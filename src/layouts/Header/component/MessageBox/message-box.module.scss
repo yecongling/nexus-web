@@ -1,0 +1,23 @@
+.message-box {
+  width: 400px;
+  max-height: 800px;
+}
+
+.message-title {
+  display: flex;
+  justify-content: space-between;
+}
+
+.footer {
+  display: flex;
+}
+
+.footer-item {
+  display: flex;
+  justify-content: center;
+  width: 50%;
+
+  &:first-child {
+    border-right: 1px solid #ddd;
+  }
+}

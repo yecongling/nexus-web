@@ -1,0 +1,14 @@
+.layoutTitle {
+  font-size: 0.75rem;
+  line-height: 1rem;
+  text-align: center;
+  margin-top: 0.5rem;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  color: #71717a;
+
+  &:hover {
+    color: #323639;
+  }
+}

@@ -1,0 +1,14 @@
+.screen-lock {
+  position: absolute;
+  z-index: 9999999999;
+  top: 0;
+  // 这里后面搞个背景图片
+  background-color: antiquewhite;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
