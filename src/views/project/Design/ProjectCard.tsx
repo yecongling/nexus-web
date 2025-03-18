@@ -10,7 +10,7 @@ import {
 import { Card, Button, Dropdown, type MenuProps } from 'antd';
 import './design.scss';
 import { memo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import bg from '@/assets/images/titlebar.jpg';
 
 /**

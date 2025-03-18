@@ -18,7 +18,7 @@ export function handleRouter(
   if (!routerList) return newArr;
   for (const item of routerList) {
     const menu: RouteObject = {};
-    if (typeof item === 'object' && item.path && item.route === '1') {
+    if (typeof item === 'object' && item.path && item.route) {
       menu.path = item.path;
       menu.component = LazyLoad(item.component).type;
       newArr.push(menu);

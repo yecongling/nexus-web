@@ -93,6 +93,6 @@ export interface RouteItem {
   children?: RouteItem[];
   // 子路由
   childrenRoute?: RouteItem[];
-  // route类型
-  route?: string;
+  // 是否是路由
+  route?: boolean;
 }

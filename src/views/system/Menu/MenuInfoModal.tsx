@@ -1,6 +1,6 @@
 import { QuestionCircleFilled, SettingOutlined } from '@ant-design/icons';
 import DragModal from '@/components/modal/DragModal';
-import { menuService } from './api/menuApi';
+import { menuApis } from './api/menuApi';
 import {
   Dropdown,
   Form,
@@ -45,7 +45,7 @@ const MenuInfoModal: React.FC<MenuInfoModalProps> = ({
       if (!visible) return;
       try {
         setLoading(true);
-        const response = await menuService.getDirectory(newMenuType);
+        const response = await menuApis.getDirectory(newMenuType);
         setDirectory(response);
         if (currentRow) {
           form.setFieldsValue(currentRow);

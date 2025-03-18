@@ -122,7 +122,7 @@ const Menu: React.FC = () => {
       dataIndex: 'status',
       key: 'status',
       align: 'center',
-      render(value) {
+      render(value: boolean) {
         if (value) {
           return <Tag color="green">启用</Tag>;
         }
@@ -395,7 +395,7 @@ const Menu: React.FC = () => {
           style={{ marginTop: '8px' }}
           bordered
           pagination={false}
-          dataSource={data}
+          dataSource={data || []}
           columns={columns}
           loading={isLoading}
           rowKey="id"

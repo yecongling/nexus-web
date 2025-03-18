@@ -12,7 +12,7 @@ export const menuService = {
    */
   async getAllMenus({ queryKey }: any): Promise<MenuModel[]> {
     const [, params] = queryKey;
-    const data = menuApis.getAllMenus(params);
+    const data = await menuApis.getAllMenus(params);
     // 转换数据
     return menuService.transformMenuData(data);
   },

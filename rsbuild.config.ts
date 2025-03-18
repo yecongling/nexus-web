@@ -37,7 +37,7 @@ export default defineConfig({
   // 配置html模板
   html: {
     favicon: path.resolve(__dirname, './src/assets/images/favicon.ico'),
-    title: 'fusion',
+    title: 'Flex-Fusion',
     tags: [
       {
         tag: 'html',

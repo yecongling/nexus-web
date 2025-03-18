@@ -3,7 +3,7 @@ import type React from 'react';
 import { Suspense, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { Router } from '@/router/router';
-import { menuService } from '@/views/system/Menu/api/menuApi';
+import { menuApis } from '@/views/system/Menu/api/menuApi';
 import { antdUtils } from '@/utils/antdUtil';
 import { useMenuStore } from './stores/store';
 import { useQuery } from '@tanstack/react-query';
@@ -22,9 +22,17 @@ const App: React.FC = () => {
     queryKey: ['menuData'],
     queryFn: async () => {
       const roleId = sessionStorage.getItem('roleId') || '';
-      const menu = await menuService.getMenuListByRoleId(roleId);
+      const menu = await menuApis.getMenuListByRoleId(roleId);
       setMenus(menu);
       return menu;
+    },
+    // 未登录的情况下不启用菜单的查询操作
+    enabled() {
+      const isLogin = sessionStorage.getItem('isLogin');
+      if (isLogin === 'false' ||!isLogin || location.pathname === '/login') {
+        return false;
+      }
+      return true;
     },
   });
 

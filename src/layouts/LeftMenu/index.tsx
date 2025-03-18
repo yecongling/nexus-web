@@ -166,7 +166,7 @@ const LeftMenu: React.FC = memo(() => {
                   color: titleColor,
                 }}
               >
-                fusion
+                Flex-Fusion
               </p>
             )}
           </div>
