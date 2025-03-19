@@ -146,20 +146,27 @@ const Login: React.FC = () => {
 
   return (
     <>
-      <div className={styles.dragArea} />
+      {/* 标题 */}
+      <div className="h-[66px] flex items-center ml-40">
+        <div className="flex items-center">
+          <img className="login-icon my-0" width="40" src={logo} alt="logo" />
+          <span
+            className="ml-5 text-3xl text-[#000000]"
+            style={{
+              fontFamily:
+                '微软雅黑 Bold, 微软雅黑 Regular, 微软雅黑, sans-serif',
+              fontWeight: 700,
+            }}
+          >
+            Flex Fusion
+          </span>
+        </div>
+      </div>
       <div className={styles['login-container']}>
         <div className={styles['login-box']}>
           {/* 左边图案和标题 */}
           <div className={styles['login-left']}>
-            <div className="logo mt-10 mb-2">
-              <img
-                className="login-icon my-0 mx-auto"
-                width="70"
-                src={logo}
-                alt="logo"
-              />
-            </div>
-            <div className="title">
+            <div className="title mt-20">
               <p className="text-[20px] m-0">
                 <span
                   style={{
@@ -168,20 +175,10 @@ const Login: React.FC = () => {
                     fontWeight: 700,
                   }}
                 >
-                  集成平台
+                  灵活的集成式管理系统
                 </span>
               </p>
-              <p className="text-[14px] m-0">
-                <span
-                  style={{
-                    fontFamily: '微软雅黑, sans-serif',
-                    fontWeight: 400,
-                    color: '#999999',
-                  }}
-                >
-                  fusion
-                </span>
-              </p>
+              <p className='text-[14px] mt-3 italic'>FLEX AND STRONG</p>
             </div>
           </div>
           {/* 右边登陆表单 */}
@@ -284,6 +281,9 @@ const Login: React.FC = () => {
         </div>
       </div>
       <div className="w-[440px] my-0 mx-auto py-[20px] px-0">
+        <p className="text-center mb-2">
+          Copyright@2025 499475142@qq.com 版权所有
+        </p>
         <a
           target="_blank"
           rel="noreferrer"

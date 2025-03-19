@@ -58,7 +58,8 @@ const Menu: React.FC = () => {
 
   // 查询菜单数据
   const { isLoading, data, refetch } = useQuery({
-    queryKey: ['menu', searchParams],
+    // 依赖searchParams, 当searchParams变化时，会重新执行queryFn
+    queryKey: ['sys_menu', searchParams],
     queryFn: menuService.getAllMenus,
   });
 
@@ -192,6 +193,13 @@ const Menu: React.FC = () => {
         ([, value]) => value !== undefined && value !== '',
       ),
     );
+    // 判断参数是否发生变化
+    if (JSON.stringify(queryCondition) === JSON.stringify(searchParams)) {
+      // 参数没有变化，手动刷新数据
+      refetch();
+      return;
+    }
+    // 参数变了，更新查询参数，自动触发查询
     setSearchParams(queryCondition);
   };
 
@@ -227,7 +235,7 @@ const Menu: React.FC = () => {
   // 新增公共确认方法
   const confirmDelete = (content: string, onConfirm: () => void) => {
     modal.confirm({
-      title: '删除确认',
+      title: '确认删除？',
       icon: <ExclamationCircleFilled />,
       content,
       onOk: onConfirm,
