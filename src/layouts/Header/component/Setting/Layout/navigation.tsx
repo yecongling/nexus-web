@@ -16,6 +16,7 @@ const Navigation: React.FC = () => {
         title="侧边导航栏手风琴模式"
         category="navigation"
         pKey="accordion"
+        disabled={false}
       />
     </>
   );

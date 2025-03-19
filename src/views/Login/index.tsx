@@ -175,7 +175,7 @@ const Login: React.FC = () => {
                     fontWeight: 700,
                   }}
                 >
-                  灵活的集成式管理系统
+                  灵活、强大、集成、高效
                 </span>
               </p>
               <p className='text-[14px] mt-3 italic'>FLEX AND STRONG</p>
