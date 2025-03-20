@@ -1,5 +1,5 @@
 import { HttpRequest } from '@/utils/request';
-import type { MenuModel } from './menuModel';
+import type { MenuDirectoryItem, MenuModel } from './menuModel';
 
 /**
  * 菜单相关接口枚举
@@ -53,13 +53,13 @@ interface IMenuService {
    * @param params 查询参数
    * @returns 菜单列表
    */
-  getAllMenus(params: MenuSearchParams): Promise<MenuModel[]>;
+  getAllMenus(params: any): Promise<MenuModel[]>;
 
   /**
    * 获取所有的菜单目录（如果选中的是按钮，就不止以及菜单）
    * @returns 菜单列表
    */
-  getDirectory(menuType: number): Promise<MenuModel[]>;
+  getDirectory(menuType: number): Promise<MenuDirectoryItem[]>;
 
   /**
    * 新增菜单
@@ -114,17 +114,20 @@ interface IMenuService {
 /**
  * 菜单管理服务实现
  */
-export const menuApis: IMenuService = {
+export const menuService: IMenuService = {
   /**
    * 根据角色获取菜单
    * @param roleId 角色ID
    * @returns 菜单列表
    */
   getMenuListByRoleId(roleId: string): Promise<any[]> {
-    return HttpRequest.get({
-      url: MenuApi.getMenuList,
-      params: { roleId },
-    }, {successMessageMode: 'none'});
+    return HttpRequest.get(
+      {
+        url: MenuApi.getMenuList,
+        params: { roleId },
+      },
+      { successMessageMode: 'none' },
+    );
   },
 
   /**
@@ -132,21 +135,29 @@ export const menuApis: IMenuService = {
    * @param params 查询参数
    * @returns 菜单列表
    */
-  getAllMenus(params: MenuSearchParams): Promise<MenuModel[]> {
-    return HttpRequest.post({
-      url: MenuApi.getAllMenus,
-      params,
-    }, {successMessageMode: 'none'});
+  getAllMenus({ queryKey }: any): Promise<MenuModel[]> {
+    const [, params] = queryKey;
+    const data = HttpRequest.post(
+      {
+        url: MenuApi.getAllMenus,
+        params,
+      },
+      { successMessageMode: 'none' },
+    );
+    return transformMenuData(data);
   },
   /**
    * 获取所有的一级菜单
    * @returns 菜单列表
    */
-  getDirectory(menuType: number): Promise<MenuModel[]> {
-    return HttpRequest.get({
-      url: MenuApi.getDirectory,
-      params: { menuType },
-    }, {successMessageMode: 'none'});
+  getDirectory(menuType: number): Promise<MenuDirectoryItem[]> {
+    return HttpRequest.get(
+      {
+        url: MenuApi.getDirectory,
+        params: { menuType },
+      },
+      { successMessageMode: 'none' },
+    );
   },
   /**
    * 新增菜单
@@ -229,3 +240,14 @@ export const menuApis: IMenuService = {
     });
   },
 };
+
+/**
+ * 转换菜单数据，children没有数据的转换为null
+ * @param data
+ */
+function transformMenuData(data: any) {
+  return data.map((item: any) => ({
+    ...item,
+    children: item.children?.length ? transformMenuData(item.children) : null,
+  }));
+}

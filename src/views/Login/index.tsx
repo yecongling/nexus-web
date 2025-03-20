@@ -12,7 +12,7 @@ import filing from '@/assets/images/filing.png';
 import { useNavigate } from 'react-router';
 import { loginService } from './api/loginApi';
 // 一些公用的API需要提取出来到api目录下(后续进行更改)
-import { menuApis } from '../system/Menu/api/menuApi';
+import { menuService } from '../system/Menu/api/menuApi';
 import { HttpCodeEnum } from '@/enums/httpEnum';
 import { antdUtils } from '@/utils/antdUtil';
 import { useMenuStore } from '@/stores/store';
@@ -91,7 +91,7 @@ const Login: React.FC = () => {
             // 存储登录的用户名
             sessionStorage.setItem('loginUser', values.username);
             // 登录成功根据角色获取菜单
-            const menu = await menuApis.getMenuListByRoleId(roleId);
+            const menu = await menuService.getMenuListByRoleId(roleId);
             setMenus(menu);
             // 判断是否配置了默认跳转的首页地址
             if (!homePath) {

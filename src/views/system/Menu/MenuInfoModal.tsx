@@ -1,6 +1,6 @@
 import { QuestionCircleFilled, SettingOutlined } from '@ant-design/icons';
 import DragModal from '@/components/modal/DragModal';
-import { menuApis } from './api/menuApi';
+import { menuService } from './api/menuApi';
 import {
   Dropdown,
   Form,
@@ -15,6 +15,7 @@ import {
 import type React from 'react';
 import { useEffect, useRef, useState, useCallback } from 'react';
 import IconPanel from '@/components/IconPanel';
+import { useQuery } from '@tanstack/react-query';
 
 /**
  * 菜单信息编辑弹窗
@@ -30,36 +31,33 @@ const MenuInfoModal: React.FC<MenuInfoModalProps> = ({
   const [form] = Form.useForm();
   const nameRef = useRef<InputRef>(null);
   const [menuType, setMenuType] = useState<number>(0);
-  // 目录的dropdown菜单
-  const [directory, setDirectory] = useState<MenuDirectoryItem[]>([]);
-  // 设置对话框加载状态
-  const [loading, setLoading] = useState<boolean>(false);
+
+  const { isLoading, data, isError, error } = useQuery({
+    queryKey: ['sys_menu_directory', menuType],
+    queryFn: async () => menuService.getDirectory(menuType),
+  });
+
+  if (isError) {
+    return (
+      <div>
+        <p>Error: {error.message}</p>
+      </div>
+    );
+  }
 
   useEffect(() => {
+    if (!visible) {
+      return;
+    }
     // 首先更新menuType
     const newMenuType = currentRow?.menuType ?? 0;
     setMenuType(newMenuType);
-
     // 然后加载目录数据
-    const loadData = async () => {
-      if (!visible) return;
-      try {
-        setLoading(true);
-        const response = await menuApis.getDirectory(newMenuType);
-        setDirectory(response);
-        if (currentRow) {
-          form.setFieldsValue(currentRow);
-        } else {
-          form.resetFields();
-        }
-      } catch (error) {
-        console.error('加载目录数据失败:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadData();
+    if (currentRow) {
+      form.setFieldsValue(currentRow);
+    } else {
+      form.resetFields();
+    }
   }, [visible, currentRow, form]);
 
   // 使用 useCallback 优化事件处理函数
@@ -100,7 +98,7 @@ const MenuInfoModal: React.FC<MenuInfoModalProps> = ({
         form.setFieldsValue({ icon });
       }
     },
-    [form]
+    [form],
   );
 
   return (
@@ -116,7 +114,7 @@ const MenuInfoModal: React.FC<MenuInfoModalProps> = ({
       title={`${currentRow ? '编辑' : '新增'}菜单数据`}
       open={visible}
       onOk={handleOk}
-      loading={loading}
+      loading={isLoading}
       onCancel={onCancel}
       afterOpenChange={onAfterOpenChange}
     >
@@ -162,16 +160,13 @@ const MenuInfoModal: React.FC<MenuInfoModalProps> = ({
           </Form.Item>
         )}
         {menuType !== 0 && (
-          <Form.Item
-            name="parentId"
-            label="上级菜单"
-          >
+          <Form.Item name="parentId" label="上级菜单">
             <TreeSelect
               showSearch
               style={{ width: '100%' }}
               dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
               placeholder="请选择上级目录"
-              treeData={directory}
+              treeData={data}
             />
           </Form.Item>
         )}
@@ -261,14 +256,6 @@ const MenuInfoModal: React.FC<MenuInfoModalProps> = ({
   );
 };
 export default MenuInfoModal;
-
-// 添加类型定义
-interface MenuDirectoryItem {
-  id: string | number;
-  name: string;
-  children?: MenuDirectoryItem[];
-  [key: string]: any;
-}
 
 // 菜单信息弹窗的参数
 export type MenuInfoModalProps = {

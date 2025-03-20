@@ -128,3 +128,13 @@ export interface MenuModel {
    */
   updateTime: string;
 }
+
+/**
+ * 菜单目录项
+ */
+export interface MenuDirectoryItem {
+  id: string | number;
+  name: string;
+  children?: MenuDirectoryItem[];
+  [key: string]: any;
+}

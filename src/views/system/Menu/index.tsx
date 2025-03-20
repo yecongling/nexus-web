@@ -1,26 +1,13 @@
-import {
-  DeleteOutlined,
-  ExclamationCircleFilled,
-  PlusOutlined,
-  RedoOutlined,
-  SearchOutlined,
-} from '@ant-design/icons';
-import { menuApis } from './api/menuApi';
+import { ExclamationCircleFilled } from '@ant-design/icons';
+import { menuService } from './api/menuApi';
 import {
   App,
   Button,
   Card,
-  Col,
   ConfigProvider,
-  Form,
-  Input,
-  Row,
-  Select,
   Space,
-  Table,
   type TableProps,
   Tag,
-  Upload,
 } from 'antd';
 import type React from 'react';
 import { useReducer, useState } from 'react';
@@ -28,16 +15,16 @@ import MenuInfoModal from './MenuInfoModal';
 import './menu.scss';
 import useParentSize from '@/hooks/useParentSize';
 import { addIcon } from '@/utils/utils';
-import { usePermission } from '@/hooks/usePermission';
 import { useQuery } from '@tanstack/react-query';
-import { menuService } from './api';
+import SearchBar from './SearchBar';
+import ActionButtons from './ActionButtons';
+import DataTable from './DataTable';
 
 /**
  * 系统菜单维护
  */
 const Menu: React.FC = () => {
   const { modal } = App.useApp();
-  const [form] = Form.useForm();
   // 合并的状态
   const [state, dispatch] = useReducer(
     (prev: any, action: any) => ({ ...prev, ...action }),
@@ -49,9 +36,6 @@ const Menu: React.FC = () => {
   );
   // 查询条件
   const [searchParams, setSearchParams] = useState({});
-
-  // 新增菜单权限
-  const hasAddPermission = usePermission(['system:menu:add']);
 
   // 容器高度计算（表格）
   const { parentRef, height } = useParentSize();
@@ -185,11 +169,9 @@ const Menu: React.FC = () => {
    * @param values  检索表单条件
    */
   const onFinish = (values: any) => {
-    // 获取表单查询条件
-    const formCon = values || form.getFieldsValue();
     // 拼接查询条件，没有选择的条件就不拼接
     const queryCondition = Object.fromEntries(
-      Object.entries(formCon).filter(
+      Object.entries(values).filter(
         ([, value]) => value !== undefined && value !== '',
       ),
     );
@@ -204,16 +186,6 @@ const Menu: React.FC = () => {
   };
 
   /**
-   * 转换菜单数据，children没有数据的转换为null
-   * @param data
-   */
-  const transformMenuData = (data: any) =>
-    data.map((item: any) => ({
-      ...item,
-      children: item.children?.length ? transformMenuData(item.children) : null,
-    }));
-
-  /**
    * 批量删除选中的菜单
    */
   const deleteBatch = () => {
@@ -223,7 +195,7 @@ const Menu: React.FC = () => {
       content: '确定批量删除菜单吗？数据删除后将无法恢复！',
       onOk() {
         // 调用删除接口，删除成功后刷新页面数据
-        menuApis
+        menuService
           .deleteMenuBatch(state.selRows.map((item: any) => item.id))
           .then(() => {
             refetch();
@@ -245,7 +217,7 @@ const Menu: React.FC = () => {
   // 修改后的删除方法
   const delMenu = (id: string) => {
     confirmDelete('确定删除菜单吗？数据删除后将无法恢复！', () => {
-      menuApis.deleteMenu(id).then(() => {
+      menuService.deleteMenu(id).then(() => {
         refetch();
       });
     });
@@ -279,10 +251,10 @@ const Menu: React.FC = () => {
     try {
       if (state.currentRow == null) {
         // 新增数据
-        await menuApis.addMenu(menuData);
+        await menuService.addMenu(menuData);
       } else {
         // 编辑数据
-        await menuApis.updateMenu(menuData);
+        await menuService.updateMenu(menuData);
       }
       // 操作成功，关闭弹窗，刷新数据
       closeEditModal();
@@ -308,60 +280,7 @@ const Menu: React.FC = () => {
         }}
       >
         <Card>
-          <Form form={form} onFinish={onFinish}>
-            <Row gutter={24}>
-              <Col span={6}>
-                <Form.Item name="name" label="菜单名称" colon={false}>
-                  <Input autoFocus allowClear autoComplete="off" />
-                </Form.Item>
-              </Col>
-              <Col span={6}>
-                <Form.Item name="menuType" label="菜单类型" colon={false}>
-                  <Select
-                    allowClear
-                    options={[
-                      { value: '', label: '请选择', disabled: true },
-                      { value: 0, label: '一级菜单' },
-                      { value: 1, label: '子菜单' },
-                      { value: 2, label: '按钮权限' },
-                    ]}
-                  />
-                </Form.Item>
-              </Col>
-              <Col span={6}>
-                <Form.Item name="status" label="状态" colon={false}>
-                  <Select
-                    allowClear
-                    options={[
-                      { value: '', label: '请选择', disabled: true },
-                      { value: 1, label: '启用' },
-                      { value: 0, label: '停用' },
-                    ]}
-                  />
-                </Form.Item>
-              </Col>
-              <Col span={6} style={{ textAlign: 'right' }}>
-                <Space>
-                  <Button
-                    type="primary"
-                    htmlType="submit"
-                    icon={<SearchOutlined />}
-                  >
-                    检索
-                  </Button>
-                  <Button
-                    type="default"
-                    icon={<RedoOutlined />}
-                    onClick={() => {
-                      form.resetFields();
-                    }}
-                  >
-                    重置
-                  </Button>
-                </Space>
-              </Col>
-            </Row>
-          </Form>
+          <SearchBar onFinish={onFinish} />
         </Card>
       </ConfigProvider>
       {/* 查询表格 */}
@@ -371,41 +290,16 @@ const Menu: React.FC = () => {
         ref={parentRef}
       >
         {/* 操作按钮 */}
-        <Space>
-          {hasAddPermission && (
-            <Button
-              type="primary"
-              icon={<PlusOutlined />}
-              onClick={onAddMenuClick}
-            >
-              新增
-            </Button>
-          )}
-
-          <Upload accept=".xlsx">
-            <Button type="default" icon={<PlusOutlined />}>
-              批量导入
-            </Button>
-          </Upload>
-          <Button
-            type="default"
-            danger
-            icon={<DeleteOutlined />}
-            disabled={state.selRows.length === 0}
-            onClick={deleteBatch}
-          >
-            批量删除
-          </Button>
-        </Space>
+        <ActionButtons
+          onAddMenuClick={onAddMenuClick}
+          onDeleteBatch={deleteBatch}
+          selRowsLength={state.selRows.length}
+        />
         {/* 表格数据 */}
-        <Table
-          size="middle"
-          style={{ marginTop: '8px' }}
-          bordered
-          pagination={false}
+        <DataTable
           dataSource={data || []}
           columns={columns}
-          loading={isLoading}
+          isLoading={isLoading}
           rowKey="id"
           scroll={{ y: height - 128, x: 'max-content' }}
           rowSelection={{ ...rowSelection }}
