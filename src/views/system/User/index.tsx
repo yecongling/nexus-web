@@ -9,7 +9,7 @@ import {
 } from '@ant-design/icons';
 import { Button, Card, Space, Table, Upload, message, Modal } from 'antd';
 import type React from 'react';
-import { useMemo, useState } from 'react';
+import { useMemo, useReducer, useState } from 'react';
 import type { UserSearchParams } from './types';
 import { getColumns } from './columns';
 import SearchForm from './SearchForm';
@@ -24,12 +24,24 @@ const { confirm } = Modal;
  * @returns
  */
 const User: React.FC = () => {
-  // 编辑窗口的打开状态
-  const [openEditModal, setOpenEditModal] = useState<boolean>(false);
-  // 当前编辑的行数据
-  const [currentRow, setCurrentRow] = useState<Partial<UserModel> | null>(null);
-  // 当前选中的行数据
-  const [selectedRows, setSelectedRows] = useState<UserModel[]>([]);
+  // 合并状态
+  const [state, dispatch] = useReducer(
+    (prev: any, action: any) => ({
+      ...prev,
+      ...action,
+    }),
+    {
+      // 编辑窗口的打开状态
+      openEditModal: false,
+      // 当前编辑的行数据
+      currentRow: null,
+      // 当前选中的行数据
+      selectedRows: [],
+      // 当前操作
+      action: '',
+    },
+  );
+
   // 容器高度计算（表格）
   const { parentRef, height } = useParentSize();
 
@@ -50,10 +62,13 @@ const User: React.FC = () => {
   });
 
   // 处理删除数据
-  const deleteUserMutation = useMutation({
+  const logicDeleteUserMutation = useMutation({
     mutationFn: (ids: string[]) => userApis.logicDeleteUsers(ids),
     onSuccess: () => {
       message.success('删除成功!');
+      dispatch({
+        selectedRows: [],
+      });
       refetch();
     },
     onError: (error) => {
@@ -79,20 +94,29 @@ const User: React.FC = () => {
 
   // 处理编辑
   const handleEdit = (record: UserModel) => {
-    setCurrentRow(record);
-    setOpenEditModal(true);
+    dispatch({
+      openEditModal: true,
+      currentRow: record,
+      action: 'edit',
+    });
   };
 
   // 处理详情
   const handleDetail = (record: UserModel) => {
-    setCurrentRow(record);
-    setOpenEditModal(true);
+    dispatch({
+      openEditModal: true,
+      currentRow: record,
+      action: 'view',
+    });
   };
 
   // 处理新增
   const handleAdd = () => {
-    setCurrentRow(null);
-    setOpenEditModal(true);
+    dispatch({
+      openEditModal: true,
+      currentRow: null,
+      action: 'add',
+    });
   };
 
   // 处理批量删除
@@ -100,20 +124,11 @@ const User: React.FC = () => {
     confirm({
       title: '确定要删除选中的用户吗？',
       icon: <ExclamationCircleFilled />,
-      content: '此操作将永久删除选中的用户，是否继续？',
+      content: '此操作将删除选中的用户，删除后可在回收站中进行恢复，是否继续？',
       onOk() {
-        const ids = selectedRows.map((row) => row.id);
+        const ids = state.selectedRows.map((row: Partial<UserModel>) => row.id);
         // 调用批量删除接口(逻辑删除)
-        userApis
-          .logicDeleteUsers(ids)
-          .then(() => {
-            message.success('批量删除成功');
-            setSelectedRows([]);
-            refetch();
-          })
-          .catch((error: Error) => {
-            message.error(`批量删除失败,${error.message}`);
-          });
+        logicDeleteUserMutation.mutate(ids);
       },
     });
   };
@@ -134,17 +149,19 @@ const User: React.FC = () => {
   // 处理表单提交
   const handleModalOk = async (values: Partial<UserModel>) => {
     try {
-      if (currentRow?.id) {
-        await userApis.updateUser({ id: currentRow.id, ...values });
+      if (state.currentRow?.id) {
+        await userApis.updateUser({ id: state.currentRow.id, ...values });
         message.success('更新成功');
       } else {
         await userApis.createUser(values);
         message.success('创建成功');
       }
-      setOpenEditModal(false);
+      dispatch({
+        openEditModal: false,
+      });
       refetch();
     } catch (error) {
-      message.error((currentRow?.id ? '更新失败' : '创建失败') + error);
+      message.error((state.currentRow?.id ? '更新失败' : '创建失败') + error);
     }
   };
 
@@ -174,9 +191,9 @@ const User: React.FC = () => {
             confirm({
               title: '删除用户',
               icon: <ExclamationCircleFilled />,
-              content: '确定删除该用户吗？数据删除后将无法恢复！',
+              content: '确定删除该用户吗？数据删除后请在回收站中恢复！',
               onOk() {
-                deleteUserMutation.mutate([record.id]);
+                logicDeleteUserMutation.mutate([record.id]);
               },
             });
           },
@@ -219,7 +236,7 @@ const User: React.FC = () => {
           <Button
             danger
             icon={<DeleteOutlined />}
-            disabled={selectedRows.length === 0}
+            disabled={state.selectedRows.length === 0}
             onClick={handleBatchDelete}
           >
             批量删除
@@ -254,7 +271,9 @@ const User: React.FC = () => {
           scroll={{ y: height - 128, x: 'max-content' }}
           rowSelection={{
             onChange: (_selectedRowKeys, selectedRows) => {
-              setSelectedRows(selectedRows);
+              dispatch({
+                selectedRows: selectedRows,
+              });
             },
             columnWidth: 32,
             fixed: true,
@@ -264,13 +283,16 @@ const User: React.FC = () => {
 
       {/* 编辑弹窗 */}
       <UserInfoModal
-        visible={openEditModal}
+        visible={state.openEditModal}
         onOk={handleModalOk}
         onCancel={() => {
-          setOpenEditModal(false);
-          setCurrentRow(null);
+          dispatch({
+            openEditModal: false,
+            currentRow: null,
+          });
         }}
-        userInfo={currentRow}
+        userInfo={state.currentRow}
+        action={state.action}
       />
     </>
   );

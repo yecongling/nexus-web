@@ -9,6 +9,7 @@ import type { UserModel } from './api/userModel';
 
 interface UserInfoModalProps {
   visible: boolean;
+  action: string;
   onOk: (values: Partial<UserModel>) => void;
   onCancel: () => void;
   userInfo: Partial<UserModel> | null;
@@ -27,6 +28,7 @@ const UserInfoModal: React.FC<UserInfoModalProps> = ({
   onOk,
   onCancel,
   userInfo,
+  action,
 }) => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
@@ -123,6 +125,7 @@ const UserInfoModal: React.FC<UserInfoModalProps> = ({
     >
       <Form
         form={form}
+        disabled={action === 'view'}
         labelCol={{ span: 6 }}
         wrapperCol={{ span: 16 }}
         validateMessages={{
@@ -137,7 +140,7 @@ const UserInfoModal: React.FC<UserInfoModalProps> = ({
           name="username"
           rules={[{ required: true }, { min: 3, message: '用户名至少3个字符' }]}
         >
-          <Input placeholder="请输入用户名" />
+          <Input placeholder="请输入用户名" autoFocus/>
         </Form.Item>
 
         <Form.Item
