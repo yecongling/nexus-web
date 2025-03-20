@@ -5,7 +5,7 @@ import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import type { UploadChangeParam } from 'antd/es/upload';
 import type { RcFile, UploadFile } from 'antd/es/upload/interface';
 import dayjs from 'dayjs';
-import type { UserModel } from '@/api/system/user/userModel';
+import type { UserModel } from './api/userModel';
 
 interface UserInfoModalProps {
   visible: boolean;
@@ -34,6 +34,9 @@ const UserInfoModal: React.FC<UserInfoModalProps> = ({
 
   // 初始化表单数据
   useEffect(() => {
+    if (!visible) {
+      return;
+    }
     if (userInfo) {
       const formData = {
         ...userInfo,
@@ -45,7 +48,7 @@ const UserInfoModal: React.FC<UserInfoModalProps> = ({
       form.resetFields();
       setImageUrl(undefined);
     }
-  }, [userInfo, form]);
+  }, [userInfo, form, visible]);
 
   /**
    * 确认回调

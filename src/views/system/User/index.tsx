@@ -1,5 +1,5 @@
 import useParentSize from '@/hooks/useParentSize';
-import { userService } from '@/api/system/user/userApi';
+import { userApis } from './api/userApi';
 import {
   DeleteOutlined,
   EditOutlined,
@@ -9,12 +9,13 @@ import {
 } from '@ant-design/icons';
 import { Button, Card, Space, Table, Upload, message, Modal } from 'antd';
 import type React from 'react';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import type { UserSearchParams } from './types';
 import { getColumns } from './columns';
 import SearchForm from './SearchForm';
 import UserInfoModal from './UserInfoModal';
-import type { UserModel } from '@/api/system/user/userModel';
+import type { UserModel } from './api/userModel';
+import { useMutation, useQuery } from '@tanstack/react-query';
 
 const { confirm } = Modal;
 
@@ -25,51 +26,55 @@ const { confirm } = Modal;
 const User: React.FC = () => {
   // 编辑窗口的打开状态
   const [openEditModal, setOpenEditModal] = useState<boolean>(false);
-  // 表格数据
-  const [tableData, setTableData] = useState<UserModel[]>([]);
   // 当前编辑的行数据
   const [currentRow, setCurrentRow] = useState<Partial<UserModel> | null>(null);
-  // 表格加载状态
-  const [loading, setLoading] = useState<boolean>(false);
   // 当前选中的行数据
   const [selectedRows, setSelectedRows] = useState<UserModel[]>([]);
-  // 数据总条数
-  const [total, setTotal] = useState<number>(0);
   // 容器高度计算（表格）
   const { parentRef, height } = useParentSize();
-  // 分页参数
-  const [pagination, setPagination] = useState<{
-    pageNum: number;
-    pageSize: number;
-  }>({
+
+  // 查询参数（包含分页参数）
+  const [searchParams, setSearchParams] = useState<UserSearchParams>({
     pageNum: 1,
     pageSize: 20,
   });
 
   // 查询用户数据
-  const getUserList = useCallback(
-    async (params: UserSearchParams) => {
-      try {
-        setLoading(true);
-        const res = await userService.queryUsers({ ...pagination, ...params });
-        setTableData(res.data);
-        setTotal(res.total || 0);
-      } finally {
-        setLoading(false);
-      }
-    },
-    [pagination],
-  );
+  const {
+    isLoading,
+    data: result,
+    refetch,
+  } = useQuery({
+    queryKey: ['sys_users', searchParams],
+    queryFn: () => userApis.queryUsers({ ...searchParams }),
+  });
 
-  // 首次加载和分页变化时获取数据
-  useEffect(() => {
-    getUserList({} as UserSearchParams);
-  }, [getUserList]);
+  // 处理删除数据
+  const deleteUserMutation = useMutation({
+    mutationFn: (id: string) => userApis.deleteUser(id),
+    onSuccess: () => {
+      message.success('删除成功!');
+      refetch();
+    },
+    onError: (error) => {
+      message.error(`删除失败, 原因：${error.message}`);
+    },
+  });
 
   // 处理搜索
   const handleSearch = (values: UserSearchParams) => {
-    setPagination((prev) => ({ ...prev, pageNum: 1 }));
-    getUserList(values);
+    const search = {
+      ...values,
+      pageNum: searchParams.pageNum,
+      pageSize: searchParams.pageSize,
+    };
+    // 判断参数是否发生变化
+    if (JSON.stringify(search) === JSON.stringify(searchParams)) {
+      // 参数没有变化，手动刷新数据
+      refetch();
+      return;
+    }
+    setSearchParams((prev) => ({ ...prev, ...search }));
   };
 
   // 处理编辑
@@ -90,17 +95,6 @@ const User: React.FC = () => {
     setOpenEditModal(true);
   };
 
-  // 处理删除
-  const handleDelete = async (id: string) => {
-    try {
-      await userService.deleteUser(id);
-      message.success('删除成功');
-      getUserList({} as UserSearchParams);
-    } catch (error) {
-      message.error('删除失败, 原因：' + error);
-    }
-  };
-
   // 处理批量删除
   const handleBatchDelete = () => {
     confirm({
@@ -110,11 +104,11 @@ const User: React.FC = () => {
       onOk() {
         const ids = selectedRows.map((row) => row.id);
         // 调用批量删除接口
-        Promise.all(ids.map((id) => userService.deleteUser(id)))
+        Promise.all(ids.map((id) => userApis.deleteUser(id)))
           .then(() => {
             message.success('批量删除成功');
             setSelectedRows([]);
-            getUserList({} as UserSearchParams);
+            refetch();
           })
           .catch(() => {
             message.error('批量删除失败');
@@ -126,14 +120,11 @@ const User: React.FC = () => {
   // 处理用户状态更新
   const handleStatusChange = async (record: UserModel) => {
     try {
-      await userService.updateUserStatus(
-        record.id,
-        record.status === 1 ? 0 : 1,
-      );
+      await userApis.updateUserStatus(record.id, record.status === 1 ? 0 : 1);
       message.success('状态更新成功');
-      getUserList({} as UserSearchParams);
+      refetch();
     } catch (error) {
-      message.error('状态更新失败' + error);
+      message.error(`状态更新失败${error}`);
     }
   };
 
@@ -141,16 +132,16 @@ const User: React.FC = () => {
   const handleModalOk = async (values: Partial<UserModel>) => {
     try {
       if (currentRow?.id) {
-        await userService.updateUser({ id: currentRow.id, ...values });
+        await userApis.updateUser({ id: currentRow.id, ...values });
         message.success('更新成功');
       } else {
-        await userService.createUser(values);
+        await userApis.createUser(values);
         message.success('创建成功');
       }
       setOpenEditModal(false);
-      getUserList({} as UserSearchParams);
+      refetch();
     } catch (error) {
-      message.error((currentRow?.id ? '更新失败' : '创建失败')  + error);
+      message.error((currentRow?.id ? '更新失败' : '创建失败') + error);
     }
   };
 
@@ -182,7 +173,7 @@ const User: React.FC = () => {
               icon: <ExclamationCircleFilled />,
               content: '确定删除该用户吗？数据删除后将无法恢复！',
               onOk() {
-                handleDelete(record.id);
+                deleteUserMutation.mutate(record.id);
               },
             });
           },
@@ -214,7 +205,7 @@ const User: React.FC = () => {
             onChange={(info) => {
               if (info.file.status === 'done') {
                 message.success('导入成功');
-                getUserList({} as UserSearchParams);
+                refetch();
               } else if (info.file.status === 'error') {
                 message.error('导入失败');
               }
@@ -238,23 +229,24 @@ const User: React.FC = () => {
           style={{ marginTop: '8px' }}
           bordered
           pagination={{
-            pageSize: pagination.pageSize,
-            current: pagination.pageNum,
+            pageSize: searchParams.pageSize,
+            current: searchParams.pageNum,
             showQuickJumper: true,
             hideOnSinglePage: false,
             showSizeChanger: true,
             showTotal: (total) => `共 ${total} 条`,
-            total: total,
+            total: result?.total || 0,
             onChange(page, pageSize) {
-              setPagination({
+              setSearchParams({
+                ...searchParams,
                 pageNum: page,
                 pageSize: pageSize,
               });
             },
           }}
-          dataSource={tableData}
+          dataSource={result?.data || []}
           columns={columns}
-          loading={loading}
+          loading={isLoading}
           rowKey="id"
           scroll={{ y: height - 128, x: 'max-content' }}
           rowSelection={{

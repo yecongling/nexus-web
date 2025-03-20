@@ -67,7 +67,7 @@ export interface UserSearchParams {
 /**
  * 用户信息服务接口
  */
-export interface IUserService {
+export interface IUserApi {
   /**
    * 创建用户
    * @param user 用户信息
@@ -113,7 +113,7 @@ export interface IUserService {
 /**
  * 用户信息服务实现
  */
-export const userService: IUserService = {
+export const userApis: IUserApi = {
   /**
    * 创建用户
    * @param user 用户信息

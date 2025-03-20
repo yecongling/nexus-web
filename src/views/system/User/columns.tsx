@@ -1,6 +1,14 @@
-import type { UserModel } from '@/api/system/user/userModel';
+import type { UserModel } from './api/userModel';
 import { ManOutlined, WomanOutlined, MoreOutlined } from '@ant-design/icons';
-import { Button, Space, Tag, Image, Dropdown, type TableProps, type MenuProps } from 'antd';
+import {
+  Button,
+  Space,
+  Tag,
+  Image,
+  Dropdown,
+  type TableProps,
+  type MenuProps,
+} from 'antd';
 
 /**
  * 获取表格列
@@ -12,7 +20,7 @@ import { Button, Space, Tag, Image, Dropdown, type TableProps, type MenuProps } 
 export const getColumns = (
   handleEdit: (record: UserModel) => void,
   handleDetail: (record: UserModel) => void,
-  handleMore: (record: UserModel) => MenuProps['items']
+  handleMore: (record: UserModel) => MenuProps['items'],
 ): TableProps<UserModel>['columns'] => [
   {
     dataIndex: 'id',

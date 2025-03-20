@@ -74,7 +74,7 @@ const LeftMenu: React.FC = memo(() => {
     } as MenuItem;
   };
 
-  // 处理后台返回菜单 key 值为 antd 菜单需要的 key 值
+  // 处理后台返回菜单数据
   const deepLoopFloat = (menuList: RouteItem[], newArr: MenuItem[] = []) => {
     for (const item of menuList) {
       // 如果不能显示的菜单不显示
