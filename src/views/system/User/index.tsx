@@ -51,7 +51,7 @@ const User: React.FC = () => {
 
   // 处理删除数据
   const deleteUserMutation = useMutation({
-    mutationFn: (id: string) => userApis.deleteUser(id),
+    mutationFn: (ids: string[]) => userApis.logicDeleteUsers(ids),
     onSuccess: () => {
       message.success('删除成功!');
       refetch();
@@ -103,15 +103,16 @@ const User: React.FC = () => {
       content: '此操作将永久删除选中的用户，是否继续？',
       onOk() {
         const ids = selectedRows.map((row) => row.id);
-        // 调用批量删除接口
-        Promise.all(ids.map((id) => userApis.deleteUser(id)))
+        // 调用批量删除接口(逻辑删除)
+        userApis
+          .logicDeleteUsers(ids)
           .then(() => {
             message.success('批量删除成功');
             setSelectedRows([]);
             refetch();
           })
-          .catch(() => {
-            message.error('批量删除失败');
+          .catch((error: Error) => {
+            message.error(`批量删除失败,${error.message}`);
           });
       },
     });
@@ -119,13 +120,15 @@ const User: React.FC = () => {
 
   // 处理用户状态更新
   const handleStatusChange = async (record: UserModel) => {
-    try {
-      await userApis.updateUserStatus(record.id, record.status === 1 ? 0 : 1);
-      message.success('状态更新成功');
-      refetch();
-    } catch (error) {
-      message.error(`状态更新失败${error}`);
-    }
+    userApis
+      .updateBatchUserStatus([record.id], record.status === 1 ? 0 : 1)
+      .then(() => {
+        message.success('状态更新成功');
+        refetch();
+      })
+      .catch((error: Error) => {
+        message.error(`状态更新失败,${error.message}`);
+      });
   };
 
   // 处理表单提交
@@ -173,7 +176,7 @@ const User: React.FC = () => {
               icon: <ExclamationCircleFilled />,
               content: '确定删除该用户吗？数据删除后将无法恢复！',
               onOk() {
-                deleteUserMutation.mutate(record.id);
+                deleteUserMutation.mutate([record.id]);
               },
             });
           },

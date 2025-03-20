@@ -1,6 +1,6 @@
-import { HttpRequest } from "@/utils/request";
-import type { UserModel } from "./userModel";
-import type { PageQueryParams } from "@/types/global";
+import { HttpRequest } from '@/utils/request';
+import type { UserModel } from './userModel';
+import type { PageQueryParams } from '@/types/global';
 
 /**
  * 用户信息操作枚举
@@ -9,35 +9,48 @@ export enum UserAction {
   /**
    * 创建用户
    */
-  addUser = "/system/user/addUser",
+  addUser = '/system/user/addUser',
 
   /**
-   * 删除用户
+   * 批量删除用户（物理删除）
    */
-  deleteUser = "/system/user/deleteUser",
+  deleteUsers = '/system/user/deleteUsers',
 
   /**
-   * 批量删除用户
+   * 批量删除用户（逻辑删除）
    */
-  deleteUsers = "/system/user/deleteUsers",
-
-  /**
-   * 逻辑删除用户
-   */
-  logicDeleteUsers = "/system/user/logicDeleteUsers",
+  logicDeleteUsers = '/system/user/logicDeleteUsers',
 
   /**
    * 更新用户
    */
-  modifyUser = "/system/user/updateUser",
+  modifyUser = '/system/user/updateUser',
 
   /**
    * 查询用户
    */
-  getUserList = "/system/user/queryUserList",
+  getUserList = '/system/user/queryUserList',
+
+  /**
+   * 批量锁定用户
+   */
+  lockBatchUser = '/system/user/lockBatchUser',
+
+  /**
+   * 批量解锁用户
+   */
+  unlockBatchUser = '/system/user/unlockBatchUser',
+
+  /**
+   * 重置用户密码
+   */
+  resetUserPwd = '/system/user/resetPwd',
+
+  /**
+   * 修改用户密码
+   */
+  changeUserPwd = '/system/user/modifyPwd',
 }
-
-
 
 /**
  * 用户信息查询参数
@@ -76,18 +89,18 @@ export interface IUserApi {
   createUser(user: Partial<UserModel>): Promise<boolean>;
 
   /**
-   * 删除用户
-   * @param id 用户ID
-   * @returns 删除结果
-   */
-  deleteUser(id: string): Promise<boolean>;
-
-  /**
-   * 批量删除用户
+   * 批量删除用户（物理删除）
    * @param ids 用户ID列表
    * @returns 删除结果
    */
   deleteUsers(ids: string[]): Promise<boolean>;
+
+  /**
+   * 批量删除用户（逻辑删除）
+   * @param ids 用户ID列表
+   * @returns 删除结果
+   */
+  logicDeleteUsers(ids: string[]): Promise<boolean>;
 
   /**
    * 更新用户
@@ -104,10 +117,16 @@ export interface IUserApi {
    */
   queryUsers(
     pageParams: PageQueryParams,
-    searchParams?: UserSearchParams
+    searchParams?: UserSearchParams,
   ): Promise<Record<string, any>>;
 
-  updateUserStatus(id: string, status: number): Promise<boolean>;
+  /**
+   * 批量更新用户状态
+   * @param ids 用户ID列表
+   * @param status 用户状态
+   * @returns 更新结果
+   */
+  updateBatchUserStatus(id: string[], status: number): Promise<boolean>;
 }
 
 /**
@@ -128,15 +147,13 @@ export const userApis: IUserApi = {
   },
   /**
    * 删除用户
-   * @param id 用户ID
+   * @param ids 用户ID列表
    * @returns 删除结果
    */
-  async deleteUser(id: string): Promise<boolean> {
+  async deleteUsers(ids: string[]): Promise<boolean> {
     const response = await HttpRequest.post({
-      url: UserAction.deleteUser,
-      data: {
-        id,
-      },
+      url: UserAction.deleteUsers,
+      data: ids,
     });
     return response;
   },
@@ -146,12 +163,12 @@ export const userApis: IUserApi = {
    * @param ids 用户ID列表
    * @returns 删除结果
    */
-  async deleteUsers(ids: string[]): Promise<boolean> {
+  async logicDeleteUsers(ids: string[]): Promise<boolean> {
     const response = await HttpRequest.post({
       url: UserAction.deleteUsers,
       data: ids,
     });
-    return response.ok;
+    return response;
   },
 
   /**
@@ -164,7 +181,7 @@ export const userApis: IUserApi = {
       url: UserAction.modifyUser,
       data: user,
     });
-    return response.ok;
+    return response;
   },
 
   /**
@@ -175,7 +192,7 @@ export const userApis: IUserApi = {
    */
   async queryUsers(
     pageParams: PageQueryParams,
-    searchParams?: UserSearchParams
+    searchParams?: UserSearchParams,
   ): Promise<Record<string, any>> {
     const params = { ...pageParams, searchParams };
     const response = await HttpRequest.post(
@@ -184,22 +201,24 @@ export const userApis: IUserApi = {
         params,
       },
       {
-        successMessageMode: "none",
-      }
+        successMessageMode: 'none',
+      },
     );
     return response;
   },
 
   /**
-   * 更新用户状态
-   * @param id 用户ID
+   * 批量更新用户状态
+   * @param ids 用户ID列表
    * @param status 用户状态
    * @returns 更新结果
    */
-  async updateUserStatus(id: string, status: number): Promise<boolean> {
-    const response = await fetch(`${UserAction.modifyUser}/${id}/${status}`, {
-      method: "PUT",
+  async updateBatchUserStatus(ids: string[], status: number): Promise<boolean> {
+    // 根据status决定是锁定还是解锁用户
+    const url = status === 0 ? UserAction.lockBatchUser : UserAction.unlockBatchUser;
+    return HttpRequest.post({
+      url,
+      data: ids,
     });
-    return response.ok;
   },
 };
