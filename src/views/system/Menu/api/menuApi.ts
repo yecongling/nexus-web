@@ -135,9 +135,9 @@ export const menuService: IMenuService = {
    * @param params 查询参数
    * @returns 菜单列表
    */
-  getAllMenus({ queryKey }: any): Promise<MenuModel[]> {
+  async getAllMenus({ queryKey }: any): Promise<MenuModel[]> {
     const [, params] = queryKey;
-    const data = HttpRequest.post(
+    const data = await HttpRequest.post(
       {
         url: MenuApi.getAllMenus,
         params,

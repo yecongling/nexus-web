@@ -3,7 +3,7 @@ import type React from 'react';
 import { Suspense, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { Router } from '@/router/router';
-import { menuApis } from '@/views/system/Menu/api/menuApi';
+import { menuService } from '@/views/system/Menu/api/menuApi';
 import { antdUtils } from '@/utils/antdUtil';
 import { useMenuStore } from './stores/store';
 import { useQuery } from '@tanstack/react-query';
@@ -22,7 +22,7 @@ const App: React.FC = () => {
     queryKey: ['menuData'],
     queryFn: async () => {
       const roleId = sessionStorage.getItem('roleId') || '';
-      const menu = await menuApis.getMenuListByRoleId(roleId);
+      const menu = await menuService.getMenuListByRoleId(roleId);
       setMenus(menu);
       return menu;
     },
