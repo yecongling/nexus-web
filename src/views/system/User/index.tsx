@@ -5,9 +5,8 @@ import {
   EditOutlined,
   ExclamationCircleFilled,
   LockOutlined,
-  PlusOutlined,
 } from '@ant-design/icons';
-import { Button, Card, Space, Table, Upload, message, Modal } from 'antd';
+import { Card, Table, message, Modal } from 'antd';
 import type React from 'react';
 import { useMemo, useReducer, useState } from 'react';
 import type { UserSearchParams } from './types';
@@ -16,12 +15,12 @@ import SearchForm from './SearchForm';
 import UserInfoModal from './UserInfoModal';
 import type { UserModel } from './api/userModel';
 import { useMutation, useQuery } from '@tanstack/react-query';
+import TableActionButtons from './TableActionButtons';
 
 const { confirm } = Modal;
 
 /**
  * 用户管理
- * @returns
  */
 const User: React.FC = () => {
   // 合并状态
@@ -214,34 +213,12 @@ const User: React.FC = () => {
         ref={parentRef}
       >
         {/* 操作按钮 */}
-        <Space>
-          <Button type="primary" icon={<PlusOutlined />} onClick={handleAdd}>
-            新增
-          </Button>
-          <Upload
-            accept=".xlsx"
-            showUploadList={false}
-            action="/api/user/import"
-            onChange={(info) => {
-              if (info.file.status === 'done') {
-                message.success('导入成功');
-                refetch();
-              } else if (info.file.status === 'error') {
-                message.error('导入失败');
-              }
-            }}
-          >
-            <Button icon={<PlusOutlined />}>批量导入</Button>
-          </Upload>
-          <Button
-            danger
-            icon={<DeleteOutlined />}
-            disabled={state.selectedRows.length === 0}
-            onClick={handleBatchDelete}
-          >
-            批量删除
-          </Button>
-        </Space>
+        <TableActionButtons
+          handleAdd={handleAdd}
+          handleBatchDelete={handleBatchDelete}
+          refetch={refetch}
+          selectedRows={state.selectedRows}
+        />
 
         {/* 表格数据 */}
         <Table

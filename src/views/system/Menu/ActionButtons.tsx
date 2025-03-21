@@ -19,9 +19,9 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
   // 新增菜单权限
   const hasAddPermission = usePermission(['system:menu:add']);
   // 批量导入权限
-  const hasImportPermission = usePermission(['system:menu:import']);
+  const hasImportPermission = usePermission(['system:menu:batch-import']);
   // 批量删除权限
-  const hasDeletePermission = usePermission(['system:menu:delete']);
+  const hasDeletePermission = usePermission(['system:menu:batch-delete']);
   return (
     <Space>
       {hasAddPermission && (
