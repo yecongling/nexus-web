@@ -9,15 +9,9 @@ import { Tag, Space, Button, Dropdown, App } from 'antd';
 import { useCallback } from 'react';
 
 interface RoleTableColumnsProps {
-  setParams: (params: {
-    visible: boolean;
-    currentRow: any;
-    view: boolean;
-  }) => void;
-  setDrawerOpen: (open: boolean) => void;
-  setDrawerOpenUser: (open: boolean) => void;
+  dispatch: React.Dispatch<any>;
   deleteRole: (row: any) => Promise<void>;
-  queryRoleData: () => Promise<void>;
+  refetch: () => Promise<any>;
 }
 
 /**
@@ -26,11 +20,9 @@ interface RoleTableColumnsProps {
  * @returns 表格列配置
  */
 const getRoleTableColumns = ({
-  setParams,
-  setDrawerOpen,
-  setDrawerOpenUser,
+  dispatch,
   deleteRole,
-  queryRoleData,
+  refetch,
 }: RoleTableColumnsProps): TableProps['columns'] => {
   const { modal } = App.useApp();
   const more = useCallback(
@@ -40,7 +32,11 @@ const getRoleTableColumns = ({
         label: '编辑',
         icon: <EditOutlined className="text-orange-400" />,
         onClick: () => {
-          setParams({ visible: true, currentRow: row, view: false });
+          dispatch({
+            openEditModal: true,
+            currentRow: row,
+            view: false,
+          });
         },
       },
       {
@@ -54,14 +50,14 @@ const getRoleTableColumns = ({
             content: '确定删除该角色吗？数据删除后将无法恢复！',
             onOk() {
               deleteRole(row).then(() => {
-                queryRoleData();
+                refetch();
               });
             },
           });
         },
       },
     ],
-    [setParams, modal, deleteRole, queryRoleData],
+    [modal, deleteRole],
   );
 
   const columns: TableProps['columns'] = [
@@ -127,7 +123,11 @@ const getRoleTableColumns = ({
               type="link"
               size="small"
               onClick={() => {
-                setParams({ visible: true, currentRow: record, view: true });
+                dispatch({
+                  openEditModal: true,
+                  currentRow: record,
+                  view: 'view',
+                });
               }}
             >
               详情
@@ -136,8 +136,12 @@ const getRoleTableColumns = ({
               type="link"
               size="small"
               onClick={() => {
-                setParams({ visible: false, currentRow: record, view: false });
-                setDrawerOpenUser(true);
+                dispatch({
+                  openEditModal: true,
+                  currentRow: record,
+                  view: 'user',
+                  openRoleUserModal: true,
+                });
               }}
             >
               用户
@@ -146,8 +150,12 @@ const getRoleTableColumns = ({
               type="link"
               size="small"
               onClick={() => {
-                setParams({ visible: false, currentRow: record, view: false });
-                setDrawerOpen(true);
+                dispatch({
+                  openEditModal: false,
+                  currentRow: record,
+                  view: 'auth',
+                  openRoleMenuModal: true,
+                });
               }}
             >
               授权菜单

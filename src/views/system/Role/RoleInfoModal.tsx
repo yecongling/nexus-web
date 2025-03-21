@@ -2,6 +2,7 @@ import DragModal from '@/components/modal/DragModal';
 import { checkRoleCodeExist } from '@/api/system/role/roleApi';
 import { Form, Input, type InputRef, Select, Switch } from 'antd';
 import { useEffect, useRef } from 'react';
+import type { RoleState } from './api/type';
 
 const RoleInfoModal: React.FC<RoleInfoModalProps> = ({
   params,
@@ -11,10 +12,10 @@ const RoleInfoModal: React.FC<RoleInfoModalProps> = ({
   // 表单实例
   const [form] = Form.useForm();
   const roleCodeRef = useRef<InputRef>(null);
-  const { visible, currentRow, view } = params;
+  const { openEditModal, currentRow, action } = params;
 
   useEffect(() => {
-    if (!visible) return;
+    if (!openEditModal) return;
     if (currentRow) {
       // 填充表单数据
       form.setFieldsValue(currentRow);
@@ -22,7 +23,7 @@ const RoleInfoModal: React.FC<RoleInfoModalProps> = ({
       // 清空表单数据，表示新增
       form.resetFields();
     }
-  }, [currentRow, visible]);
+  }, [currentRow, openEditModal]);
 
   /**
    * 弹窗打开关闭的回调（打开后默认聚焦到名称输入框）
@@ -75,9 +76,9 @@ const RoleInfoModal: React.FC<RoleInfoModalProps> = ({
   return (
     <DragModal
       width="40%"
-      open={visible}
+      open={openEditModal}
       title={currentRow ? '编辑角色' : '新增角色'}
-      okButtonProps={{ className: view ? 'hidden' : '' }}
+      okButtonProps={{ className: action === 'view' ? 'hidden' : '' }}
       onOk={handleOk}
       onCancel={onCancel}
       afterOpenChange={onAfterOpenChange}
@@ -86,7 +87,7 @@ const RoleInfoModal: React.FC<RoleInfoModalProps> = ({
         form={form}
         labelCol={{ span: 3 }}
         initialValues={{ status: true }}
-        disabled={view}
+        disabled={action === 'view'}
       >
         <Form.Item name="id" hidden>
           <Input disabled />
@@ -138,14 +139,7 @@ const RoleInfoModal: React.FC<RoleInfoModalProps> = ({
 export default RoleInfoModal;
 
 export type RoleInfoModalProps = {
-  params: {
-    // 弹窗可见性
-    visible: boolean;
-    // 弹窗需要的数据
-    currentRow: Record<string, any> | null;
-    view: boolean;
-  };
-
+  params: RoleState;
   // 点击确定的回调
   onOk: (params: Record<string, string | number | boolean>) => void;
   // 点击取消的回调

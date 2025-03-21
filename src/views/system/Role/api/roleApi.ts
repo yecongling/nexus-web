@@ -1,5 +1,5 @@
 import { HttpRequest } from "@/utils/request";
-import type { SysRole } from "./roleModel";
+import type { SysRole } from "./type";
 
 /**
  * 枚举角色相关的api

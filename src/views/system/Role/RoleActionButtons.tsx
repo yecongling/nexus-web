@@ -7,6 +7,11 @@ interface RoleActionButtonsProps {
   selRows: any[];
 }
 
+/**
+ * 角色操作按钮
+ * @param props 参数
+ * @returns 操作按钮
+ */
 const RoleActionButtons: React.FC<RoleActionButtonsProps> = ({
   onAddRoleClick,
   selRows,

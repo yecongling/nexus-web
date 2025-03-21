@@ -113,7 +113,7 @@ export interface IUserApi {
    * 查询用户
    * @param pageParams 分页参数
    * @param searchParams 搜索参数
-   * @returns 用户列表
+   * @returns 用户列表、分页信息
    */
   queryUsers(
     pageParams: PageQueryParams,
@@ -188,7 +188,7 @@ export const userApis: IUserApi = {
    * 查询用户
    * @param pageParams 分页参数
    * @param searchParams 搜索参数
-   * @returns 用户列表
+   * @returns 用户列表、分页信息
    */
   async queryUsers(
     pageParams: PageQueryParams,

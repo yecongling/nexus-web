@@ -26,7 +26,7 @@ import {
   type TableProps,
 } from 'antd';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import AddUser from './AddUser';
+import AddUser from './AddUserModal';
 
 /**
  * 给角色分配用户

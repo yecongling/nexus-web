@@ -1,7 +1,7 @@
 import useParentSize from '@/hooks/useParentSize';
 import { App, Card, type TableProps } from 'antd';
 import type React from 'react';
-import { useEffect, useState } from 'react';
+import { useReducer, useState } from 'react';
 import {
   addRole,
   deleteRole,
@@ -9,13 +9,14 @@ import {
   getRoleList,
 } from '@/api/system/role/roleApi';
 import RoleInfoModal from './RoleInfoModal';
-import RoleMenuDrawer from './RoleMenuDrawer';
-import RoleUserDrawer from './RoleUserDrawer';
+import RoleMenuDrawer from './AssignRoleMenuDrawer';
+import RoleUserDrawer from './AssignRoleUserDrawer';
 import RoleSearchForm from './RoleSearchForm';
 import RoleActionButtons from './RoleActionButtons';
 import RoleTable from './RoleTable';
 import getRoleTableColumns from './RoleTableColumns';
-import type { RoleSearchParams } from './api/roleModel';
+import type { RoleAction, RoleSearchParams, RoleState } from './api/type';
+import { useQuery } from '@tanstack/react-query';
 
 /**
  * 系统角色维护
@@ -26,67 +27,58 @@ const Role: React.FC = () => {
   // 容器高度计算（表格）
   const { parentRef, height } = useParentSize();
 
-  // 表格数据
-  const [tableData, setTableData] = useState<any[]>([]);
-  // 表格加载状态
-  const [loading, setLoading] = useState<boolean>(false);
-  // 当前选中的行数据
-  const [selRows, setSelectedRows] = useState<any[]>([]);
+  // 定义状态（合并的状态）
+  const [state, dispatch] = useReducer(
+    (prev: RoleState, action: RoleAction) => ({
+      ...prev,
+      ...action,
+    }),
+    {
+      // 编辑窗口的打开状态
+      openEditModal: false,
+      // 角色用户分配窗口的打开状态
+      openRoleUserModal: false,
+      // 角色菜单分配窗口的打开状态
+      openRoleMenuModal: false,
+      // 当前编辑的行数据
+      currentRow: null,
+      // 当前选中的行数据
+      selectedRows: [],
+      // 当前操作
+      action: '',
+    },
+  );
 
-  // 将当前编辑行和窗口开关合并为一个状态对象
-  const [params, setParams] = useState<{
-    visible: boolean;
-    currentRow: any;
-    view: boolean;
-  }>({
-    visible: false,
-    currentRow: null,
-    view: false,
+  // 查询参数（包含分页参数）
+  const [searchParams, setSearchParams] = useState<RoleSearchParams>({
+    pageNum: 1,
+    pageSize: 20,
   });
 
-  // 抽屉窗口打开关闭
-  const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
-  // 角色用户分配抽屉
-  const [drawerOpenUser, setDrawerOpenUser] = useState<boolean>(false);
-
-  useEffect(() => {
-    // 查询角色数据
-    queryRoleData();
-  }, []);
-
-  /**
-   * 查询角色数据
-   * @param params 参数
-   */
-  const queryRoleData = async (params?: any) => {
-    setLoading(true);
-    // 获取表单查询条件
-    const formCon = params;
-    // 拼接查询条件，没有选择的条件就不拼接
-    const queryCondition: Record<string, any> = {};
-    for (const item of Object.keys(formCon)) {
-      if (formCon[item] || formCon[item] === '') {
-        queryCondition[item] = formCon[item];
-      }
-    }
-    // 调用查询
-    getRoleList(queryCondition)
-      .then((response) => {
-        setTableData(response);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  };
+  // 查询表格数据
+  const {
+    isLoading,
+    data: tableData,
+    refetch,
+  } = useQuery({
+    queryKey: ['sys_roles', searchParams],
+    queryFn: () => getRoleList({ ...searchParams }),
+  });
 
   // 处理检索
   const handleSearch = (values: RoleSearchParams) => {
-    
-  }
-
-  // 检索表单提交
-  const onFinish = (values: any) => {
-    queryRoleData(values);
+    const search = {
+      ...values,
+      pageNum: searchParams.pageNum,
+      pageSize: searchParams.pageSize,
+    };
+    // 判断参数是否发生变化
+    if (JSON.stringify(search) === JSON.stringify(searchParams)) {
+      // 参数没有变化，手动刷新数据
+      refetch();
+      return;
+    }
+    setSearchParams((prev) => ({ ...prev, ...search }));
   };
 
   /**
@@ -95,7 +87,9 @@ const Role: React.FC = () => {
   const rowSelection: TableProps['rowSelection'] = {
     // 行选中的回调
     onChange(_selectedRowKeys, selectedRows) {
-      setSelectedRows(selectedRows);
+      dispatch({
+        selectedRows,
+      });
     },
     columnWidth: 32,
     fixed: true,
@@ -107,7 +101,11 @@ const Role: React.FC = () => {
   const onRow = (record: any) => {
     return {
       onDoubleClick: () => {
-        setParams({ visible: true, currentRow: record, view: true });
+        dispatch({
+          openEditModal: true,
+          currentRow: record,
+          action: 'view',
+        });
       },
     };
   };
@@ -116,22 +114,32 @@ const Role: React.FC = () => {
    * 新增角色
    */
   const onAddRoleClick = () => {
-    setParams({ visible: true, currentRow: null, view: false });
+    dispatch({
+      openEditModal: true,
+      currentRow: null,
+      action: 'add',
+    });
   };
 
   /**
    * 取消
    */
   const onCancel = () => {
-    setParams({ visible: false, currentRow: null, view: false });
+    dispatch({
+      openEditModal: false,
+      currentRow: null,
+      action: 'cancel',
+    });
   };
 
   /**
    * 隐藏抽屉
    */
   const hideDrawer = () => {
-    setDrawerOpen(false);
-    setDrawerOpenUser(false);
+    dispatch({
+      openRoleUserModal: false,
+      openRoleMenuModal: false,
+    });
   };
 
   /**
@@ -140,7 +148,7 @@ const Role: React.FC = () => {
    */
   const onEditOk = async (roleData: Record<string, any>) => {
     try {
-      if (params.currentRow == null) {
+      if (state.currentRow == null) {
         // 新增数据
         await addRole(roleData);
       } else {
@@ -148,8 +156,12 @@ const Role: React.FC = () => {
         await editRole(roleData);
       }
       // 操作成功，关闭弹窗，刷新数据
-      setParams({ visible: false, currentRow: null, view: false });
-      queryRoleData();
+      dispatch({
+        openEditModal: false,
+        currentRow: null,
+        action: 'ok',
+      });
+      refetch();
     } catch (error) {
       modal.error({
         title: '操作失败',
@@ -162,17 +174,15 @@ const Role: React.FC = () => {
    * 获取表格列配置
    */
   const columns = getRoleTableColumns({
-    setParams,
-    setDrawerOpen,
-    setDrawerOpenUser,
+    dispatch,
     deleteRole,
-    queryRoleData,
+    refetch,
   });
 
   return (
     <>
       {/* 菜单检索条件栏 */}
-      <RoleSearchForm onFinish={onFinish} />
+      <RoleSearchForm onFinish={handleSearch} />
       {/* 查询表格 */}
       <Card
         style={{ flex: 1, marginTop: '8px' }}
@@ -180,11 +190,14 @@ const Role: React.FC = () => {
         ref={parentRef}
       >
         {/* 操作按钮 */}
-        <RoleActionButtons onAddRoleClick={onAddRoleClick} selRows={selRows} />
+        <RoleActionButtons
+          onAddRoleClick={onAddRoleClick}
+          selRows={state.selectedRows}
+        />
         {/* 表格数据 */}
         <RoleTable
-          tableData={tableData}
-          loading={loading}
+          tableData={tableData || []}
+          loading={isLoading}
           columns={columns}
           onRow={onRow}
           rowSelection={rowSelection}
@@ -193,19 +206,19 @@ const Role: React.FC = () => {
       </Card>
 
       {/* 编辑弹窗 */}
-      <RoleInfoModal params={params} onCancel={onCancel} onOk={onEditOk} />
+      <RoleInfoModal params={state} onCancel={onCancel} onOk={onEditOk} />
       {/* 权限分配抽屉 */}
       <RoleMenuDrawer
-        roleId={params.currentRow?.id}
+        roleId={state.currentRow?.id}
         onOk={hideDrawer}
-        open={drawerOpen}
+        open={state.openRoleMenuModal}
         onCancel={hideDrawer}
       />
       {/* 用户分配抽屉 */}
       <RoleUserDrawer
-        roleId={params.currentRow?.id}
+        roleId={state.currentRow?.id}
         onCancel={hideDrawer}
-        open={drawerOpenUser}
+        open={state.openRoleUserModal}
       />
     </>
   );
