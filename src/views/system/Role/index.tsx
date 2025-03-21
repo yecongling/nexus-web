@@ -1,30 +1,5 @@
-import {
-  DeleteOutlined,
-  EditOutlined,
-  ExclamationCircleFilled,
-  MoreOutlined,
-  PlusOutlined,
-  RedoOutlined,
-  SearchOutlined,
-} from '@ant-design/icons';
 import useParentSize from '@/hooks/useParentSize';
-import {
-  App,
-  Button,
-  Card,
-  Col,
-  ConfigProvider,
-  Dropdown,
-  Form,
-  Input,
-  type MenuProps,
-  Row,
-  Select,
-  Space,
-  Table,
-  Tag,
-  type TableProps,
-} from 'antd';
+import { App, Card, type TableProps } from 'antd';
 import type React from 'react';
 import { useEffect, useState } from 'react';
 import {
@@ -36,6 +11,11 @@ import {
 import RoleInfoModal from './RoleInfoModal';
 import RoleMenuDrawer from './RoleMenuDrawer';
 import RoleUserDrawer from './RoleUserDrawer';
+import RoleSearchForm from './RoleSearchForm';
+import RoleActionButtons from './RoleActionButtons';
+import RoleTable from './RoleTable';
+import getRoleTableColumns from './RoleTableColumns';
+import type { RoleSearchParams } from './api/roleModel';
 
 /**
  * 系统角色维护
@@ -43,8 +23,6 @@ import RoleUserDrawer from './RoleUserDrawer';
  */
 const Role: React.FC = () => {
   const { modal } = App.useApp();
-  // 检索表单
-  const [form] = Form.useForm();
   // 容器高度计算（表格）
   const { parentRef, height } = useParentSize();
 
@@ -76,140 +54,6 @@ const Role: React.FC = () => {
     queryRoleData();
   }, []);
 
-  // 更多操作中的选项
-  const more: (row: any) => MenuProps['items'] = (row) => [
-    {
-      key: 'edit',
-      label: '编辑',
-      icon: <EditOutlined className="text-orange-400" />,
-      onClick: () => {
-        // 编辑选中的行数据
-        setParams({ visible: true, currentRow: row, view: false });
-      },
-    },
-    {
-      key: 'delete',
-      label: '删除',
-      icon: <DeleteOutlined className="text-red-400" />,
-      onClick: () => {
-        // 删除选中的行数据
-        modal.confirm({
-          title: '删除角色',
-          icon: <ExclamationCircleFilled />,
-          content: '确定删除该角色吗？数据删除后将无法恢复！',
-          onOk() {
-            deleteRole(row).then(() => {
-              // 刷新表格数据
-              queryRoleData();
-            });
-          },
-        });
-      },
-    },
-  ];
-
-  // 表格的列配置
-  const columns: TableProps['columns'] = [
-    {
-      title: '编码',
-      width: 160,
-      dataIndex: 'roleCode',
-      key: 'roleCode',
-    },
-    {
-      title: '名称',
-      width: 160,
-      dataIndex: 'roleName',
-      key: 'roleName',
-    },
-    {
-      title: '类型',
-      width: 120,
-      dataIndex: 'roleType',
-      key: 'roleType',
-      align: 'center',
-      render(value) {
-        switch (value) {
-          case 0:
-            return '系统角色';
-          case 1:
-            return '普通角色';
-          default:
-            return '';
-        }
-      },
-    },
-    {
-      title: '状态',
-      width: 80,
-      dataIndex: 'status',
-      key: 'status',
-      align: 'center',
-      render(value) {
-        return value ? (
-          <Tag color="success">启用</Tag>
-        ) : (
-          <Tag color="error">停用</Tag>
-        );
-      },
-    },
-    {
-      title: '描述',
-      width: 160,
-      dataIndex: 'remark',
-      key: 'remark',
-    },
-    {
-      title: '操作',
-      width: '14%',
-      dataIndex: 'action',
-      fixed: 'right',
-      align: 'center',
-      render(_, record) {
-        return (
-          <Space size={0}>
-            <Button
-              type="link"
-              size="small"
-              onClick={() => {
-                setParams({ visible: true, currentRow: record, view: true });
-              }}
-            >
-              详情
-            </Button>
-            <Button
-              type="link"
-              size="small"
-              onClick={() => {
-                setParams({ visible: false, currentRow: record, view: false });
-                setDrawerOpenUser(true);
-              }}
-            >
-              用户
-            </Button>
-            <Button
-              type="link"
-              size="small"
-              onClick={() => {
-                setParams({ visible: false, currentRow: record, view: false });
-                setDrawerOpen(true);
-              }}
-            >
-              授权菜单
-            </Button>
-            <Dropdown
-              menu={{ items: more(record) }}
-              placement="bottom"
-              trigger={['click']}
-            >
-              <Button type="link" size="small" icon={<MoreOutlined />} />
-            </Dropdown>
-          </Space>
-        );
-      },
-    },
-  ];
-
   /**
    * 查询角色数据
    * @param params 参数
@@ -217,7 +61,7 @@ const Role: React.FC = () => {
   const queryRoleData = async (params?: any) => {
     setLoading(true);
     // 获取表单查询条件
-    const formCon = params || form.getFieldsValue();
+    const formCon = params;
     // 拼接查询条件，没有选择的条件就不拼接
     const queryCondition: Record<string, any> = {};
     for (const item of Object.keys(formCon)) {
@@ -234,6 +78,11 @@ const Role: React.FC = () => {
         setLoading(false);
       });
   };
+
+  // 处理检索
+  const handleSearch = (values: RoleSearchParams) => {
+    
+  }
 
   // 检索表单提交
   const onFinish = (values: any) => {
@@ -309,113 +158,39 @@ const Role: React.FC = () => {
     }
   };
 
+  /**
+   * 获取表格列配置
+   */
+  const columns = getRoleTableColumns({
+    setParams,
+    setDrawerOpen,
+    setDrawerOpenUser,
+    deleteRole,
+    queryRoleData,
+  });
+
   return (
     <>
       {/* 菜单检索条件栏 */}
-      <ConfigProvider
-        theme={{
-          components: {
-            Form: {
-              itemMarginBottom: 0,
-            },
-          },
-        }}
+      <RoleSearchForm onFinish={onFinish} />
+      {/* 查询表格 */}
+      <Card
+        style={{ flex: 1, marginTop: '8px' }}
+        styles={{ body: { height: '100%' } }}
+        ref={parentRef}
       >
-        <Card>
-          <Form
-            form={form}
-            initialValues={{ menuType: '', status: '' }}
-            onFinish={onFinish}
-          >
-            <Row gutter={24}>
-              <Col span={6}>
-                <Form.Item name="roleCode" label="角色编码" colon={false}>
-                  <Input autoFocus allowClear autoComplete="off" />
-                </Form.Item>
-              </Col>
-              <Col span={6}>
-                <Form.Item name="roleName" label="角色名称" colon={false}>
-                  <Input allowClear autoComplete="off" />
-                </Form.Item>
-              </Col>
-              <Col span={6}>
-                <Form.Item name="status" label="状态" colon={false}>
-                  <Select
-                    allowClear
-                    options={[
-                      { value: '', label: '请选择', disabled: true },
-                      { value: 1, label: '正常' },
-                      { value: 0, label: '停用' },
-                    ]}
-                  />
-                </Form.Item>
-              </Col>
-              <Col span={6} style={{ textAlign: 'right' }}>
-                <Space>
-                  <Button
-                    type="primary"
-                    htmlType="submit"
-                    icon={<SearchOutlined />}
-                  >
-                    检索
-                  </Button>
-                  <Button
-                    type="default"
-                    icon={<RedoOutlined />}
-                    onClick={() => {
-                      form.resetFields();
-                    }}
-                  >
-                    重置
-                  </Button>
-                </Space>
-              </Col>
-            </Row>
-          </Form>
-        </Card>
-        {/* 查询表格 */}
-        <Card
-          style={{ flex: 1, marginTop: '8px' }}
-          styles={{ body: { height: '100%' } }}
-          ref={parentRef}
-        >
-          {/* 操作按钮 */}
-          <Space>
-            <Button
-              type="primary"
-              icon={<PlusOutlined />}
-              onClick={onAddRoleClick}
-            >
-              新增
-            </Button>
-            <Button type="default" icon={<PlusOutlined />}>
-              批量导入
-            </Button>
-            <Button
-              type="default"
-              danger
-              icon={<DeleteOutlined />}
-              disabled={selRows.length === 0}
-            >
-              批量删除
-            </Button>
-          </Space>
-          {/* 表格数据 */}
-          <Table
-            size="small"
-            onRow={onRow}
-            style={{ marginTop: '8px' }}
-            bordered
-            pagination={false}
-            dataSource={tableData}
-            columns={columns}
-            loading={loading}
-            rowKey="id"
-            scroll={{ x: 'max-content', y: height - 128 }}
-            rowSelection={{ ...rowSelection }}
-          />
-        </Card>
-      </ConfigProvider>
+        {/* 操作按钮 */}
+        <RoleActionButtons onAddRoleClick={onAddRoleClick} selRows={selRows} />
+        {/* 表格数据 */}
+        <RoleTable
+          tableData={tableData}
+          loading={loading}
+          columns={columns}
+          onRow={onRow}
+          rowSelection={rowSelection}
+          height={height}
+        />
+      </Card>
 
       {/* 编辑弹窗 */}
       <RoleInfoModal params={params} onCancel={onCancel} onOk={onEditOk} />
@@ -435,4 +210,5 @@ const Role: React.FC = () => {
     </>
   );
 };
+
 export default Role;

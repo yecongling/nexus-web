@@ -151,9 +151,8 @@ const UserInfoModal: React.FC<UserInfoModalProps> = ({
           <Input placeholder="请输入真实姓名" />
         </Form.Item>
 
-        <Form.Item label="头像" name="avatar">
+        <Form.Item label="头像" valuePropName='avatar'>
           <Upload
-            name="avatar"
             listType="picture-card"
             showUploadList={false}
             action="/api/upload"

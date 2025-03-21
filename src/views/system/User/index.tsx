@@ -6,7 +6,7 @@ import {
   ExclamationCircleFilled,
   LockOutlined,
 } from '@ant-design/icons';
-import { Card, Table, message, Modal } from 'antd';
+import { Card, Table, App, Modal } from 'antd';
 import type React from 'react';
 import { useMemo, useReducer, useState } from 'react';
 import type { UserSearchParams } from './types';
@@ -23,6 +23,7 @@ const { confirm } = Modal;
  * 用户管理
  */
 const User: React.FC = () => {
+  const { message } = App.useApp();
   // 合并状态
   const [state, dispatch] = useReducer(
     (prev: any, action: any) => ({
