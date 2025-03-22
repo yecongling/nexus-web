@@ -139,9 +139,14 @@ export interface IRoleService {
    * 分配角色用户
    * @param roleId 角色id
    * @param userIds 用户id列表
+   * @param operate 操作类型（add、remove）
    * @returns 结果
    */
-  assignRoleUser(roleId: string, userIds: string[]): Promise<boolean>;
+  assignRoleUser(
+    roleId: string,
+    userIds: string[],
+    operate: string,
+  ): Promise<boolean>;
 
   /**
    * 获取角色用户
@@ -149,7 +154,10 @@ export interface IRoleService {
    * @param params 用户查询参数和分页参数
    * @returns 结果
    */
-  getRoleUser(roleId: string, params: UserSearchParams): Promise<UserModel>;
+  getRoleUser(
+    roleId: string,
+    params: UserSearchParams,
+  ): Promise<Record<string, any>>;
 
   /**
    * 获取不在该角色下的所有可用用户
@@ -254,10 +262,15 @@ export const roleService: IRoleService = {
    * @returns 菜单权限列表
    */
   async getRoleMenu(roleId: string): Promise<RoleMenu> {
-    return await HttpRequest.get({
-      url: RoleApi.getRoleMenu,
-      params: { roleId },
-    });
+    return await HttpRequest.get(
+      {
+        url: RoleApi.getRoleMenu,
+        params: { roleId },
+      },
+      {
+        successMessageMode: 'none',
+      },
+    );
   },
   /**
    * 分配角色菜单权限
@@ -275,13 +288,23 @@ export const roleService: IRoleService = {
    * 分配角色用户
    * @param roleId 角色id
    * @param userIds 用户id列表
+   * @param operate 操作类型（add、remove）
    * @returns 结果
    */
-  async assignRoleUser(roleId: string, userIds: string[]): Promise<boolean> {
-    return await HttpRequest.post({
-      url: RoleApi.assignRoleUser,
-      data: { roleId, userIds },
-    });
+  async assignRoleUser(
+    roleId: string,
+    userIds: string[],
+    operate: string,
+  ): Promise<boolean> {
+    return await HttpRequest.post(
+      {
+        url: RoleApi.assignRoleUser,
+        data: { roleId, userIds, operate },
+      },
+      {
+        successMessageMode: 'none',
+      },
+    );
   },
   /**
    * 获取角色用户
@@ -292,11 +315,16 @@ export const roleService: IRoleService = {
   async getRoleUser(
     roleId: string,
     params: UserSearchParams,
-  ): Promise<UserModel> {
-    return await HttpRequest.post({
-      url: RoleApi.getRoleUser,
-      data: { roleId, searchParams: params },
-    });
+  ): Promise<Record<string, any>> {
+    return await HttpRequest.post(
+      {
+        url: RoleApi.getRoleUser,
+        data: { roleId, searchParams: params },
+      },
+      {
+        successMessageMode: 'none',
+      },
+    );
   },
 
   /**
@@ -309,10 +337,15 @@ export const roleService: IRoleService = {
     roleId: string,
     params: UserSearchParams,
   ): Promise<UserModel> {
-    return await HttpRequest.post({
-      url: RoleApi.getUserNotInRoleByPage,
-      data: { roleId, searchParams: params },
-    });
+    return await HttpRequest.post(
+      {
+        url: RoleApi.getUserNotInRoleByPage,
+        data: { roleId, searchParams: params },
+      },
+      {
+        successMessageMode: 'none',
+      },
+    );
   },
   /**
    * 校验角色编码是否存在

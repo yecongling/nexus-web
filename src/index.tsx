@@ -11,6 +11,7 @@ if (container) {
     defaultOptions: {
       queries: {
         retry: false, // 默认所有的useQuery请求都不重试，内部如果有需要重试的，需要手动设置retry: true
+        refetchOnWindowFocus: false, // 窗口聚焦时不重新获取数据，不然浏览器切换tab时会重新获取数据
       },
     },
   });

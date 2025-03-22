@@ -1,4 +1,3 @@
-import { assignRoleUser, getRoleUser } from '@/api/system/role/roleApi';
 import {
   CloseOutlined,
   DeleteOutlined,
@@ -7,6 +6,7 @@ import {
   PlusOutlined,
   RedoOutlined,
   SearchOutlined,
+  WarningOutlined,
   WomanOutlined,
 } from '@ant-design/icons';
 import {
@@ -19,14 +19,18 @@ import {
   Form,
   Input,
   type InputRef,
+  Popconfirm,
   Row,
   Select,
   Space,
   Table,
   type TableProps,
 } from 'antd';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import AddUser from './AddUserModal';
+import { roleService } from './api/roleApi';
+import type { UserSearchParams } from './api/type';
+import { useQuery } from '@tanstack/react-query';
 
 /**
  * 给角色分配用户
@@ -38,53 +42,27 @@ const RoleUserDrawer: React.FC<RoleUserDrawerProps> = ({
   onCancel,
 }) => {
   const { modal } = App.useApp();
-  // 用户表格数据
-  const [tableData, setTableData] = useState<any[]>([]);
   // 添加用户弹窗的打开关闭
   const [openAddUser, setOpenAddUser] = useState<boolean>(false);
   // 检索表单
   const [form] = Form.useForm();
   // 当前选中的行数据
   const [selRows, setSelectedRows] = useState<any[]>([]);
-  // 数据总条数
-  const [total, setTotal] = useState<number>(0);
   // 第一个检索框
   const ref = useRef<InputRef>(null);
-  // 分页参数
-  const [pagination, setPagination] = useState<{
-    pageNumber: number;
-    pageSize: number;
-  }>({
-    pageNumber: 1,
+
+  // 查询参数（包含分页参数）
+  const [searchParams, setSearchParams] = useState<UserSearchParams>({
+    pageNum: 1,
     pageSize: 20,
   });
 
-  useEffect(() => {
-    if (!open) return;
-    // 获取当前角色已经分配的用户
-    getRoleUserByPage();
-    setSelectedRows([]);
-  }, [open]);
-
-  /**
-   * 分页查询数据
-   * @param params 查询参数
-   */
-  const getRoleUserByPage = useCallback(() => {
-    getRoleUser({
-      roleId,
-      // 表单数据
-      searchParams: form.getFieldsValue(),
-      pageNum: pagination.pageNumber,
-      pageSize: pagination.pageSize,
-    }).then((resp) => {
-      // 设置表格数据
-      setTableData(resp.data);
-      // 设置数据总条数
-      resp.total && setTotal(resp.total);
-      ref.current?.focus();
-    });
-  }, [pagination]);
+  // 查询用户数据
+  const { isLoading, data, refetch } = useQuery({
+    queryKey: ['sys_users', [roleId, searchParams]],
+    queryFn: () => roleService.getRoleUser(roleId, searchParams),
+    enabled: open,
+  });
 
   /**
    * 定义表格的列
@@ -135,14 +113,16 @@ const RoleUserDrawer: React.FC<RoleUserDrawerProps> = ({
       align: 'center',
       render: (_text, record) => {
         return (
-          <Button
-            type="link"
-            danger
-            size="small"
-            onClick={() => deleteBatch(record.id)}
+          <Popconfirm
+            title="移除用户"
+            description="确定从该角色下移除当前用户吗？"
+            onConfirm={() => deleteRoleUser(record.id)}
+            icon={<WarningOutlined style={{ color: 'red' }} />}
           >
-            移除
-          </Button>
+            <Button type="link" danger size="small">
+              移除
+            </Button>
+          </Popconfirm>
         );
       },
     },
@@ -154,8 +134,9 @@ const RoleUserDrawer: React.FC<RoleUserDrawerProps> = ({
    * @param pageSize 每页数量
    */
   const onPageSizeChange = (page: number, pageSize: number) => {
-    setPagination({
-      pageNumber: page,
+    setSearchParams({
+      ...searchParams,
+      pageNum: page,
       pageSize: pageSize,
     });
   };
@@ -163,8 +144,19 @@ const RoleUserDrawer: React.FC<RoleUserDrawerProps> = ({
   /**
    * 表单检索
    */
-  const onFinish = () => {
-    getRoleUserByPage();
+  const onFinish = (values: UserSearchParams) => {
+    const search = {
+      ...values,
+      pageNum: searchParams.pageNum,
+      pageSize: searchParams.pageSize,
+    };
+    // 判断参数是否发生变化
+    if (JSON.stringify(search) === JSON.stringify(searchParams)) {
+      // 参数没有变化，手动刷新数据
+      refetch();
+      return;
+    }
+    setSearchParams((prev) => ({ ...prev, ...search }));
   };
 
   /**
@@ -196,26 +188,35 @@ const RoleUserDrawer: React.FC<RoleUserDrawerProps> = ({
   };
 
   /**
+   * 删除单个用户
+   * @param id 用户ID
+   */
+  const deleteRoleUser = (id: string) => {
+    roleService.assignRoleUser(roleId, [id], 'remove').then(() => {
+      // 刷新表格数据
+      refetch();
+      // 清空选择项
+      setSelectedRows([]);
+    });
+  };
+
+  /**
    * 批量删除用户
    * @param id 用户ID
    */
   const deleteBatch = (id?: string) => {
     // 删除操作需要二次确定
     modal.confirm({
-      title: '批量删除',
+      title: '删除用户',
       icon: <ExclamationCircleFilled />,
-      content: '确定批量删除用户吗？数据删除后将无法恢复！',
+      content: '确定删除用户吗？数据删除后将无法恢复！',
       onOk() {
         // 调用删除接口，删除成功后刷新页面数据
         const ids = selRows.map((item: any) => item.id);
         id && ids.push(id);
-        assignRoleUser({
-          roleId,
-          ids,
-          operate: 'delete',
-        }).then(() => {
+        roleService.assignRoleUser(roleId, ids, 'remove').then(() => {
           // 刷新表格数据
-          getRoleUserByPage();
+          refetch();
           // 清空选择项
           setSelectedRows([]);
         });
@@ -233,146 +234,145 @@ const RoleUserDrawer: React.FC<RoleUserDrawerProps> = ({
       cancelAddUser();
       return;
     }
-    getRoleUserByPage();
+    refetch();
     cancelAddUser();
   };
 
   return (
-    <>
-      <ConfigProvider
-        theme={{
-          components: {
-            Form: {
-              itemMarginBottom: 0,
-            },
+    <ConfigProvider
+      theme={{
+        components: {
+          Form: {
+            itemMarginBottom: 0,
           },
-        }}
+        },
+      }}
+    >
+      <Drawer
+        title="分配用户"
+        width={920}
+        open={open}
+        closeIcon={false}
+        extra={
+          <Button type="text" icon={<CloseOutlined />} onClick={onCancel} />
+        }
+        onClose={onCancel}
+        classNames={{ footer: 'text-right', body: 'flex flex-col' }}
       >
-        <Drawer
-          title="分配用户"
-          width={920}
-          open={open}
-          closeIcon={false}
-          extra={
-            <Button type="text" icon={<CloseOutlined />} onClick={onCancel} />
-          }
-          onClose={onCancel}
-          classNames={{ footer: 'text-right', body: 'flex flex-col' }}
+        <Card className="mb-2!">
+          <Form form={form} onFinish={onFinish}>
+            <Row gutter={12}>
+              <Col span={6}>
+                <Form.Item
+                  className="mb-0"
+                  name="username"
+                  label="用户名"
+                  colon={false}
+                >
+                  <Input autoFocus allowClear autoComplete="off" ref={ref} />
+                </Form.Item>
+              </Col>
+              <Col span={6}>
+                <Form.Item
+                  className="mb-0"
+                  name="realName"
+                  label="实际名"
+                  colon={false}
+                >
+                  <Input allowClear autoComplete="off" />
+                </Form.Item>
+              </Col>
+              <Col span={6}>
+                <Form.Item
+                  className="mb-0"
+                  name="sex"
+                  label="性别"
+                  colon={false}
+                >
+                  <Select
+                    allowClear
+                    options={[
+                      { value: '', label: '请选择', disabled: true },
+                      { value: 1, label: '男' },
+                      { value: 0, label: '女' },
+                    ]}
+                  />
+                </Form.Item>
+              </Col>
+              <Col span={6} style={{ textAlign: 'right' }}>
+                <Space>
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    icon={<SearchOutlined />}
+                  >
+                    检索
+                  </Button>
+                  <Button
+                    type="default"
+                    icon={<RedoOutlined />}
+                    onClick={() => {
+                      form.resetFields();
+                    }}
+                  >
+                    重置
+                  </Button>
+                </Space>
+              </Col>
+            </Row>
+          </Form>
+        </Card>
+        <Card
+          className="mt-2 flex-1 min-h-0"
+          styles={{ body: { height: '100%' } }}
         >
-          <Card className='mb-2!'>
-            <Form form={form} onFinish={onFinish}>
-              <Row gutter={12}>
-                <Col span={6}>
-                  <Form.Item
-                    className="mb-0"
-                    name="username"
-                    label="用户名"
-                    colon={false}
-                  >
-                    <Input autoFocus allowClear autoComplete="off" ref={ref} />
-                  </Form.Item>
-                </Col>
-                <Col span={6}>
-                  <Form.Item
-                    className="mb-0"
-                    name="realName"
-                    label="实际名"
-                    colon={false}
-                  >
-                    <Input allowClear autoComplete="off" />
-                  </Form.Item>
-                </Col>
-                <Col span={6}>
-                  <Form.Item
-                    className="mb-0"
-                    name="sex"
-                    label="性别"
-                    colon={false}
-                  >
-                    <Select
-                      allowClear
-                      options={[
-                        { value: '', label: '请选择', disabled: true },
-                        { value: 1, label: '男' },
-                        { value: 0, label: '女' },
-                      ]}
-                    />
-                  </Form.Item>
-                </Col>
-                <Col span={6} style={{ textAlign: 'right' }}>
-                  <Space>
-                    <Button
-                      type="primary"
-                      htmlType="submit"
-                      icon={<SearchOutlined />}
-                    >
-                      检索
-                    </Button>
-                    <Button
-                      type="default"
-                      icon={<RedoOutlined />}
-                      onClick={() => {
-                        form.resetFields();
-                      }}
-                    >
-                      重置
-                    </Button>
-                  </Space>
-                </Col>
-              </Row>
-            </Form>
-          </Card>
-          <Card
-            className="mt-2 flex-1 min-h-0"
-            styles={{ body: { height: '100%' } }}
-          >
-            <Space>
-              <Button type="primary" onClick={addUser} icon={<PlusOutlined />}>
-                添加用户
-              </Button>
-              <Button
-                icon={<DeleteOutlined />}
-                danger
-                disabled={selRows.length === 0}
-                onClick={() => deleteBatch()}
-              >
-                批量删除
-              </Button>
-            </Space>
-            {/* 表格数据 */}
-            <Table
-              className="mt-2"
-              size="small"
-              columns={columns}
-              dataSource={tableData}
-              bordered
-              rowKey="id"
-              pagination={{
-                pageSize: pagination.pageSize,
-                current: pagination.pageNumber,
-                showQuickJumper: true,
-                hideOnSinglePage: false,
-                showSizeChanger: true,
-                showTotal: (total) => `共 ${total} 条`,
-                total: total,
-                onChange(page, pageSize) {
-                  onPageSizeChange(page, pageSize);
-                },
-              }}
-              scroll={{ x: 'max-content' }}
-              rowSelection={{ ...rowSelection }}
-            />
-          </Card>
-        </Drawer>
-        {/* 添加用户弹窗 */}
-        <AddUser
-          roleId={roleId}
-          open={openAddUser}
-          onCancel={cancelAddUser}
-          onOk={handleOk}
-        />
-      </ConfigProvider>
-    </>
+          <Space>
+            <Button type="primary" onClick={addUser} icon={<PlusOutlined />}>
+              添加用户
+            </Button>
+            <Button
+              icon={<DeleteOutlined />}
+              danger
+              disabled={selRows.length === 0}
+              onClick={() => deleteBatch()}
+            >
+              批量删除
+            </Button>
+          </Space>
+          {/* 表格数据 */}
+          <Table
+            className="mt-2"
+            size="small"
+            columns={columns}
+            dataSource={data?.data || []}
+            loading={isLoading}
+            bordered
+            rowKey="id"
+            pagination={{
+              pageSize: searchParams.pageSize,
+              current: searchParams.pageNum,
+              showQuickJumper: true,
+              hideOnSinglePage: false,
+              showSizeChanger: true,
+              showTotal: (total) => `共 ${total} 条`,
+              total: data?.total,
+              onChange(page, pageSize) {
+                onPageSizeChange(page, pageSize);
+              },
+            }}
+            scroll={{ x: 'max-content' }}
+            rowSelection={{ ...rowSelection }}
+          />
+        </Card>
+      </Drawer>
+      {/* 添加用户弹窗 */}
+      <AddUser
+        roleId={roleId}
+        open={openAddUser}
+        onCancel={cancelAddUser}
+        onOk={handleOk}
+      />
+    </ConfigProvider>
   );
 };
 
