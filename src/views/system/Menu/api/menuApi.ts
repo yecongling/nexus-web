@@ -1,5 +1,5 @@
 import { HttpRequest } from '@/utils/request';
-import type { MenuDirectoryItem, MenuModel } from './menuModel';
+import type { MenuDirectoryItem, MenuModel } from './type';
 
 /**
  * 菜单相关接口枚举

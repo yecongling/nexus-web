@@ -15,7 +15,7 @@ import RoleSearchForm from './RoleSearchForm';
 import RoleActionButtons from './RoleActionButtons';
 import RoleTable from './RoleTable';
 import getRoleTableColumns from './RoleTableColumns';
-import type { RoleAction, RoleSearchParams, RoleState } from './api/type';
+import type { RoleSearchParams, RoleState } from './api/type';
 import { useQuery } from '@tanstack/react-query';
 
 /**
@@ -29,7 +29,7 @@ const Role: React.FC = () => {
 
   // 定义状态（合并的状态）
   const [state, dispatch] = useReducer(
-    (prev: RoleState, action: RoleAction) => ({
+    (prev: RoleState, action: Partial<RoleState>) => ({
       ...prev,
       ...action,
     }),

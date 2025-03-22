@@ -13,7 +13,7 @@ import type { UserSearchParams } from './types';
 import { getColumns } from './columns';
 import SearchForm from './SearchForm';
 import UserInfoModal from './UserInfoModal';
-import type { UserModel } from './api/userModel';
+import type { UserModel } from './api/type';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import TableActionButtons from './TableActionButtons';
 

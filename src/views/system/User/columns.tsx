@@ -1,4 +1,4 @@
-import type { UserModel } from './api/userModel';
+import type { UserModel } from './api/type';
 import { ManOutlined, WomanOutlined, MoreOutlined } from '@ant-design/icons';
 import {
   Button,

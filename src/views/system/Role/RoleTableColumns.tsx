@@ -7,9 +7,10 @@ import {
 } from '@ant-design/icons';
 import { Tag, Space, Button, Dropdown, App } from 'antd';
 import { useCallback } from 'react';
+import type { RoleState } from './api/type';
 
 interface RoleTableColumnsProps {
-  dispatch: React.Dispatch<any>;
+  dispatch: React.Dispatch<Partial<RoleState>>;
   deleteRole: (row: any) => Promise<void>;
   refetch: () => Promise<any>;
 }
@@ -35,7 +36,7 @@ const getRoleTableColumns = ({
           dispatch({
             openEditModal: true,
             currentRow: row,
-            view: false,
+            action: 'edit',
           });
         },
       },
@@ -126,7 +127,7 @@ const getRoleTableColumns = ({
                 dispatch({
                   openEditModal: true,
                   currentRow: record,
-                  view: 'view',
+                  action: 'view',
                 });
               }}
             >
@@ -137,9 +138,9 @@ const getRoleTableColumns = ({
               size="small"
               onClick={() => {
                 dispatch({
-                  openEditModal: true,
+                  openEditModal: false,
                   currentRow: record,
-                  view: 'user',
+                  action: 'user',
                   openRoleUserModal: true,
                 });
               }}
@@ -153,7 +154,7 @@ const getRoleTableColumns = ({
                 dispatch({
                   openEditModal: false,
                   currentRow: record,
-                  view: 'auth',
+                  action: 'auth',
                   openRoleMenuModal: true,
                 });
               }}

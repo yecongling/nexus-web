@@ -1,7 +1,9 @@
+import type { MenuModel } from '../../Menu/api/type';
+
 /**
  * 系统角色
  */
-export interface SysRole {
+export interface RoleModel {
   /**
    * 角色ID
    */
@@ -69,7 +71,23 @@ export interface RoleState {
   action: string;
 }
 
-// 定义 action 的类型
-export interface RoleAction {
-  [key: string]: any;
+/**
+ * 查询返回的角色菜单权限
+ */
+export interface RoleMenu {
+  // 菜单列表
+  menuList: MenuModel[];
+  // 选中的菜单列表
+  menuIds: string[];
+}
+
+/**
+ * 分配用户抽屉模块查询参数
+ */
+export interface UserSearchParams {
+  username?: string;
+  realName?: string;
+  status?: 0 | 1;
+  pageNum: number;
+  pageSize: number;
 }

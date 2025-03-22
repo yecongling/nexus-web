@@ -1,6 +1,6 @@
 import { HttpRequest } from '@/utils/request';
-import type { UserModel } from './userModel';
-import type { PageQueryParams } from '@/types/global';
+import type { UserModel } from './type';
+import type { UserSearchParams } from '../types';
 
 /**
  * 用户信息操作枚举
@@ -53,31 +53,6 @@ export enum UserAction {
 }
 
 /**
- * 用户信息查询参数
- */
-export interface UserSearchParams {
-  /**
-   * 用户名
-   */
-  username?: string;
-
-  /**
-   * 性别
-   */
-  sex?: string;
-
-  /**
-   * 状态
-   */
-  status?: string;
-
-  /**
-   * 删除标志
-   */
-  delFlag?: string;
-}
-
-/**
  * 用户信息服务接口
  */
 export interface IUserApi {
@@ -111,13 +86,11 @@ export interface IUserApi {
 
   /**
    * 查询用户
-   * @param pageParams 分页参数
-   * @param searchParams 搜索参数
+   * @param searchParams 查询参数（包括分页）
    * @returns 用户列表、分页信息
    */
   queryUsers(
-    pageParams: PageQueryParams,
-    searchParams?: UserSearchParams,
+    searchParams: UserSearchParams,
   ): Promise<Record<string, any>>;
 
   /**
@@ -191,14 +164,12 @@ export const userApis: IUserApi = {
    * @returns 用户列表、分页信息
    */
   async queryUsers(
-    pageParams: PageQueryParams,
-    searchParams?: UserSearchParams,
+    searchParams: UserSearchParams,
   ): Promise<Record<string, any>> {
-    const params = { ...pageParams, searchParams };
     const response = await HttpRequest.post(
       {
         url: UserAction.getUserList,
-        params,
+        params: searchParams,
       },
       {
         successMessageMode: 'none',
