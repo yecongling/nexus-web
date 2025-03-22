@@ -3,10 +3,10 @@ import type React from 'react';
 import { Suspense, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { Router } from '@/router/router';
-import { menuService } from '@/views/system/Menu/api/menuApi';
 import { antdUtils } from '@/utils/antdUtil';
 import { useMenuStore } from './stores/store';
 import { useQuery } from '@tanstack/react-query';
+import { commonService } from '@/api/common/common';
 
 /**
  * 主应用
@@ -22,7 +22,7 @@ const App: React.FC = () => {
     queryKey: ['menuData'],
     queryFn: async () => {
       const roleId = sessionStorage.getItem('roleId') || '';
-      const menu = await menuService.getMenuListByRoleId(roleId);
+      const menu = await commonService.getMenuListByRoleId(roleId);
       setMenus(menu);
       return menu;
     },

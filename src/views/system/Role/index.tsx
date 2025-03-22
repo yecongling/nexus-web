@@ -2,12 +2,6 @@ import useParentSize from '@/hooks/useParentSize';
 import { App, Card, type TableProps } from 'antd';
 import type React from 'react';
 import { useReducer, useState } from 'react';
-import {
-  addRole,
-  deleteRole,
-  editRole,
-  getRoleList,
-} from '@/api/system/role/roleApi';
 import RoleInfoModal from './RoleInfoModal';
 import RoleMenuDrawer from './AssignRoleMenuDrawer';
 import RoleUserDrawer from './AssignRoleUserDrawer';
@@ -16,14 +10,15 @@ import RoleActionButtons from './RoleActionButtons';
 import RoleTable from './RoleTable';
 import getRoleTableColumns from './RoleTableColumns';
 import type { RoleSearchParams, RoleState } from './api/type';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { roleService } from './api/roleApi';
 
 /**
  * 系统角色维护
  * @returns
  */
 const Role: React.FC = () => {
-  const { modal } = App.useApp();
+  const { modal, message } = App.useApp();
   // 容器高度计算（表格）
   const { parentRef, height } = useParentSize();
 
@@ -62,7 +57,7 @@ const Role: React.FC = () => {
     refetch,
   } = useQuery({
     queryKey: ['sys_roles', searchParams],
-    queryFn: () => getRoleList({ ...searchParams }),
+    queryFn: () => roleService.getRoleList({ ...searchParams }),
   });
 
   // 处理检索
@@ -80,6 +75,24 @@ const Role: React.FC = () => {
     }
     setSearchParams((prev) => ({ ...prev, ...search }));
   };
+
+  // 处理逻辑删除角色
+  const logicDeleteUserMutation = useMutation({
+    mutationFn: (ids: string[]) => roleService.deleteBatchRole(ids),
+    onSuccess() {
+      message.success('删除成功!');
+      dispatch({
+        selectedRows: [],
+      });
+      refetch();
+    },
+    onError(error) {
+      modal.error({
+        title: '操作失败',
+        content: `原因：${error}`,
+      });
+    },
+  });
 
   /**
    * 多行选中的配置
@@ -150,10 +163,10 @@ const Role: React.FC = () => {
     try {
       if (state.currentRow == null) {
         // 新增数据
-        await addRole(roleData);
+        await roleService.addRole(roleData);
       } else {
         // 编辑数据
-        await editRole(roleData);
+        await roleService.editRole(roleData);
       }
       // 操作成功，关闭弹窗，刷新数据
       dispatch({
@@ -175,8 +188,7 @@ const Role: React.FC = () => {
    */
   const columns = getRoleTableColumns({
     dispatch,
-    deleteRole,
-    refetch,
+    logicDeleteUserMutation,
   });
 
   return (
@@ -193,15 +205,32 @@ const Role: React.FC = () => {
         <RoleActionButtons
           onAddRoleClick={onAddRoleClick}
           selRows={state.selectedRows}
+          logicDeleteUserMutation={logicDeleteUserMutation}
         />
         {/* 表格数据 */}
         <RoleTable
-          tableData={tableData || []}
+          tableData={tableData?.data || []}
           loading={isLoading}
           columns={columns}
           onRow={onRow}
           rowSelection={rowSelection}
           height={height}
+          pagination={{
+            pageSize: searchParams.pageSize,
+            current: searchParams.pageNum,
+            showQuickJumper: true,
+            hideOnSinglePage: false,
+            showSizeChanger: true,
+            showTotal: (total) => `共 ${total} 条`,
+            total: tableData?.total || 0,
+            onChange(page, pageSize) {
+              setSearchParams({
+                ...searchParams,
+                pageNum: page,
+                pageSize: pageSize,
+              });
+            },
+          }}
         />
       </Card>
 

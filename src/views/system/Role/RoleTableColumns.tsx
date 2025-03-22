@@ -8,11 +8,11 @@ import {
 import { Tag, Space, Button, Dropdown, App } from 'antd';
 import { useCallback } from 'react';
 import type { RoleState } from './api/type';
+import type { UseMutationResult } from '@tanstack/react-query';
 
 interface RoleTableColumnsProps {
   dispatch: React.Dispatch<Partial<RoleState>>;
-  deleteRole: (row: any) => Promise<void>;
-  refetch: () => Promise<any>;
+  logicDeleteUserMutation: UseMutationResult<any, any, any, unknown>;
 }
 
 /**
@@ -22,10 +22,11 @@ interface RoleTableColumnsProps {
  */
 const getRoleTableColumns = ({
   dispatch,
-  deleteRole,
-  refetch,
+  logicDeleteUserMutation,
 }: RoleTableColumnsProps): TableProps['columns'] => {
   const { modal } = App.useApp();
+
+  // 更多操作
   const more = useCallback(
     (row: any) => [
       {
@@ -50,17 +51,18 @@ const getRoleTableColumns = ({
             icon: <ExclamationCircleFilled />,
             content: '确定删除该角色吗？数据删除后将无法恢复！',
             onOk() {
-              deleteRole(row).then(() => {
-                refetch();
-              });
+              logicDeleteUserMutation.mutate([row.id]);
             },
           });
         },
       },
     ],
-    [modal, deleteRole],
+    [],
   );
 
+  /**
+   * 表格列配置
+   */
   const columns: TableProps['columns'] = [
     {
       title: '编码',

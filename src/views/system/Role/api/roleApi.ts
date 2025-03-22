@@ -77,55 +77,55 @@ export enum RoleApi {
 /**
  * 角色管理服务接口
  */
-export interface IRoleApi {
+export interface IRoleService {
   /**
    * 获取角色列表（包含分页数据）
    * @param params 角色参数(包含分页信息)
    * @returns 角色列表
    */
-  getRoleList: (params: RoleSearchParams) => Promise<Record<string, any>>;
+  getRoleList(params: RoleSearchParams): Promise<Record<string, any>>;
 
   /**
    * 新增角色
    * @param params 角色参数
    * @returns 结果
    */
-  addRole: (params: Partial<RoleModel>) => Promise<boolean>;
+  addRole(params: Partial<RoleModel>): Promise<boolean>;
 
   /**
    * 编辑角色信息
    * @param params 角色参数
    * @returns 结果
    */
-  editRole: (params: Partial<RoleModel>) => Promise<boolean>;
+  editRole(params: Partial<RoleModel>): Promise<boolean>;
 
   /**
    * 更新角色状态
    * @param params 角色参数
    * @returns 结果
    */
-  changeStatus: (params: Partial<RoleModel>) => Promise<boolean>;
+  changeStatus(params: Partial<RoleModel>): Promise<boolean>;
 
   /**
    * 物理批量删除角色
    * @param ids 角色id
    * @returns 结果
    */
-  deleteBatchRole: (ids: string[]) => Promise<boolean>;
+  deleteBatchRole(ids: string[]): Promise<boolean>;
 
   /**
    * 逻辑批量删除角色
    * @param ids 角色id
    * @returns 结果
    */
-  logicDeleteBatchRole: (ids: string[]) => Promise<boolean>;
+  logicDeleteBatchRole(ids: string[]): Promise<boolean>;
 
   /**
    * 获取角色菜单权限
    * @param params 角色参数
    * @returns 菜单权限列表
    */
-  getRoleMenu: (roleId: string) => Promise<RoleMenu>;
+  getRoleMenu(roleId: string): Promise<RoleMenu>;
 
   /**
    * 分配角色菜单权限
@@ -133,7 +133,7 @@ export interface IRoleApi {
    * @param menuIds 菜单ID列表
    * @returns 结果
    */
-  assignRoleMenu: (roleId: string, menuIds: string[]) => Promise<boolean>;
+  assignRoleMenu(roleId: string, menuIds: string[]): Promise<boolean>;
 
   /**
    * 分配角色用户
@@ -141,7 +141,7 @@ export interface IRoleApi {
    * @param userIds 用户id列表
    * @returns 结果
    */
-  assignRoleUser: (roleId: string, userIds: string[]) => Promise<boolean>;
+  assignRoleUser(roleId: string, userIds: string[]): Promise<boolean>;
 
   /**
    * 获取角色用户
@@ -149,7 +149,7 @@ export interface IRoleApi {
    * @param params 用户查询参数和分页参数
    * @returns 结果
    */
-  getRoleUser: (roleId: string, params: UserSearchParams) => Promise<UserModel>;
+  getRoleUser(roleId: string, params: UserSearchParams): Promise<UserModel>;
 
   /**
    * 获取不在该角色下的所有可用用户
@@ -157,171 +157,172 @@ export interface IRoleApi {
    * @param params 用户查询参数和分页参数
    * @returns 结果
    */
-  getUserNotInRoleByPage: (
+  getUserNotInRoleByPage(
     roleId: string,
     params: UserSearchParams,
-  ) => Promise<UserModel>;
+  ): Promise<UserModel>;
 
   /**
    * 校验角色编码是否存在
    * @param roleCode 角色编码
    * @returns 结果
    */
-  checkRoleCodeExist: (roleCode: string) => Promise<boolean>;
+  checkRoleCodeExist(roleCode: string): Promise<boolean>;
 }
 
 /**
- * 查询角色列表
- * @param params 角色参数
- * @returns 角色列表
+ * 角色管理服务实现
  */
-export const getRoleList = (params: any) => {
-  return HttpRequest.post<RoleModel[]>(
-    {
-      url: RoleApi.getRoleList,
+export const roleService: IRoleService = {
+  /**
+   * 获取角色列表（包含分页数据）
+   * @param params 角色参数(包含分页信息)
+   * @returns 角色列表
+   */
+  async getRoleList(params: RoleSearchParams): Promise<Record<string, any>> {
+    return await HttpRequest.post(
+      {
+        url: RoleApi.getRoleList,
+        data: params,
+      },
+      {
+        successMessageMode: 'none',
+      },
+    );
+  },
+
+  /**
+   * 新增角色
+   * @param params 角色参数
+   * @returns 结果
+   */
+  async addRole(params: Partial<RoleModel>): Promise<boolean> {
+    return await HttpRequest.post({
+      url: RoleApi.addRole,
       data: params,
-    },
-    {
-      successMessageMode: 'none',
-    },
-  );
-};
+    });
+  },
+  /**
+   * 编辑角色信息
+   * @param params 角色参数
+   * @returns 结果
+   */
+  async editRole(params: Partial<RoleModel>): Promise<boolean> {
+    return await HttpRequest.post({
+      url: RoleApi.editRole,
+      data: params,
+    });
+  },
 
-/**
- * 新增角色
- * @param params 角色参数
- * @returns 结果
- */
-export const addRole = (params: Record<string, any>) => {
-  return HttpRequest.post({
-    url: RoleApi.addRole,
-    data: params,
-  });
-};
+  /**
+   * 更新角色状态
+   * @param params 角色参数
+   * @returns 结果
+   */
+  async changeStatus(params: Partial<RoleModel>): Promise<boolean> {
+    return await HttpRequest.patch({
+      url: RoleApi.changeStatus,
+      data: params,
+    });
+  },
+  /**
+   * 物理批量删除角色
+   * @param ids 角色id
+   * @returns 结果
+   */
+  async deleteBatchRole(ids: string[]): Promise<boolean> {
+    return await HttpRequest.delete({
+      url: RoleApi.deleteBatchRoles,
+      data: ids,
+    });
+  },
 
-/**
- * 编辑角色信息
- * @param params 角色参数
- * @returns 结果
- */
-export const editRole = (params: Record<string, any>) => {
-  return HttpRequest.post({
-    url: RoleApi.editRole,
-    data: params,
-  });
-};
-
-/**
- * 更新角色状态
- * @param params 角色参数
- * @returns 结果
- */
-export const changStatus = (params: Record<string, any>) => {
-  return HttpRequest.patch({
-    url: RoleApi.changeStatus,
-    data: params,
-  });
-};
-
-/**
- * 删除角色
- * @param params 角色参数
- * @returns 结果
- */
-export const deleteRole = (params: Record<string, any>) => {
-  return HttpRequest.delete({
-    url: RoleApi.deleteBatchRoles,
-    params,
-  });
-};
-
-/**
- * 获取角色菜单权限
- * @param params 角色参数
- * @returns 结果
- */
-export const getRoleMenu = (roleId: string) => {
-  return HttpRequest.get(
-    {
+  /**
+   * 逻辑批量删除角色
+   * @param ids 角色id
+   * @returns 结果
+   */
+  async logicDeleteBatchRole(ids: string[]): Promise<boolean> {
+    return await HttpRequest.delete({
+      url: RoleApi.logicDeleteBatchRoles,
+      data: ids,
+    });
+  },
+  /**
+   * 获取角色菜单权限
+   * @param params 角色参数
+   * @returns 菜单权限列表
+   */
+  async getRoleMenu(roleId: string): Promise<RoleMenu> {
+    return await HttpRequest.get({
       url: RoleApi.getRoleMenu,
       params: { roleId },
-    },
-    {
-      successMessageMode: 'none',
-    },
-  );
-};
-
-/**
- * 分配角色菜单权限
- * @param params 角色参数
- * @returns 结果
- */
-export const assignRoleMenu = (params: any) => {
-  return HttpRequest.post({
-    url: RoleApi.assignRoleMenu,
-    data: params,
-  });
-};
-
-/**
- * 分配角色用户
- * @param params 角色参数
- * @returns 结果
- */
-export const assignRoleUser = (params: any) => {
-  return HttpRequest.post({
-    url: RoleApi.assignRoleUser,
-    data: params,
-  });
-};
-
-/**
- * 获取角色用户
- * @param params 角色参数
- * @returns 结果
- */
-export const getRoleUser = (params: any) => {
-  return HttpRequest.post(
-    {
+    });
+  },
+  /**
+   * 分配角色菜单权限
+   * @param roleId 角色ID
+   * @param menuIds 菜单ID列表
+   * @returns 结果
+   */
+  async assignRoleMenu(roleId: string, menuIds: string[]): Promise<boolean> {
+    return await HttpRequest.post({
+      url: RoleApi.assignRoleMenu,
+      data: { roleId, menuIds },
+    });
+  },
+  /**
+   * 分配角色用户
+   * @param roleId 角色id
+   * @param userIds 用户id列表
+   * @returns 结果
+   */
+  async assignRoleUser(roleId: string, userIds: string[]): Promise<boolean> {
+    return await HttpRequest.post({
+      url: RoleApi.assignRoleUser,
+      data: { roleId, userIds },
+    });
+  },
+  /**
+   * 获取角色用户
+   * @param roleId 角色ID
+   * @param params 用户查询参数和分页参数
+   * @returns 结果
+   */
+  async getRoleUser(
+    roleId: string,
+    params: UserSearchParams,
+  ): Promise<UserModel> {
+    return await HttpRequest.post({
       url: RoleApi.getRoleUser,
-      data: params,
-    },
-    {
-      successMessageMode: 'none',
-    },
-  );
-};
+      data: { roleId, searchParams: params },
+    });
+  },
 
-/**
- * 获取不在该角色下的所有可用用户
- * @param params 角色参数和分页参数
- * @returns 结果
- */
-export const getUserNotInRoleByPage = (params: any) => {
-  return HttpRequest.post(
-    {
+  /**
+   * 获取不在该角色下的所有可用用户
+   * @param roleId 角色ID
+   * @param params 用户查询参数和分页参数
+   * @returns 结果
+   */
+  async getUserNotInRoleByPage(
+    roleId: string,
+    params: UserSearchParams,
+  ): Promise<UserModel> {
+    return await HttpRequest.post({
       url: RoleApi.getUserNotInRoleByPage,
-      data: params,
-    },
-    {
-      successMessageMode: 'none',
-    },
-  );
-};
-/**
- * 验证角色编码是否存在
- * @param params 角色编码
- * @returns 结果
- */
-export const checkRoleCodeExist = (params: any) => {
-  return HttpRequest.get(
-    {
+      data: { roleId, searchParams: params },
+    });
+  },
+  /**
+   * 校验角色编码是否存在
+   * @param roleCode 角色编码
+   * @returns 结果
+   */
+  async checkRoleCodeExist(roleCode: string): Promise<boolean> {
+    return await HttpRequest.get({
       url: RoleApi.checkRoleCodeExist,
-      params,
-    },
-    {
-      successMessageMode: 'none',
-    },
-  );
+      params: { roleCode },
+    });
+  },
 };

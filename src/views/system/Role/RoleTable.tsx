@@ -8,6 +8,8 @@ interface RoleTableProps {
   onRow: (record: any) => any;
   rowSelection: TableProps['rowSelection'];
   height: number;
+  // 分页配置
+  pagination?: TableProps['pagination'];
 }
 
 /**
@@ -22,6 +24,7 @@ const RoleTable: React.FC<RoleTableProps> = ({
   onRow,
   rowSelection,
   height,
+  pagination
 }) => {
   return (
     <Table
@@ -29,7 +32,7 @@ const RoleTable: React.FC<RoleTableProps> = ({
       onRow={onRow}
       style={{ marginTop: '8px' }}
       bordered
-      pagination={false}
+      pagination={pagination}
       dataSource={tableData}
       columns={columns}
       loading={loading}

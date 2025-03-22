@@ -55,7 +55,7 @@ export enum UserAction {
 /**
  * 用户信息服务接口
  */
-export interface IUserApi {
+export interface IUserService {
   /**
    * 创建用户
    * @param user 用户信息
@@ -105,7 +105,7 @@ export interface IUserApi {
 /**
  * 用户信息服务实现
  */
-export const userApis: IUserApi = {
+export const userService: IUserService = {
   /**
    * 创建用户
    * @param user 用户信息

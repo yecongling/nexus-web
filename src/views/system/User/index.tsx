@@ -1,12 +1,12 @@
 import useParentSize from '@/hooks/useParentSize';
-import { userApis } from './api/userApi';
+import { userService } from './api/userApi';
 import {
   DeleteOutlined,
   EditOutlined,
   ExclamationCircleFilled,
   LockOutlined,
 } from '@ant-design/icons';
-import { Card, Table, App, Modal } from 'antd';
+import { Card, Table, App } from 'antd';
 import type React from 'react';
 import { useMemo, useReducer, useState } from 'react';
 import type { UserSearchParams } from './types';
@@ -17,13 +17,11 @@ import type { UserModel } from './api/type';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import TableActionButtons from './TableActionButtons';
 
-const { confirm } = Modal;
-
 /**
  * 用户管理
  */
 const User: React.FC = () => {
-  const { message } = App.useApp();
+  const { message, modal } = App.useApp();
   // 合并状态
   const [state, dispatch] = useReducer(
     (prev: any, action: any) => ({
@@ -58,12 +56,12 @@ const User: React.FC = () => {
     refetch,
   } = useQuery({
     queryKey: ['sys_users', searchParams],
-    queryFn: () => userApis.queryUsers({ ...searchParams }),
+    queryFn: () => userService.queryUsers({ ...searchParams }),
   });
 
   // 处理删除数据
   const logicDeleteUserMutation = useMutation({
-    mutationFn: (ids: string[]) => userApis.logicDeleteUsers(ids),
+    mutationFn: (ids: string[]) => userService.logicDeleteUsers(ids),
     onSuccess: () => {
       message.success('删除成功!');
       dispatch({
@@ -121,7 +119,7 @@ const User: React.FC = () => {
 
   // 处理批量删除
   const handleBatchDelete = () => {
-    confirm({
+    modal.confirm({
       title: '确定要删除选中的用户吗？',
       icon: <ExclamationCircleFilled />,
       content: '此操作将删除选中的用户，删除后可在回收站中进行恢复，是否继续？',
@@ -135,7 +133,7 @@ const User: React.FC = () => {
 
   // 处理用户状态更新
   const handleStatusChange = async (record: UserModel) => {
-    userApis
+    userService
       .updateBatchUserStatus([record.id], record.status === 1 ? 0 : 1)
       .then(() => {
         message.success('状态更新成功');
@@ -150,10 +148,10 @@ const User: React.FC = () => {
   const handleModalOk = async (values: Partial<UserModel>) => {
     try {
       if (state.currentRow?.id) {
-        await userApis.updateUser({ id: state.currentRow.id, ...values });
+        await userService.updateUser({ id: state.currentRow.id, ...values });
         message.success('更新成功');
       } else {
-        await userApis.createUser(values);
+        await userService.createUser(values);
         message.success('创建成功');
       }
       dispatch({
@@ -188,7 +186,7 @@ const User: React.FC = () => {
           label: '删除',
           icon: <DeleteOutlined className="text-red-400!" />,
           onClick: () => {
-            confirm({
+            modal.confirm({
               title: '删除用户',
               icon: <ExclamationCircleFilled />,
               content: '确定删除该用户吗？数据删除后请在回收站中恢复！',
