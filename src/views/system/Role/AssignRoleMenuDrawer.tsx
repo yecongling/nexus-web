@@ -1,4 +1,4 @@
-import { assignRoleMenu, getRoleMenu } from '@/api/system/role/roleApi';
+import { roleService } from './api/roleApi';
 import { getIcon } from '@/utils/utils';
 import {
   CloseOutlined,
@@ -29,7 +29,7 @@ const RoleMenuDrawer: React.FC<RoleMenuDrawerProps> = ({
   useEffect(() => {
     if (!open) return;
     // 调用获取所有菜单接口方法（里面包含获取选中的菜单key）
-    getRoleMenu(roleId).then((resp: any) => {
+    roleService.getRoleMenu(roleId).then((resp: any) => {
       // 内部包含menuList和menuIds
       const expanded: string[] = [];
       const data = transformData(resp.menuList, expanded);
@@ -65,7 +65,7 @@ const RoleMenuDrawer: React.FC<RoleMenuDrawerProps> = ({
    */
   const handleOk = (e: React.MouseEvent<HTMLButtonElement>) => {
     // 保存分配的菜单数据
-    assignRoleMenu({ roleId: roleId, menuIds: checked }).then(() => {
+    roleService.assignRoleMenu( roleId, checked ).then(() => {
       // 关闭弹窗
       onOk(e);
     });

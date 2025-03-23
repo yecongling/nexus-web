@@ -1,8 +1,7 @@
 import DragModal from '@/components/modal/DragModal';
 import {
-  assignRoleUser,
-  getUserNotInRoleByPage,
-} from '@/api/system/role/roleApi';
+  roleService,
+} from './api/roleApi';
 import {
   SearchOutlined,
   RedoOutlined,
@@ -58,13 +57,12 @@ const AddUser: React.FC<AddUserProps> = ({ open, onOk, onCancel, roleId }) => {
    * 获取用户数据
    */
   const getUserData = () => {
-    getUserNotInRoleByPage({
-      roleId,
+    roleService.getUserNotInRoleByPage(roleId, {
       // 表单数据
-      searchParams: form.getFieldsValue(),
+      ...form.getFieldsValue(),
       pageNum: pagination.pageNumber,
       pageSize: pagination.pageSize,
-    }).then((resp) => {
+    }).then((resp: any) => {
       setTableData(resp.data);
       resp.total && setTotal(resp.total);
       ref.current?.focus();
@@ -155,11 +153,11 @@ const AddUser: React.FC<AddUserProps> = ({ open, onOk, onCancel, roleId }) => {
     }
     const userIds = selRows.map((item: any) => item.id);
     // 分配用户
-    assignRoleUser({
+    roleService.assignRoleUser(
       roleId,
-      ids: userIds,
-      operate: 'add',
-    }).then(() => {
+      userIds,
+      'add',
+    ).then(() => {
       onOk(selRows.length);
       // 清空选择项
       setSelectedRows([]);

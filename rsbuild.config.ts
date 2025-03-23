@@ -60,9 +60,7 @@ export default defineConfig({
   // 构建优化相关
   performance: {
     chunkSplit: {
-      strategy: 'split-by-size',
-      // 单个chunk的最大为500kb
-      maxSize: 50000,
+      strategy: 'split-by-experience',
       // 下面的部分单独分包
       forceSplitting: {
         axios: /node_modules[\\/]axios/,

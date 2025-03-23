@@ -1,5 +1,5 @@
 import DragModal from '@/components/modal/DragModal';
-import { checkRoleCodeExist } from '@/api/system/role/roleApi';
+import { roleService } from './api/roleApi';
 import { Form, Input, type InputRef, Select, Switch } from 'antd';
 import { useEffect, useRef } from 'react';
 import type { RoleState } from './api/type';
@@ -50,7 +50,7 @@ const RoleInfoModal: React.FC<RoleInfoModalProps> = ({
     if (currentRow && currentRow.roleCode === value) {
       return Promise.resolve();
     }
-    const res = await checkRoleCodeExist({ roleCode: value });
+    const res = await roleService.checkRoleCodeExist(value);
     if (res) {
       return Promise.reject('角色编码已存在');
     }
