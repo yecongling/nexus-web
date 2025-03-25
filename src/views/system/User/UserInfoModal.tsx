@@ -192,7 +192,7 @@ const UserInfoModal: React.FC<UserInfoModalProps> = ({
           <Form.Item
             label="密码"
             name="password"
-            rules={[{ required: true }, { min: 6, message: '密码至少6个字符' }]}
+            rules={[{ required: true }, { min: 8, message: '密码至少8个字符' }]}
           >
             <Input.Password placeholder="请输入密码" />
           </Form.Item>

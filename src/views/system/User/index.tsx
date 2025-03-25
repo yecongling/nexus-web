@@ -146,21 +146,15 @@ const User: React.FC = () => {
 
   // 处理表单提交
   const handleModalOk = async (values: Partial<UserModel>) => {
-    try {
-      if (state.currentRow?.id) {
-        await userService.updateUser({ id: state.currentRow.id, ...values });
-        message.success('更新成功');
-      } else {
-        await userService.createUser(values);
-        message.success('创建成功');
-      }
-      dispatch({
-        openEditModal: false,
-      });
-      refetch();
-    } catch (error) {
-      message.error((state.currentRow?.id ? '更新失败' : '创建失败') + error);
+    if (state.currentRow?.id) {
+      await userService.updateUser({ id: state.currentRow.id, ...values });
+    } else {
+      await userService.createUser(values);
     }
+    dispatch({
+      openEditModal: false,
+    });
+    refetch();
   };
 
   // 表格列配置
