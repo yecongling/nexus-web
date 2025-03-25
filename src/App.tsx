@@ -18,7 +18,7 @@ const App: React.FC = () => {
   const { notification, message, modal } = AntdApp.useApp();
 
   // 使用 TanStack Query 获取菜单数据
-  const { isLoading, isError, error } = useQuery({
+  const { isLoading, isError, error, refetch } = useQuery({
     queryKey: ['menuData'],
     queryFn: async () => {
       const roleId = sessionStorage.getItem('roleId') || '';
@@ -26,14 +26,7 @@ const App: React.FC = () => {
       setMenus(menu);
       return menu;
     },
-    // 未登录的情况下不启用菜单的查询操作
-    enabled() {
-      const isLogin = sessionStorage.getItem('isLogin');
-      if (isLogin === 'false' ||!isLogin || location.pathname === '/login') {
-        return false;
-      }
-      return true;
-    },
+    enabled: false,
   });
 
   useEffect(() => {
@@ -54,6 +47,9 @@ const App: React.FC = () => {
     const isLogin = sessionStorage.getItem('isLogin');
     if (isLogin === 'false' || !isLogin || location.pathname === '/login') {
       navigate('/login');
+    } else {
+      // 查询菜单数据
+      refetch();
     }
   }, []);
 
