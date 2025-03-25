@@ -1,7 +1,5 @@
 import DragModal from '@/components/modal/DragModal';
-import {
-  roleService,
-} from './api/roleApi';
+import { roleService } from './api/roleApi';
 import {
   SearchOutlined,
   RedoOutlined,
@@ -22,6 +20,8 @@ import {
   type TableProps,
 } from 'antd';
 import { useEffect, useRef, useState } from 'react';
+import type { UserSearchParams } from './api/type';
+import { useQuery } from '@tanstack/react-query';
 
 /**
  * 添加用户弹窗
@@ -31,49 +31,42 @@ const AddUser: React.FC<AddUserProps> = ({ open, onOk, onCancel, roleId }) => {
   const [form] = Form.useForm();
   // 当前选中的行数据
   const [selRows, setSelectedRows] = useState<any[]>([]);
-  // 表格数据
-  const [tableData, setTableData] = useState<any[]>([]);
-  // 数据总条数
-  const [total, setTotal] = useState<number>(0);
   const ref = useRef<InputRef>(null);
-  // 分页参数
-  const [pagination, setPagination] = useState<{
-    pageNumber: number;
-    pageSize: number;
-  }>({
-    pageNumber: 1,
-    pageSize: 10,
+
+  // 查询参数（包含分页参数）
+  const [searchParams, setSearchParams] = useState<UserSearchParams>({
+    pageNum: 1,
+    pageSize: 20,
+  });
+
+  // 查询没分配给当前角色的用户数据
+  const { isLoading, data, refetch } = useQuery({
+    queryKey: ['sys_role_user_not_in_role', [roleId, searchParams]],
+    queryFn: () => roleService.getUserNotInRoleByPage(roleId, searchParams),
+    enabled: open,
   });
 
   useEffect(() => {
     if (!open) return;
-    // 获取没有当前角色权限的所有用户
-    getUserData();
-    // 重置选中的行
-    setSelectedRows([]);
-  }, [open, pagination]);
+    ref.current?.focus();
+  }, [open]);
 
   /**
-   * 获取用户数据
+   * 表单检索
    */
-  const getUserData = () => {
-    roleService.getUserNotInRoleByPage(roleId, {
-      // 表单数据
-      ...form.getFieldsValue(),
-      pageNum: pagination.pageNumber,
-      pageSize: pagination.pageSize,
-    }).then((resp: any) => {
-      setTableData(resp.data);
-      resp.total && setTotal(resp.total);
-      ref.current?.focus();
-    });
-  };
-
-  /**
-   * 检索表单提交
-   */
-  const onFinish = () => {
-    getUserData();
+  const onFinish = (values: UserSearchParams) => {
+    const search = {
+      ...values,
+      pageNum: searchParams.pageNum,
+      pageSize: searchParams.pageSize,
+    };
+    // 判断参数是否发生变化
+    if (JSON.stringify(search) === JSON.stringify(searchParams)) {
+      // 参数没有变化，手动刷新数据
+      refetch();
+      return;
+    }
+    setSearchParams((prev) => ({ ...prev, ...search }));
   };
 
   /**
@@ -137,8 +130,9 @@ const AddUser: React.FC<AddUserProps> = ({ open, onOk, onCancel, roleId }) => {
    * @param pageSize 每页数量
    */
   const onPageSizeChange = (page: number, pageSize: number) => {
-    setPagination({
-      pageNumber: page,
+    setSearchParams({
+      ...searchParams,
+      pageNum: page,
       pageSize: pageSize,
     });
   };
@@ -153,11 +147,7 @@ const AddUser: React.FC<AddUserProps> = ({ open, onOk, onCancel, roleId }) => {
     }
     const userIds = selRows.map((item: any) => item.id);
     // 分配用户
-    roleService.assignRoleUser(
-      roleId,
-      userIds,
-      'add',
-    ).then(() => {
+    roleService.assignRoleUser(roleId, userIds, 'add').then(() => {
       onOk(selRows.length);
       // 清空选择项
       setSelectedRows([]);
@@ -172,7 +162,7 @@ const AddUser: React.FC<AddUserProps> = ({ open, onOk, onCancel, roleId }) => {
       width={{ xl: 800, xxl: 1000 }}
       onOk={handleOk}
     >
-      <Card className='mb-2!'>
+      <Card className="mb-2!">
         <Form form={form} onFinish={onFinish}>
           <Row gutter={12}>
             <Col span={6}>
@@ -236,19 +226,20 @@ const AddUser: React.FC<AddUserProps> = ({ open, onOk, onCancel, roleId }) => {
           title={() => '用户列表'}
           bordered
           rowKey="id"
+          loading={isLoading}
           columns={columns}
           pagination={{
-            pageSize: pagination.pageSize,
-            current: pagination.pageNumber,
+            pageSize: searchParams.pageSize,
+            current: searchParams.pageNum,
             showQuickJumper: true,
             showSizeChanger: true,
             showTotal: (total) => `共 ${total} 条`,
-            total: total,
+            total: data?.total || 0,
             onChange(page, pageSize) {
               onPageSizeChange(page, pageSize);
             },
           }}
-          dataSource={tableData}
+          dataSource={data?.tableData || []}
           rowSelection={rowSelection}
         />
       </Card>

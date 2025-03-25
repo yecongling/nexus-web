@@ -5,7 +5,6 @@ import type {
   RoleSearchParams,
   UserSearchParams,
 } from './type';
-import type { UserModel } from '../../User/api/type';
 
 /**
  * 枚举角色相关的api
@@ -160,7 +159,7 @@ export interface IRoleService {
   ): Promise<Record<string, any>>;
 
   /**
-   * 获取不在该角色下的所有可用用户
+   * 获取不在该角色下的所有可用用户，包括分页结果
    * @param roleId 角色ID
    * @param params 用户查询参数和分页参数
    * @returns 结果
@@ -168,7 +167,7 @@ export interface IRoleService {
   getUserNotInRoleByPage(
     roleId: string,
     params: UserSearchParams,
-  ): Promise<UserModel>;
+  ): Promise<Record<string, any>>;
 
   /**
    * 校验角色编码是否存在
@@ -336,7 +335,7 @@ export const roleService: IRoleService = {
   async getUserNotInRoleByPage(
     roleId: string,
     params: UserSearchParams,
-  ): Promise<UserModel> {
+  ): Promise<Record<string, any>> {
     return await HttpRequest.post(
       {
         url: RoleApi.getUserNotInRoleByPage,

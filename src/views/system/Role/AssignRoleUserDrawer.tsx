@@ -59,7 +59,7 @@ const RoleUserDrawer: React.FC<RoleUserDrawerProps> = ({
 
   // 查询用户数据
   const { isLoading, data, refetch } = useQuery({
-    queryKey: ['sys_users', [roleId, searchParams]],
+    queryKey: ['sys_role_users_drawer', [roleId, searchParams]],
     queryFn: () => roleService.getRoleUser(roleId, searchParams),
     enabled: open,
   });
