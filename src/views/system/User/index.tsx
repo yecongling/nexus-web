@@ -16,6 +16,7 @@ import UserInfoModal from './UserInfoModal';
 import type { UserModel } from './api/type';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import TableActionButtons from './TableActionButtons';
+import UserPasswordModal from './UserPasswordModal';
 
 /**
  * 用户管理
@@ -31,6 +32,8 @@ const User: React.FC = () => {
     {
       // 编辑窗口的打开状态
       openEditModal: false,
+      // 修改密码弹窗的打开状态
+      openPasswordModal: false,
       // 当前编辑的行数据
       currentRow: null,
       // 当前选中的行数据
@@ -157,7 +160,7 @@ const User: React.FC = () => {
     refetch();
   };
 
-  // 表格列配置
+  // 表格操作列中的更多操作
   const columns = useMemo(
     () =>
       getColumns(handleEdit, handleDetail, (record) => [
@@ -263,6 +266,13 @@ const User: React.FC = () => {
         }}
         userInfo={state.currentRow}
         action={state.action}
+      />
+
+      {/* 密码编辑弹窗 */}
+      <UserPasswordModal
+        open={state.openPasswordModal}
+        onClose={() => {}}
+        onSubmit={() => {}}
       />
     </>
   );
