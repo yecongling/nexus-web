@@ -8,7 +8,7 @@ import {
   FileOutlined,
 } from '@ant-design/icons';
 import { Card, Button, Dropdown, type MenuProps } from 'antd';
-import './project.module.scss';
+import './project.scss';
 import { memo } from 'react';
 import { useNavigate } from 'react-router';
 import bg from '@/assets/images/titlebar.jpg';

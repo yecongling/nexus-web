@@ -1,6 +1,6 @@
 import { Card, Segmented, type SegmentedProps, Input } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
-import './design.scss';
+import './project.scss';
 import { PlusOutlined } from '@ant-design/icons';
 import ProjectCard from './ProjectCard';
 import { projectService } from '@/api/project/design/designApi';
