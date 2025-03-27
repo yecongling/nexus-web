@@ -5,7 +5,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import ProjectCard from './ProjectCard';
 import { projectService } from '@/api/project/design/designApi';
 import ProjectInfoModal from './ProjectInfoModal';
-import type { Project } from './types';
+import type { ProjectModel } from './api/types';
 import { usePreferencesStore } from '@/stores/store';
 import { usePermission } from '@/hooks/usePermission';
 const { Search } = Input;
@@ -13,7 +13,7 @@ const { Search } = Input;
 /**
  * 项目设计
  */
-const Design: React.FC = () => {
+const Project: React.FC = () => {
   // 选中的分类
   const [type, setType] = useState<string>('');
   const { preferences } = usePreferencesStore();
@@ -46,9 +46,9 @@ const Design: React.FC = () => {
   ];
 
   // 项目列表数据
-  const [projects, setProjects] = useState<Project[]>([]);
+  const [projects, setProjects] = useState<ProjectModel[]>([]);
   // 编辑的项目数据
-  const [project, setProject] = useState<Project>();
+  const [project, setProject] = useState<ProjectModel>();
 
   // 根据类型进行检索
   useEffect(() => {
@@ -99,7 +99,7 @@ const Design: React.FC = () => {
   /**
    * 新增（编辑）项目确认
    */
-  const onModalOk = (project: Project) => {
+  const onModalOk = (project: ProjectModel) => {
     // 首先确定是新增还是修改(有没有项目ID)
     if (project.id) {
       // 修改
@@ -192,4 +192,4 @@ const Design: React.FC = () => {
     </>
   );
 };
-export default Design;
+export default Project;

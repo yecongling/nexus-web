@@ -8,7 +8,7 @@ import {
   FileOutlined,
 } from '@ant-design/icons';
 import { Card, Button, Dropdown, type MenuProps } from 'antd';
-import './design.scss';
+import './project.module.scss';
 import { memo } from 'react';
 import { useNavigate } from 'react-router';
 import bg from '@/assets/images/titlebar.jpg';
@@ -54,8 +54,8 @@ const ProjectCard: React.FC<ProjectCardProps> = memo((props) => {
    * 项目流程设计
    */
   const designProject = () => {
-    // 跳转到流程设计界面
-    navigate(`/project/designer/${id}`);
+    // 跳转到流程编排界面
+    navigate(`/project/${id}/workflow`);
   };
 
   /**
@@ -76,7 +76,7 @@ const ProjectCard: React.FC<ProjectCardProps> = memo((props) => {
           className="text-[18px] mr-2"
           style={{ color: '#1677ff' }}
         />
-        <span className='text-[16px] font-bold'>{name}</span>
+        <span className="text-[16px] font-bold">{name}</span>
       </div>
       <div className="h-[166px] px-3 relative">
         <div

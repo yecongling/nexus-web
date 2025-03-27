@@ -1,5 +1,5 @@
 import DragModal from '@/components/modal/DragModal';
-import type { Project } from './types';
+import type { ProjectModel } from './api/types';
 import { Form, Input, Select, type InputRef } from 'antd';
 import { useEffect, useRef } from 'react';
 
@@ -133,7 +133,7 @@ export interface ProjectInfoModalProps {
    * 窗口确认按钮点击回调
    * @returns
    */
-  onOk: (project: Project) => void;
+  onOk: (project: ProjectModel) => void;
   /**
    * 窗口取消按钮点击回调
    * @returns
@@ -148,5 +148,5 @@ export interface ProjectInfoModalProps {
   /**
    * 项目数据
    */
-  project?: Project;
+  project?: ProjectModel;
 }

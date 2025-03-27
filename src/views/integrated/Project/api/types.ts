@@ -1,7 +1,7 @@
 /**
  * 项目
  */
-export interface Project {
+export interface ProjectModel {
   // 项目id
   id: string;
   // 项目名称

@@ -1,6 +1,5 @@
-import { useCallback, useEffect, useRef } from "react";
-import { useNavigate } from "react-router";
-import "./designer.scss";
+import { useNavigate, useParams } from 'react-router';
+import './workflow.module.scss';
 import {
   ReactFlow,
   MiniMap,
@@ -10,21 +9,25 @@ import {
   useEdgesState,
   addEdge,
   BackgroundVariant,
-} from "@xyflow/react";
+} from '@xyflow/react';
 
-import "@xyflow/react/dist/style.css";
+import '@xyflow/react/dist/style.css';
+import { useRef, useCallback, useEffect } from 'react';
 
 const initialNodes = [
-  { id: "1", position: { x: 0, y: 0 }, data: { label: "1" } },
-  { id: "2", position: { x: 0, y: 100 }, data: { label: "2" } },
+  { id: '1', position: { x: 0, y: 0 }, data: { label: '1' } },
+  { id: '2', position: { x: 0, y: 100 }, data: { label: '2' } },
 ];
-const initialEdges = [{ id: "e1-2", source: "1", target: "2" }];
+const initialEdges = [{ id: 'e1-2', source: '1', target: '2' }];
 
 /**
- * 项目设计界面
+ * 流程编排
  * @returns
  */
-const Designer: React.FC = () => {
+const Workflow: React.FC = () => {
+  // 获取路由参数（应用ID）
+  const { appId } = useParams();
+
   // 路由跳转
   const navigate = useNavigate();
   // 逻辑流程图对象
@@ -34,7 +37,7 @@ const Designer: React.FC = () => {
 
   const onConnect = useCallback(
     (params: any) => setEdges((eds) => addEdge(params, eds)),
-    [setEdges]
+    [setEdges],
   );
   useEffect(() => {
     if (!refContainer.current) {
@@ -47,6 +50,7 @@ const Designer: React.FC = () => {
       {/* 左边可收缩部分 */}
       <div className="w-[300px] h-full border-r-[1px] border-solid border-[#ddd] fixed z-20 hidden">
         左边列表，可收缩
+        流程ID: {appId}
       </div>
       {/* 右边设计部分 */}
       <div className="w-full h-full">
@@ -69,4 +73,4 @@ const Designer: React.FC = () => {
     </div>
   );
 };
-export default Designer;
+export default Workflow;
