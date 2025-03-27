@@ -77,8 +77,8 @@ const LeftMenu: React.FC = memo(() => {
   // 处理后台返回菜单数据
   const deepLoopFloat = (menuList: RouteItem[], newArr: MenuItem[] = []) => {
     for (const item of menuList) {
-      // 如果不能显示的菜单不显示
-      if (item?.meta?.menuType === 2 || item?.hidden) {
+      // 处理子路由和权限按钮不显示
+      if (item?.meta?.menuType === 2 || item?.meta?.menuType === 3 || item?.hidden) {
         continue;
       }
       // 下面判断代码解释 *** !item?.children?.length   ==>   (!item.children || item.children.length === 0)

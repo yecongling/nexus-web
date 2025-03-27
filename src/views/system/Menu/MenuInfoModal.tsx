@@ -102,6 +102,9 @@ const MenuInfoModal: React.FC<MenuInfoModalProps> = ({
   // 处理菜单类型变更
   const handleMenuTypeChange = useCallback((value: MenuType) => {
     setMenuType(value);
+    if (value === MenuType.SUB_ROUTE) {
+      form.setFieldsValue({ route: true });
+    }
     nameRef.current?.focus();
   }, []);
 
@@ -271,9 +274,14 @@ const MenuInfoModal: React.FC<MenuInfoModalProps> = ({
         <Form.Item name="sortNo" label="排序">
           <InputNumber min={0} autoComplete="off" />
         </Form.Item>
-        {menuType === MenuType.SUB_MENU && (
+        {(menuType === MenuType.SUB_MENU ||
+          menuType === MenuType.SUB_ROUTE) && (
           <Form.Item name="route" label="是否路由菜单">
-            <Switch checkedChildren="是" unCheckedChildren="否" />
+            <Switch
+              checkedChildren="是"
+              unCheckedChildren="否"
+              disabled={menuType === MenuType.SUB_ROUTE}
+            />
           </Form.Item>
         )}
         {menuType !== MenuType.PERMISSION_BUTTON && (
