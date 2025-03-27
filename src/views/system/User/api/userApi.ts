@@ -89,9 +89,7 @@ export interface IUserService {
    * @param searchParams 查询参数（包括分页）
    * @returns 用户列表、分页信息
    */
-  queryUsers(
-    searchParams: UserSearchParams,
-  ): Promise<Record<string, any>>;
+  queryUsers(searchParams: UserSearchParams): Promise<Record<string, any>>;
 
   /**
    * 批量更新用户状态
@@ -100,6 +98,21 @@ export interface IUserService {
    * @returns 更新结果
    */
   updateBatchUserStatus(id: string[], status: number): Promise<boolean>;
+
+  /**
+   * 重置用户密码
+   * @param id 用户ID
+   * @returns 重置结果
+   */
+  resetUserPwd(id: string): Promise<boolean>;
+
+  /**
+   * 修改用户密码
+   * @param id 用户ID
+   * @param newPassword 新密码
+   * @returns 修改结果
+   */
+  changeUserPwd(id: string, newPassword: string): Promise<boolean>;
 }
 
 /**
@@ -186,10 +199,41 @@ export const userService: IUserService = {
    */
   async updateBatchUserStatus(ids: string[], status: number): Promise<boolean> {
     // 根据status决定是锁定还是解锁用户
-    const url = status === 0 ? UserAction.lockBatchUser : UserAction.unlockBatchUser;
-    return HttpRequest.post({
-      url,
-      data: ids,
+    const url =
+      status === 0 ? UserAction.lockBatchUser : UserAction.unlockBatchUser;
+    return HttpRequest.post(
+      {
+        url,
+        data: ids,
+      },
+      { successMessageMode: 'none' },
+    );
+  },
+
+  /**
+   * 重置用户密码
+   * @param id 用户ID
+   * @returns 重置结果
+   */
+  async resetUserPwd(id: string): Promise<boolean> {
+    const response = await HttpRequest.post({
+      url: UserAction.resetUserPwd,
+      data: id,
     });
+    return response;
+  },
+
+  /**
+   * 修改用户密码
+   * @param id 用户ID
+   * @param newPassword 新密码
+   * @returns 修改结果
+   */
+  async changeUserPwd(id: string, newPassword: string): Promise<boolean> {
+    const response = await HttpRequest.post({
+      url: UserAction.changeUserPwd,
+      data: { id, password: newPassword },
+    });
+    return response;
   },
 };

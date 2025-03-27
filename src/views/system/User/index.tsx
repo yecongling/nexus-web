@@ -160,6 +160,13 @@ const User: React.FC = () => {
     refetch();
   };
 
+  // 关闭密码编辑弹窗
+  const closePasswordModal = () => {
+    dispatch({
+      openPasswordModal: false,
+    });
+  };
+
   // 表格操作列中的更多操作
   const columns = useMemo(
     () =>
@@ -169,7 +176,11 @@ const User: React.FC = () => {
           label: '修改密码',
           icon: <EditOutlined className="text-orange-400!" />,
           onClick: () => {
-            /* 实现修改密码逻辑 */
+            /* 打开密码编辑弹窗 */
+            dispatch({
+              openPasswordModal: true,
+              currentRow: record,
+            });
           },
         },
         {
@@ -271,8 +282,9 @@ const User: React.FC = () => {
       {/* 密码编辑弹窗 */}
       <UserPasswordModal
         open={state.openPasswordModal}
-        onClose={() => {}}
-        onSubmit={() => {}}
+        userInfo={state.currentRow}
+        onClose={closePasswordModal}
+        onOk={closePasswordModal}
       />
     </>
   );

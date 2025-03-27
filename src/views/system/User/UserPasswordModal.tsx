@@ -1,24 +1,35 @@
 import type React from 'react';
-import { memo } from 'react';
-import { Input, Form, Progress, Row, Col } from 'antd';
+import { memo, useEffect } from 'react';
+import { Input, Form, Progress, Row, Col, App } from 'antd';
 import DragModal from '@/components/modal/DragModal';
 import styles from './strengthMeter.module.scss';
 import { keys, values } from 'lodash-es';
 import { strengthMeterOptions } from './config';
 import zxcvbn from 'zxcvbn';
+import type { UserModel } from './api/type';
+import { useMutation } from '@tanstack/react-query';
+import { userService } from './api/userApi';
 
 interface UserPasswordModalProps {
   open: boolean;
   onClose: () => void;
-  onSubmit: (username: string, password: string) => void;
+  userInfo: Partial<UserModel>;
+  onOk: () => void;
 }
 
 /**
  * 更新用户密码弹窗
  */
 const UserPasswordModal: React.FC<UserPasswordModalProps> = memo(
-  ({ open, onClose, onSubmit }) => {
+  ({ open, onClose, userInfo, onOk }) => {
+    const { message } = App.useApp();
     const [form] = Form.useForm();
+
+    useEffect(() => {
+      if (open) {
+        form.setFieldsValue(userInfo);
+      }
+    }, [open]);
 
     // 监听密码改变
     const password = Form.useWatch('password', form);
@@ -38,8 +49,8 @@ const UserPasswordModal: React.FC<UserPasswordModalProps> = memo(
       form
         .validateFields()
         .then((values) => {
-          const { username, password } = values;
-          onSubmit(username, password);
+          const { id, password } = values;
+          updatePassword.mutate({ id, password });
         })
         .catch((errorInfo) => {
           // 滚动并聚焦到第一个错误字段
@@ -48,6 +59,19 @@ const UserPasswordModal: React.FC<UserPasswordModalProps> = memo(
         });
     };
 
+    // 更新用户密码
+    const updatePassword = useMutation({
+      mutationFn: ({ id, password }: { id: string; password: string }) =>
+        userService.changeUserPwd(id, password),
+      onSuccess: () => {
+        message.success('更新用户密码成功');
+        onOk();
+      },
+      onError: (error) => {
+        message.error(error.message);
+      },
+    });
+
     return (
       <DragModal
         title="更新用户密码"
@@ -55,12 +79,16 @@ const UserPasswordModal: React.FC<UserPasswordModalProps> = memo(
         onCancel={onClose}
         onOk={handleOk}
       >
-        <Form layout="vertical" form={form}>
+        <Form form={form} labelCol={{ span: 4 }} wrapperCol={{ span: 19 }}>
           {/* 隐藏的用户ID */}
           <Form.Item name="id" hidden>
             <Input />
           </Form.Item>
-          <Form.Item label="用户名" name="username">
+          <Form.Item
+            label="用户名"
+            name="username"
+            rules={[{ required: true }]}
+          >
             <Input disabled />
           </Form.Item>
           <Form.Item
