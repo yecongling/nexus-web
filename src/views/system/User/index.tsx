@@ -134,18 +134,21 @@ const User: React.FC = () => {
     });
   };
 
-  // 处理用户状态更新
-  const handleStatusChange = async (record: UserModel) => {
-    userService
-      .updateBatchUserStatus([record.id], record.status === 1 ? 0 : 1)
-      .then(() => {
-        message.success('状态更新成功');
-        refetch();
-      })
-      .catch((error: Error) => {
-        message.error(`状态更新失败,${error.message}`);
-      });
-  };
+  // 处理用户更新状态
+  const handleUpdateStatusMutation = useMutation({
+    mutationFn: (record: UserModel) =>
+      userService.updateBatchUserStatus(
+        [record.id],
+        record.status === 1 ? 0 : 1,
+      ),
+    onSuccess: () => {
+      message.success('状态更新成功');
+      refetch();
+    },
+    onError: (error) => {
+      message.error(`状态更新失败,${error.message}`);
+    },
+  });
 
   // 处理表单提交
   const handleModalOk = async (values: Partial<UserModel>) => {
@@ -187,7 +190,7 @@ const User: React.FC = () => {
           key: 'freeze',
           label: record.status === 1 ? '冻结' : '解冻',
           icon: <LockOutlined className="text-orange-400!" />,
-          onClick: () => handleStatusChange(record),
+          onClick: () => handleUpdateStatusMutation.mutate(record),
         },
         {
           key: 'delete',
