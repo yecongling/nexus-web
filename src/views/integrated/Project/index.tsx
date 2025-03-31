@@ -1,5 +1,11 @@
-import { Card, Segmented, type SegmentedProps, Input } from 'antd';
-import { useCallback, useEffect, useState } from 'react';
+import {
+  Card,
+  Segmented,
+  type SegmentedProps,
+  Input,
+  type InputRef,
+} from 'antd';
+import { useEffect, useRef, useState } from 'react';
 import './project.scss';
 import { PlusOutlined } from '@ant-design/icons';
 import ProjectCard from './ProjectCard';
@@ -21,7 +27,7 @@ const Project: React.FC = () => {
   // 新增弹窗
   const [openAddProject, setOpenAddProject] = useState<boolean>(false);
   // 搜索框聚焦
-  const searchRef = useCallback((node: any) => node?.focus(), []);
+  const searchRef = useRef<InputRef>(null);
   // 是否有新增权限
   const hasAddPermission = usePermission(['engine:project:add']);
 
@@ -54,6 +60,13 @@ const Project: React.FC = () => {
   useEffect(() => {
     queryProject();
   }, [type]);
+
+  useEffect(() => {
+    // 搜索框聚焦
+    if (searchRef.current) {
+      searchRef.current.focus();
+    }
+  }, []);
 
   /**
    * 查询项目
