@@ -14,6 +14,7 @@ export interface DictSearchParams {
  * 字典模型
  */
 export interface DictModel {
+  
   id: string;
 }
 
