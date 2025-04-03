@@ -116,7 +116,7 @@ const LeftMenu: React.FC = memo(() => {
     const route = searchRoute(pathname, menus);
     if (route && Object.keys(route).length) {
       const title = route.meta?.title;
-      if (title) document.title = `${title} - fusion`;
+      if (title) document.title = `${title} - flex & fusion`;
       if (!collapsed) setOpenKeys(openKey);
     }
   }, [pathname, collapsed, menus]);

@@ -76,9 +76,13 @@ const Menu: React.FC = () => {
       render(value) {
         switch (value) {
           case 0:
-            return '目录';
+            return '一级菜单';
           case 1:
             return '子菜单';
+          case 2:
+            return '子路由';
+          case 3:
+            return '权限按钮';
           default:
             return '';
         }
