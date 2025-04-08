@@ -1,5 +1,5 @@
 import { THEME_PRESET } from '@/enums/constants';
-import classNames from 'classnames';
+import clsx from 'clsx';
 import './theme.scss';
 import SwitchItem from '../SwitchItem';
 
@@ -37,7 +37,7 @@ const MyTheme: React.FC = () => {
               onClick={() => {}}
             >
               <div
-                className={classNames('outline-box', {
+                className={clsx('outline-box', {
                   'outline-box-active': item.selected,
                 })}
                 style={{ paddingTop: '1rem', paddingBottom: '1rem' }}

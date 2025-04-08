@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import clsx from 'clsx';
 import './switchItem.scss';
 import { InputNumber } from 'antd';
 /**
@@ -9,7 +9,7 @@ const NumberItem: React.FC<NumberItemProps> = (props) => {
   const { title, disabled, placeholder } = props;
   return (
     <div
-      className={classNames('number-item', {
+      className={clsx('number-item', {
         'pointer-events-none opacity-50': disabled,
       })}
     >

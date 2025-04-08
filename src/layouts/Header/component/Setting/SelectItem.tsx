@@ -1,6 +1,6 @@
 import type { BasicOptions } from '@/types/global';
 import { Select } from 'antd';
-import classNames from 'classnames';
+import clsx from 'clsx';
 import "./switchItem.scss";
 
 /**
@@ -12,7 +12,7 @@ const SelectItem: React.FC<SelectItemProps> = (props) => {
 
   return (
     <div
-      className={classNames('select-item', {
+      className={clsx('select-item', {
         'pointer-events-none opacity-50': disabled,
       })}
     >
