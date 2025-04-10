@@ -49,7 +49,7 @@ const ProjectInfoModal: React.FC<ProjectInfoModalProps> = (props) => {
       open={open}
       width={650}
     >
-      <Form form={form} initialValues={{ type: '1' }} labelCol={{ span: 4 }}>
+      <Form form={form} initialValues={{ type: 1 }} labelCol={{ span: 4 }}>
         {/* 项目ID */}
         <Form.Item name="id" hidden>
           <Input />
@@ -143,7 +143,7 @@ export interface ProjectInfoModalProps {
   /**
    * 项目类型
    */
-  type?: string;
+  type?: number;
 
   /**
    * 项目数据

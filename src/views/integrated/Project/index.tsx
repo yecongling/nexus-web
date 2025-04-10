@@ -9,19 +9,18 @@ import { useEffect, useRef, useState } from 'react';
 import './project.scss';
 import { PlusOutlined } from '@ant-design/icons';
 import ProjectCard from './ProjectCard';
-import { projectService } from '@/api/project/design/designApi';
 import ProjectInfoModal from './ProjectInfoModal';
-import type { ProjectModel } from './api/types';
+import type { ProjectModel, ProjectSearchParams } from './api/types';
 import { usePreferencesStore } from '@/stores/store';
 import { usePermission } from '@/hooks/usePermission';
+import { projectService } from './api/projectApi';
+import { useQuery } from '@tanstack/react-query';
 const { Search } = Input;
 
 /**
  * 项目设计
  */
 const Project: React.FC = () => {
-  // 选中的分类
-  const [type, setType] = useState<string>('');
   const { preferences } = usePreferencesStore();
   const { theme } = preferences;
   // 新增弹窗
@@ -35,31 +34,58 @@ const Project: React.FC = () => {
   const segmentedOptions: SegmentedProps['options'] = [
     {
       label: '全部',
-      value: '',
+      value: 0,
     },
     {
       label: '集成项目',
-      value: '1',
+      value: 1,
     },
     {
       label: '接口项目',
-      value: '2',
+      value: 2,
     },
     {
       label: '三方项目',
-      value: '3',
+      value: 3,
     },
   ];
 
-  // 项目列表数据
-  const [projects, setProjects] = useState<ProjectModel[]>([]);
   // 编辑的项目数据
   const [project, setProject] = useState<ProjectModel>();
 
-  // 根据类型进行检索
-  useEffect(() => {
-    queryProject();
-  }, [type]);
+  // 查询参数（包含分页参数）
+  const [searchParams, setSearchParams] = useState<ProjectSearchParams>({
+    type: 0,
+    pageNum: 1,
+    pageSize: 20,
+  });
+
+  // 查询项目数据
+  const {
+    isLoading,
+    data: result,
+    refetch,
+  } = useQuery({
+    queryKey: ['integrated_project', searchParams],
+    queryFn: () => projectService.getProjectList(searchParams),
+  });
+
+  // 处理搜索
+  const handleSearch = (value: string) => {
+    const search = {
+      name: value,
+      type: searchParams.type,
+      pageNum: searchParams.pageNum,
+      pageSize: searchParams.pageSize,
+    };
+    // 判断参数是否发生变化
+    if (JSON.stringify(search) === JSON.stringify(searchParams)) {
+      // 参数没有变化，手动刷新数据
+      refetch();
+      return;
+    }
+    setSearchParams((prev) => ({ ...prev, ...search }));
+  };
 
   useEffect(() => {
     // 搜索框聚焦
@@ -69,26 +95,14 @@ const Project: React.FC = () => {
   }, []);
 
   /**
-   * 查询项目
-   * @param projectName 项目名称
-   */
-  const queryProject = (projectName?: string) => {
-    // 构建查询条件
-    const queryCondition: Record<string, any> = {
-      type,
-      name: projectName,
-    };
-    projectService.getProjectList(queryCondition).then((res) => {
-      setProjects(res);
-    });
-  };
-
-  /**
    * 分段控制器切换
    * @param value 值
    */
-  const onSegmentedChange = (value: string) => {
-    setType(value);
+  const onSegmentedChange = (value: number) => {
+    setSearchParams({
+      ...searchParams,
+      type: value,
+    });
   };
 
   /**
@@ -104,7 +118,9 @@ const Project: React.FC = () => {
    */
   const editProject = (projectId: string) => {
     // 根据ID从列表中获取项目具体信息
-    const project = projects.find((item) => item.id === projectId);
+    const project = (result?.data || []).find(
+      (item: ProjectModel) => item.id === projectId,
+    );
     setProject(project);
     setOpenAddProject(true);
   };
@@ -118,7 +134,7 @@ const Project: React.FC = () => {
       // 修改
       projectService.updateProject(project).then((success: boolean) => {
         if (success) {
-          queryProject();
+          refetch();
           setOpenAddProject(false);
         }
       });
@@ -126,7 +142,7 @@ const Project: React.FC = () => {
       // 新增
       projectService.addProject(project).then((success: boolean) => {
         if (success) {
-          queryProject();
+          refetch();
           setOpenAddProject(false);
         }
       });
@@ -154,18 +170,23 @@ const Project: React.FC = () => {
               placeholder="请输入检索内容"
               ref={searchRef}
               size="large"
-              onSearch={queryProject}
+              onSearch={handleSearch}
             />
           </div>
           <Segmented<any>
             options={segmentedOptions}
             onChange={onSegmentedChange}
-            value={type}
+            value={searchParams.type}
           />
         </div>
         {/* 项目列表 */}
         <div className="flex flex-wrap mt-2">
-          {/* 新建项目 */}
+          {/* 数据查询中 */}
+          {isLoading && (
+            <div className="flex justify-center items-center w-full h-[200px]">
+              <span className="text-[20px]">加载中...</span>
+            </div>
+          )}
           {hasAddPermission && (
             <Card
               styles={{ body: { padding: '0px' } }}
@@ -182,7 +203,7 @@ const Project: React.FC = () => {
             </Card>
           )}
           {/* 项目列表 */}
-          {projects.map((item) => (
+          {(result?.data || []).map((item: ProjectModel) => (
             <ProjectCard
               key={item.id}
               id={item.id}
@@ -197,7 +218,7 @@ const Project: React.FC = () => {
       {/* 新增弹窗 */}
       <ProjectInfoModal
         open={openAddProject}
-        type={type}
+        type={searchParams.type}
         onOk={onModalOk}
         onCancel={onModalCancel}
         project={project}

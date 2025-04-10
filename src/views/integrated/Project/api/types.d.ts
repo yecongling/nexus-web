@@ -27,3 +27,17 @@ export interface ProjectModel {
   // 更新人
   updateBy?: string;
 }
+
+/**
+ * 项目查询参数
+ */
+export interface ProjectSearchParams {
+  // 项目名称
+  name?: string;
+  // 项目类型
+  type?: number;
+  // 页码
+  pageNum: number;
+  // 每页条数
+  pageSize: number;
+}
