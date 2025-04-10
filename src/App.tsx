@@ -6,7 +6,7 @@ import { Router } from '@/router/router';
 import { antdUtils } from '@/utils/antdUtil';
 import { useMenuStore } from './stores/store';
 import { useQuery } from '@tanstack/react-query';
-import { commonService } from '@/api/common/common';
+import { commonService } from '@/api/common';
 
 /**
  * 主应用

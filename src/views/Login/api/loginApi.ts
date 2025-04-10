@@ -9,11 +9,6 @@ export enum LoginApi {
    * 登录
    */
   login = '/login',
-
-  /**
-   * 退出登录
-   */
-  logout = '/logout',
   /**
    * 获取验证码
    */
@@ -37,11 +32,6 @@ interface ILoginService {
    */
   getCaptcha(): Promise<{ key: string; code: any }>;
 
-  /**
-   * 用户退出登录
-   * @param token 用户token
-   */
-  logout(token: string): Promise<Response>;
 }
 
 /**
@@ -79,13 +69,5 @@ export const loginService: ILoginService = {
       },
     );
     return { key, code };
-  },
-
-  /**
-   * 用户退出登录
-   * @param token 用户token
-   */
-  logout(token: string): Promise<Response> {
-    return HttpRequest.delete({ url: LoginApi.logout, params: { token } });
   },
 };

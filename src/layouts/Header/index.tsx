@@ -31,7 +31,7 @@ const Header: React.FC = memo(() => {
    * 跳转到github
    */
   const routeGitHub = () => {
-    window.open('https://github.com/yecongling/fusion-admin', '_blank');
+    window.open('https://github.com/yecongling/fusion-flex', '_blank');
   };
 
   /**

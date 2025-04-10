@@ -6,6 +6,10 @@ import { HttpRequest } from '@/utils/request';
 enum CommonApi {
   // 根据token获取菜单（多用于框架上根据角色获取菜单那种）
   getMenuListByRoleId = '/system/menu/getMenusByRole',
+  /**
+   * 退出登录
+   */
+  logout = '/logout',
 }
 
 /**
@@ -18,6 +22,12 @@ interface ICommonService {
    * @returns 菜单列表
    */
   getMenuListByRoleId(roleId: string): Promise<any[]>;
+
+  /**
+   * 用户退出登录
+   * @param token 用户token
+   */
+  logout(token: string): Promise<boolean>;
 }
 
 /**
@@ -37,5 +47,13 @@ export const commonService: ICommonService = {
       },
       { successMessageMode: 'none' },
     );
+  },
+
+  /**
+   * 用户退出登录
+   * @param token 用户token
+   */
+  logout(token: string): Promise<boolean> {
+    return HttpRequest.post({ url: CommonApi.logout, params: { token } });
   },
 };

@@ -13,6 +13,7 @@ import {
 import type { ReactNode } from 'react';
 import React from 'react';
 import { usePreferencesStore } from '@/stores/store';
+import { commonService } from '@/api/common';
 
 const { useToken } = theme;
 
@@ -78,7 +79,7 @@ const UserDropdown: React.FC = () => {
       label: '退出登录',
       icon: <LogoutOutlined />,
       disabled: false,
-      extra: 'alt + Q',
+      danger: true,
       onClick: () => {
         modal.confirm({
           title: '退出登录',
@@ -89,17 +90,20 @@ const UserDropdown: React.FC = () => {
             const token = sessionStorage.getItem('token');
 
             // 清除后端的信息
-            // logout(token as string);
-            // 清空token
-            sessionStorage.removeItem('token');
-            sessionStorage.removeItem('roleId');
-            sessionStorage.removeItem('isLogin');
-            sessionStorage.removeItem('loginUser');
+            commonService.logout(token as string).then((res: boolean) => {
+              if (res) {
+                // 清空token
+                sessionStorage.removeItem('token');
+                sessionStorage.removeItem('roleId');
+                sessionStorage.removeItem('isLogin');
+                sessionStorage.removeItem('loginUser');
 
-            // 修改回document.title
-            document.title = 'fusion - 登录';
-            // 退出到登录页面
-            navigate('/login');
+                // 修改回document.title
+                document.title = 'fusion - 登录';
+                // 退出到登录页面
+                navigate('/login');
+              }
+            });
           },
           cancelText: '取消',
         });

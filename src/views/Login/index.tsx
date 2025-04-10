@@ -16,7 +16,7 @@ import { HttpCodeEnum } from '@/enums/httpEnum';
 import { antdUtils } from '@/utils/antdUtil';
 import { useMenuStore } from '@/stores/store';
 import { useQuery } from '@tanstack/react-query';
-import { commonService } from '@/api/common/common';
+import { commonService } from '@/api/common';
 
 /**
  * 登录模块

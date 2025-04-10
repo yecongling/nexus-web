@@ -46,21 +46,22 @@ export const dynamicRoutes: RouteObject[] = [
 // 路由处理方式
 const generateRouter = (routers: RouteObject[]) => {
   return routers.map((item: any) => {
-    /**
-     * 错误边界组件（用于单个页面渲染错误的时候显示，单个模块渲染失败不应该影响整个系统的渲染失败）
-     */
-    item.ErrorBoundary = <ErrorBoundary fallback={<ErrorFallback />} />;
     if (item.index) {
       return item;
     }
+    /**
+     * 错误边界组件（用于单个页面渲染错误的时候显示，单个模块渲染失败不应该影响整个系统的渲染失败）
+     */
     item.element = (
-      <Suspense fallback={<Skeleton />}>
-        <item.component />
-      </Suspense>
+      <ErrorBoundary fallback={<ErrorFallback />}>
+        <Suspense fallback={<Skeleton />}>
+          <item.component />
+        </Suspense>
+      </ErrorBoundary>
     );
     item.handle = {
       menuKey: item?.handle?.menuKey,
-    }
+    };
     if (item.children) {
       item.children = generateRouter(item.children);
       if (item.children.length) {
