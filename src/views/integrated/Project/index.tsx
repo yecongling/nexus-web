@@ -62,7 +62,6 @@ const Project: React.FC = () => {
 
   // 查询项目数据
   const {
-    isLoading,
     data: result,
     refetch,
   } = useQuery({
@@ -182,11 +181,6 @@ const Project: React.FC = () => {
         {/* 项目列表 */}
         <div className="flex flex-wrap mt-2">
           {/* 数据查询中 */}
-          {isLoading && (
-            <div className="flex justify-center items-center w-full h-[200px]">
-              <span className="text-[20px]">加载中...</span>
-            </div>
-          )}
           {hasAddPermission && (
             <Card
               styles={{ body: { padding: '0px' } }}

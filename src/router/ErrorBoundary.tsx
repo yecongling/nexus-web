@@ -15,8 +15,8 @@ export function ErrorFallback({ error }: any) {
       title="500"
       subTitle={
         <>
-          <p>组件渲染出现异常，错误:</p>
-          <pre style={{ color: 'red' }}>{error.message}</pre>
+          <p>组件渲染出现异常</p>
+          <pre style={{ color: 'red' }}>{error?.message}</pre>
         </>
       }
       extra={
