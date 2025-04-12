@@ -2,12 +2,24 @@ import { BUILTIN_THEME_PRESETS } from '@/enums/constants';
 import './theme.scss';
 import { ColorPicker } from 'antd';
 import { UserAddOutlined } from '@ant-design/icons';
+import { usePreferencesStore } from '@/stores/store';
+import clsx from 'clsx';
+import type { Color } from 'antd/es/color-picker';
 
 /**
  * 内置主题
  * @returns
  */
 const Buitin: React.FC = () => {
+  // 属性变动
+  const { updatePreferences, preferences } = usePreferencesStore();
+  const { theme } = preferences;
+
+  // 颜色选择器颜色切换
+  const onColorChange = (color: Color) => {
+    updatePreferences('theme', 'colorPrimary', color.toCssString());
+  }
+
   return (
     <div
       style={{
@@ -27,11 +39,16 @@ const Buitin: React.FC = () => {
               cursor: 'pointer',
             }}
             onClick={() => {
-              console.log(item.color);
+              if (item.type === 'custom') {
+                return;
+              }
+              updatePreferences('theme', 'colorPrimary', item.color);
             }}
           >
             <div
-              className="outline-box"
+              className={clsx('outline-box', {
+                'outline-box-active': theme.colorPrimary === item.color,
+              })}
               style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -58,7 +75,7 @@ const Buitin: React.FC = () => {
                       borderRadius: '6px',
                     }}
                   >
-                    <ColorPicker>
+                    <ColorPicker onChange={onColorChange} value={theme.colorPrimary}>
                       <UserAddOutlined style={{ fontSize: '1.25rem' }} />
                     </ColorPicker>
                   </div>
