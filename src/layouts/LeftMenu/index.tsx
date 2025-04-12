@@ -47,16 +47,18 @@ const LeftMenu: React.FC = memo(() => {
   const [openKeys, setOpenKeys] = useState<string[]>([]);
 
   const { collapsed, width } = sidebar;
-  let { mode } = theme;
+  let { mode, semiDarkSidebar, colorPrimary } = theme;
   if (mode === 'auto') {
     mode = window.matchMedia('(prefers-color-scheme: dark)').matches
       ? 'dark'
       : 'light';
   }
+  // 如果深色侧边栏目前也搞成dark
+  if (semiDarkSidebar) {
+    mode = 'dark';
+  }
   // 是否暗黑模式
-  const isDark = mode === 'dark';
-
-  const titleColor = isDark ? '#fff' : '#1890ff';
+  const isDark = mode === 'dark' || semiDarkSidebar;
 
   const getItem = (
     label: React.ReactNode,
@@ -163,7 +165,7 @@ const LeftMenu: React.FC = memo(() => {
                   fontWeight: 'bold',
                   margin: '0 12px',
                   fontSize: '20px',
-                  color: titleColor,
+                  color: colorPrimary,
                 }}
               >
                 Flex-Fusion
@@ -205,7 +207,7 @@ const LeftMenu: React.FC = memo(() => {
                 Segmented: {
                   itemHoverColor: isDark ? '#eee' : 'rgba(0,0,0,0.88)',
                   itemColor: isDark ? '#fff' : 'rgba(0, 0, 0, 0.65)',
-                  itemSelectedBg: isDark ? '#1677ff' : '#fff',
+                  itemSelectedBg: isDark ? colorPrimary : '#fff',
                   itemSelectedColor: isDark ? '#fff' : 'rgba(0,0,0,0.88)',
                   trackBg: isDark ? '#001529' : '#f5f5f5',
                 },
