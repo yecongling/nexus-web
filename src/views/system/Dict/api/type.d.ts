@@ -10,6 +10,13 @@ export interface DictSearchParams {
   pageSize: number;
 }
 
+export interface DictItemSearchParams {
+  // 字典项名称
+  itemText?: string;
+  pageNum: number;
+  pageSize: number;
+}
+
 /**
  * 字典模型
  */
