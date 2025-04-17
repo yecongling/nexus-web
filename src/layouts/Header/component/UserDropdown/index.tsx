@@ -87,16 +87,16 @@ const UserDropdown: React.FC = () => {
           content: '确认退出登录吗？',
           okText: '确认',
           onOk: () => {
-            const token = sessionStorage.getItem('token');
+            const token = localStorage.getItem('token');
 
             // 清除后端的信息
             commonService.logout(token as string).then((res: boolean) => {
               if (res) {
                 // 清空token
-                sessionStorage.removeItem('token');
-                sessionStorage.removeItem('roleId');
-                sessionStorage.removeItem('isLogin');
-                sessionStorage.removeItem('loginUser');
+                localStorage.removeItem('token');
+                localStorage.removeItem('roleId');
+                localStorage.removeItem('isLogin');
+                localStorage.removeItem('loginUser');
 
                 // 修改回document.title
                 document.title = 'fusion - 登录';

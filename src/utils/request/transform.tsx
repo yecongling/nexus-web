@@ -121,9 +121,9 @@ export const transform: AxiosTransform = {
           content: '当前用户身份验证凭证已过期或无效，请重新登录！',
           onOk() {
             // 登录失效后需要将本地token清除
-            sessionStorage.removeItem('token');
-            sessionStorage.removeItem('isLogin');
-            sessionStorage.removeItem('roleId');
+            localStorage.removeItem('token');
+            localStorage.removeItem('isLogin');
+            localStorage.removeItem('roleId');
             window.location.href = '/login';
           },
           okText: '确定',
@@ -228,6 +228,8 @@ export const transform: AxiosTransform = {
     }
     // 将加密配置放到请求头里面
     config.headers['X-Encrypted'] = cpt;
+    // 处理token
+    config.headers.Authorization = `Bearer ${localStorage.getItem('token')}`;
     return config;
   },
 

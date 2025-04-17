@@ -85,11 +85,11 @@ const Login: React.FC = () => {
             // 没有配置首页地址默认跳到第一个菜单
             const { token, roleId } = data;
             let { homePath } = data;
-            sessionStorage.setItem('token', token);
-            sessionStorage.setItem('isLogin', 'true');
-            sessionStorage.setItem('roleId', roleId);
+            localStorage.setItem('token', token);
+            localStorage.setItem('isLogin', 'true');
+            localStorage.setItem('roleId', roleId);
             // 存储登录的用户名
-            sessionStorage.setItem('loginUser', values.username);
+            localStorage.setItem('loginUser', values.username);
             // 登录成功根据角色获取菜单
             const menu = await commonService.getMenuListByRoleId(roleId);
             setMenus(menu);
