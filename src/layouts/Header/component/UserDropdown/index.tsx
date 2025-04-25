@@ -1,6 +1,6 @@
-import { App, Avatar, Divider, Dropdown, theme, type MenuProps } from 'antd';
-import avatar from '@/assets/images/avatar.png';
-import { useNavigate } from 'react-router';
+import { App, Avatar, Divider, Dropdown, theme, type MenuProps } from "antd";
+import avatar from "@/assets/images/avatar.png";
+import { useNavigate } from "react-router";
 import {
   ExclamationCircleOutlined,
   FileMarkdownOutlined,
@@ -9,11 +9,11 @@ import {
   QuestionCircleFilled,
   SyncOutlined,
   UserOutlined,
-} from '@ant-design/icons';
-import type { ReactNode } from 'react';
-import React from 'react';
-import { usePreferencesStore } from '@/stores/store';
-import { commonService } from '@/api/common';
+} from "@ant-design/icons";
+import type { ReactNode } from "react";
+import React from "react";
+import { usePreferencesStore } from "@/stores/store";
+import { commonService } from "@/api/common";
 
 const { useToken } = theme;
 
@@ -29,15 +29,15 @@ const UserDropdown: React.FC = () => {
   const navigate = useNavigate();
 
   // 菜单栏
-  const items: MenuProps['items'] = [
+  const items: MenuProps["items"] = [
     {
-      key: 'doc',
-      label: '文档',
+      key: "doc",
+      label: "文档",
       icon: <FileMarkdownOutlined />,
     },
     {
-      key: '1',
-      label: '个人中心',
+      key: "1",
+      label: "个人中心",
       icon: <UserOutlined />,
       disabled: false,
       onClick: () => {
@@ -45,67 +45,89 @@ const UserDropdown: React.FC = () => {
       },
     },
     {
-      key: 'help',
-      label: '问题 & 帮助',
+      key: "help",
+      label: "问题 & 帮助",
       icon: <QuestionCircleFilled />,
+      popupStyle: {
+        width: 220,
+      },
+      popupOffset: [2, 8],
+      children: [
+        {
+          key: "help1",
+          label: "问题反馈",
+          icon: <QuestionCircleFilled />,
+          onClick: () => {
+            // 跳转到问题反馈
+          },
+        },
+        {
+          key: "help2",
+          label: "常见问题",
+          icon: <QuestionCircleFilled />,
+          onClick: () => {
+            // 跳转到常见问题
+          },
+        },
+      ],
     },
     {
-      type: 'divider',
+      type: "divider",
     },
     {
-      key: '3',
-      label: '刷新缓存',
+      key: "3",
+      label: "刷新缓存",
       icon: <SyncOutlined />,
       onClick: () => {
         // 后端的缓存信息（相当于把缓存数据刷新）
       },
     },
     {
-      type: 'divider',
+      type: "divider",
     },
     {
-      key: 'lock',
-      label: '锁屏',
+      key: "lock",
+      label: "锁屏",
       icon: <LockOutlined />,
       onClick: () => {
-        updatePreferences('widget', 'lockScreenStatus', true);
+        updatePreferences("widget", "lockScreenStatus", true);
       },
     },
     {
-      type: 'divider',
+      type: "divider",
     },
     {
-      key: '4',
-      label: '退出登录',
+      key: "4",
+      label: "退出登录",
       icon: <LogoutOutlined />,
       disabled: false,
       danger: true,
       onClick: () => {
         modal.confirm({
-          title: '退出登录',
+          title: "退出登录",
           icon: <ExclamationCircleOutlined />,
-          content: '确认退出登录吗？',
-          okText: '确认',
+          content: "确认退出登录吗？",
+          okText: "确认",
           onOk: () => {
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem("token");
 
             // 清除后端的信息
             commonService.logout(token as string).then((res: boolean) => {
               if (res) {
                 // 清空token
-                localStorage.removeItem('token');
-                localStorage.removeItem('roleId');
-                localStorage.removeItem('isLogin');
-                localStorage.removeItem('loginUser');
+                localStorage.removeItem("token");
+                localStorage.removeItem("roleId");
+                localStorage.removeItem("isLogin");
+                localStorage.removeItem("loginUser");
 
                 // 修改回document.title
-                document.title = 'fusion - 登录';
+                document.title = "fusion - 登录";
                 // 退出到登录页面
-                navigate('/login');
+                navigate("/login");
               }
             });
           },
-          cancelText: '取消',
+          cancelText: "取消",
         });
       },
     },
@@ -131,9 +153,9 @@ const UserDropdown: React.FC = () => {
         <div className="avatar flex items-center p-3">
           <Avatar size="large" src={avatar} />
         </div>
-        <Divider style={{ margin: '2px 0' }} />
+        <Divider style={{ margin: "2px 0" }} />
         {React.cloneElement(menus as React.ReactElement, {
-          style: { boxShadow: 'none' },
+          style: { boxShadow: "none" },
         })}
       </div>
     );
@@ -142,15 +164,16 @@ const UserDropdown: React.FC = () => {
   return (
     <>
       <Dropdown
-        menu={{ items }}
+        trigger={["click"]}
+        menu={{ items, triggerSubMenuAction: "click" }}
         dropdownRender={renderDropdown}
         placement="bottomLeft"
         overlayStyle={{ width: 240 }}
       >
         <div className="login-user flex items-center cursor-pointer justify-between h-[50] transition-all duration-300">
           <Avatar size="default" src={avatar} />
-          <span style={{ margin: '0 0 0 6px' }}>
-            {sessionStorage.getItem('loginUser') || 'username'}
+          <span style={{ margin: "0 0 0 6px" }}>
+            {localStorage.getItem("loginUser")}
           </span>
         </div>
       </Dropdown>
