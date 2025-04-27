@@ -17,11 +17,11 @@ export const LazyLoad = (moduleName: string) => {
   //组件地址
   let Module: any;
   try {
-    Module = React.lazy(() => import(`@/views${URL}`));
+    Module = React.lazy(() => import(`@/pages${URL}`));
   } catch (error) {
     void error;
     // 如果动态加载错误就是认定为模块不存在
-    Module = React.lazy(() => import('@/views/error/404'));
+    Module = React.lazy(() => import('@/pages/error/404'));
   }
   return <Module />;
 };
