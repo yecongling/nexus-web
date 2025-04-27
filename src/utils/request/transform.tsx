@@ -17,6 +17,7 @@ import { setObjToUrlParams } from '../utils';
 import { isString } from '../is';
 import { encrypt } from '../encrypt';
 import type React from 'react';
+import { useUserStore } from '@/stores/userStore';
 
 export interface CreateAxiosOptions extends AxiosRequestConfig {
   authenticationScheme?: string;
@@ -89,6 +90,7 @@ export const transform: AxiosTransform = {
     res: AxiosResponse<Response>,
     options: RequestOptions,
   ) => {
+    const userStore = useUserStore.getState();
     const { isTransformResponse, isReturnNativeResponse } = options;
     // 是否返回原生响应头
     if (isReturnNativeResponse) {
@@ -120,10 +122,7 @@ export const transform: AxiosTransform = {
           title: '凭证失效',
           content: '当前用户身份验证凭证已过期或无效，请重新登录！',
           onOk() {
-            // 登录失效后需要将本地token清除
-            localStorage.removeItem('token');
-            localStorage.removeItem('isLogin');
-            localStorage.removeItem('roleId');
+            userStore.logout();
             window.location.href = '/login';
           },
           okText: '确定',
@@ -208,6 +207,8 @@ export const transform: AxiosTransform = {
    * @param options
    */
   requestInterceptors: (config, options) => {
+    const userStore = useUserStore.getState();
+    const token = options?.requestOptions?.tempToken || userStore.token;
     const cpt = options?.requestOptions?.encrypt;
     // 进行数据加密
     if (config.data && cpt === 1) {
@@ -229,7 +230,7 @@ export const transform: AxiosTransform = {
     // 将加密配置放到请求头里面
     config.headers['X-Encrypted'] = cpt;
     // 处理token
-    config.headers.Authorization = `Bearer ${localStorage.getItem('token')}`;
+    config.headers.Authorization = `Bearer ${token}`;
     return config;
   },
 

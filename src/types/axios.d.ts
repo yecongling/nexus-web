@@ -2,6 +2,8 @@ export type ErrorMessageMode = 'none' | 'modal' | 'message' | undefined;
 export type SuccessMessageMode = 'none' | 'success' | 'error' | undefined;
 
 export interface RequestOptions {
+  // 临时token，针对token还没有存入到状态库的情况
+  tempToken?: string;
   // 将请求参数拼接到url
   joinParamsToUrl?: boolean;
   // 格式化请求参数时间

@@ -21,7 +21,7 @@ interface ICommonService {
    * @param roleId 角色ID
    * @returns 菜单列表
    */
-  getMenuListByRoleId(roleId: string): Promise<any[]>;
+  getMenuListByRoleId(roleId: string, token?: string): Promise<any[]>;
 
   /**
    * 用户退出登录
@@ -39,13 +39,13 @@ export const commonService: ICommonService = {
    * @param roleId 角色ID
    * @returns 菜单列表
    */
-  getMenuListByRoleId(roleId: string): Promise<any[]> {
+  getMenuListByRoleId(roleId: string, token?: string): Promise<any[]> {
     return HttpRequest.get(
       {
         url: CommonApi.getMenuListByRoleId,
         params: { roleId },
       },
-      { successMessageMode: 'none' },
+      { successMessageMode: 'none', tempToken: token },
     );
   },
 

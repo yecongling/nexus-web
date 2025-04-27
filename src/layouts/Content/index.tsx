@@ -1,6 +1,7 @@
-import RouterBeforeEach from '@/router/RouterBeforeEach';
+import AuthRouter from '@/router/AuthRouter';
 import { Layout } from 'antd';
 import type React from 'react';
+import { Outlet } from 'react-router';
 
 /**
  * 中间主内容区域
@@ -16,7 +17,9 @@ const Content: React.FC = () => {
         padding: '8px',
       }}
     >
-      <RouterBeforeEach />
+      <AuthRouter>
+        <Outlet />
+      </AuthRouter>
     </Layout.Content>
   );
 };

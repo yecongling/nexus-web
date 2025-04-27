@@ -7,6 +7,7 @@ import { antdUtils } from '@/utils/antdUtil';
 import { useMenuStore } from './stores/store';
 import { useQuery } from '@tanstack/react-query';
 import { commonService } from '@/api/common';
+import { useUserStore } from './stores/userStore';
 
 /**
  * 主应用
@@ -15,14 +16,14 @@ const App: React.FC = () => {
   const { setMenus } = useMenuStore();
   const navigate = useNavigate();
   const location = useLocation();
+  const { role = '', isLogin } = useUserStore();
   const { notification, message, modal } = AntdApp.useApp();
 
   // 使用 TanStack Query 获取菜单数据
   const { isLoading, isError, error, refetch } = useQuery({
     queryKey: ['menuData'],
     queryFn: async () => {
-      const roleId = sessionStorage.getItem('roleId') || '';
-      const menu = await commonService.getMenuListByRoleId(roleId);
+      const menu = await commonService.getMenuListByRoleId(role);
       setMenus(menu);
       return menu;
     },
@@ -44,8 +45,7 @@ const App: React.FC = () => {
     antdUtils.setNotificationInstance(notification);
     antdUtils.setModalInstance(modal);
 
-    const isLogin = sessionStorage.getItem('isLogin');
-    if (isLogin === 'false' || !isLogin || location.pathname === '/login') {
+    if (!isLogin || location.pathname === '/login') {
       navigate('/login');
     } else {
       // 查询菜单数据

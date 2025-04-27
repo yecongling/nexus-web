@@ -17,6 +17,7 @@ import { antdUtils } from '@/utils/antdUtil';
 import { useMenuStore } from '@/stores/store';
 import { useQuery } from '@tanstack/react-query';
 import { commonService } from '@/api/common';
+import { useUserStore } from '@/stores/userStore';
 
 /**
  * 登录模块
@@ -27,6 +28,7 @@ const Login: React.FC = () => {
   const inputRef = useRef(null);
   const navigate = useNavigate();
   const { setMenus } = useMenuStore();
+  const userStore = useUserStore();
   // 加载状态
   const [loading, setLoading] = useState<boolean>(false);
   // 验证码
@@ -84,14 +86,11 @@ const Login: React.FC = () => {
           {
             // 没有配置首页地址默认跳到第一个菜单
             const { token, roleId } = data;
+
+            userStore.login(values.username, token, roleId);
             let { homePath } = data;
-            localStorage.setItem('token', token);
-            localStorage.setItem('isLogin', 'true');
-            localStorage.setItem('roleId', roleId);
-            // 存储登录的用户名
-            localStorage.setItem('loginUser', values.username);
             // 登录成功根据角色获取菜单
-            const menu = await commonService.getMenuListByRoleId(roleId);
+            const menu = await commonService.getMenuListByRoleId(roleId, token);
             setMenus(menu);
             // 判断是否配置了默认跳转的首页地址
             if (!homePath) {
@@ -109,12 +108,13 @@ const Login: React.FC = () => {
                 return;
               }
             }
-            // 跳转到首页
-            navigate(homePath);
+            userStore.setHomePath(homePath);
             antdUtils.notification?.success({
               message: '登录成功',
               description: '欢迎来到fusion!',
             });
+            // 跳转到首页
+            navigate(homePath);
           }
           break;
         default:
