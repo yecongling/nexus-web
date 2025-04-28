@@ -1,4 +1,4 @@
-import { roleService } from './api/roleApi';
+import { roleService } from '@/services/system/role/roleApi';
 import { getIcon } from '@/utils/utils';
 import {
   CloseOutlined,

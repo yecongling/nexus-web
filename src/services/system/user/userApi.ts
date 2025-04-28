@@ -1,6 +1,6 @@
 import { HttpRequest } from '@/utils/request';
 import type { UserModel } from './type';
-import type { UserSearchParams } from '../types';
+import type { UserSearchParams } from './type';
 
 /**
  * 用户信息操作枚举

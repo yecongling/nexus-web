@@ -77,3 +77,14 @@ export interface UserModel {
    */
   roleId: string;
 }
+
+/**
+ * 分配用户抽屉模块查询参数
+ */
+export interface UserSearchParams {
+  username?: string;
+  realName?: string;
+  status?: 0 | 1;
+  pageNum: number;
+  pageSize: number;
+}

@@ -1,5 +1,5 @@
 import DragModal from '@/components/modal/DragModal';
-import { roleService } from './api/roleApi';
+import { roleService } from '@/services/system/role/roleApi';
 import {
   SearchOutlined,
   RedoOutlined,
@@ -19,8 +19,8 @@ import {
   Table,
   type TableProps,
 } from 'antd';
-import { useEffect, useRef, useState } from 'react';
-import type { UserSearchParams } from './api/type';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import type { UserSearchParams } from '@/services/system/role/type';
 import { useQuery } from '@tanstack/react-query';
 
 /**
@@ -54,7 +54,7 @@ const AddUser: React.FC<AddUserProps> = ({ open, onOk, onCancel, roleId }) => {
   /**
    * 表单检索
    */
-  const onFinish = (values: UserSearchParams) => {
+  const onFinish = useCallback((values: UserSearchParams) => {
     const search = {
       ...values,
       pageNum: searchParams.pageNum,
@@ -67,7 +67,7 @@ const AddUser: React.FC<AddUserProps> = ({ open, onOk, onCancel, roleId }) => {
       return;
     }
     setSearchParams((prev) => ({ ...prev, ...search }));
-  };
+  }, []);
 
   /**
    * 定义表格的列

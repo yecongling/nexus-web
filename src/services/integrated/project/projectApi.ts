@@ -1,5 +1,5 @@
 import { HttpRequest } from '@/utils/request';
-import type { ProjectModel, ProjectSearchParams } from '../../../pages/integrated/Project/api/types';
+import type { ProjectModel, ProjectSearchParams } from './types';
 
 /**
  * 项目相关接口

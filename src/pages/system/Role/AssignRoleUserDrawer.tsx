@@ -28,7 +28,7 @@ import {
 } from 'antd';
 import { memo, useRef, useState } from 'react';
 import AddUser from './AddUserModal';
-import { roleService } from './api/roleApi';
+import { roleService } from '@/services/system/role/roleApi';
 import type { UserSearchParams } from './api/type';
 import { useQuery } from '@tanstack/react-query';
 

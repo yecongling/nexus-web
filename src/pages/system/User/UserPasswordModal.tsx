@@ -6,7 +6,7 @@ import styles from './strengthMeter.module.scss';
 import { keys, values } from 'lodash-es';
 import { strengthMeterOptions } from './config';
 import zxcvbn from 'zxcvbn';
-import type { UserModel } from './api/type';
+import type { UserModel } from '@/services/system/user/type';
 import { useMutation } from '@tanstack/react-query';
 import { userService } from './api/userApi';
 

@@ -1,6 +1,6 @@
 import { App, Card, type TableProps } from 'antd';
 import DictSearchForm from './SearchForm';
-import type { DictSearchParams, DictState } from '../../../services/system/dict/type';
+import type { DictSearchParams, DictState } from '@/services/system/dict/type';
 import { useReducer, useState } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import useParentSize from '@/hooks/useParentSize';

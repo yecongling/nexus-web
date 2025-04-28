@@ -1,5 +1,5 @@
 import useParentSize from '@/hooks/useParentSize';
-import { userService } from './api/userApi';
+import { userService } from '@/services/system/user/userApi';
 import {
   DeleteOutlined,
   EditOutlined,
@@ -13,7 +13,7 @@ import type { UserSearchParams } from './types';
 import { getColumns } from './columns';
 import SearchForm from './SearchForm';
 import UserInfoModal from './UserInfoModal';
-import type { UserModel } from './api/type';
+import type { UserModel } from '@/services/system/user/type';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import TableActionButtons from './TableActionButtons';
 import UserPasswordModal from './UserPasswordModal';

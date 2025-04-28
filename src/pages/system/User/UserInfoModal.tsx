@@ -5,7 +5,7 @@ import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import type { UploadChangeParam } from 'antd/es/upload';
 import type { RcFile, UploadFile } from 'antd/es/upload/interface';
 import dayjs from 'dayjs';
-import type { UserModel } from './api/type';
+import type { UserModel } from '@/services/system/user/type';
 
 interface UserInfoModalProps {
   visible: boolean;

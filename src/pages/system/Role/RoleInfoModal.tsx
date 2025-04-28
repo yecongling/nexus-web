@@ -1,5 +1,5 @@
 import DragModal from '@/components/modal/DragModal';
-import { roleService } from './api/roleApi';
+import { roleService } from '@/services/system/role/roleApi';
 import { Form, Input, type InputRef, Select, Switch } from 'antd';
 import { useEffect, useRef } from 'react';
 import type { RoleState } from './api/type';

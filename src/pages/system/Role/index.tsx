@@ -11,7 +11,7 @@ import RoleTable from './RoleTable';
 import getRoleTableColumns from './RoleTableColumns';
 import type { RoleSearchParams, RoleState } from './api/type';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { roleService } from './api/roleApi';
+import { roleService } from '@/services/system/role/roleApi';
 
 /**
  * 系统角色维护
