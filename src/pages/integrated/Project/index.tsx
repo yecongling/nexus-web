@@ -4,13 +4,20 @@ import {
   type SegmentedProps,
   Input,
   type InputRef,
+  Checkbox,
+  Dropdown,
+  Button,
+  Space,
 } from 'antd';
 import { useEffect, useRef, useState } from 'react';
 import './project.scss';
-import { PlusOutlined } from '@ant-design/icons';
+import { DownOutlined, PlusOutlined, TagOutlined } from '@ant-design/icons';
 import ProjectCard from './ProjectCard';
 import ProjectInfoModal from './ProjectInfoModal';
-import type { ProjectModel, ProjectSearchParams } from '../../../services/integrated/project/types';
+import type {
+  ProjectModel,
+  ProjectSearchParams,
+} from '../../../services/integrated/project/types';
 import { usePreferencesStore } from '@/stores/store';
 import { usePermission } from '@/hooks/usePermission';
 import { projectService } from '../../../services/integrated/project/projectApi';
@@ -61,10 +68,7 @@ const Project: React.FC = () => {
   });
 
   // 查询项目数据
-  const {
-    data: result,
-    refetch,
-  } = useQuery({
+  const { data: result, refetch } = useQuery({
     queryKey: ['integrated_project', searchParams],
     queryFn: () => projectService.getProjectList(searchParams),
   });
@@ -102,6 +106,14 @@ const Project: React.FC = () => {
       ...searchParams,
       type: value,
     });
+  };
+
+  const renderDropDown = () => {
+    return (
+      <Card>
+        <div className="flex flex-col gap-4">更多标签</div>
+      </Card>
+    );
   };
 
   /**
@@ -172,11 +184,26 @@ const Project: React.FC = () => {
               onSearch={handleSearch}
             />
           </div>
-          <Segmented<any>
-            options={segmentedOptions}
-            onChange={onSegmentedChange}
-            value={searchParams.type}
-          />
+          <div className='w-full flex justify-between items-center'>
+            <Segmented<any>
+              options={segmentedOptions}
+              onChange={onSegmentedChange}
+              value={searchParams.type}
+            />
+            <div>
+              {/* 区分我创建的、标签页 */}
+              <Checkbox>我创建的</Checkbox>
+              <Dropdown dropdownRender={renderDropDown} trigger={['click']}>
+                <Button color="default" variant="filled">
+                  <Space>
+                    <TagOutlined />
+                    全部标签
+                    <DownOutlined />
+                  </Space>
+                </Button>
+              </Dropdown>
+            </div>
+          </div>
         </div>
         {/* 项目列表 */}
         <div className="flex flex-wrap mt-2">

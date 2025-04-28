@@ -8,7 +8,7 @@ import { strengthMeterOptions } from './config';
 import zxcvbn from 'zxcvbn';
 import type { UserModel } from '@/services/system/user/type';
 import { useMutation } from '@tanstack/react-query';
-import { userService } from './api/userApi';
+import { userService } from '@/services/system/user/userApi';
 
 interface UserPasswordModalProps {
   open: boolean;
