@@ -1,5 +1,5 @@
 import DragModal from '@/components/modal/DragModal';
-import type { ProjectModel } from './api/types';
+import type { ProjectModel } from '../../../services/integrated/project/types';
 import { Form, Input, Select, type InputRef } from 'antd';
 import { useEffect, useRef } from 'react';
 

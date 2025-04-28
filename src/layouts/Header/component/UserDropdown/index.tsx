@@ -13,7 +13,7 @@ import {
 import type { ReactNode } from 'react';
 import React from 'react';
 import { usePreferencesStore } from '@/stores/store';
-import { commonService } from '@/api/common';
+import { commonService } from '@/services/common';
 import { useUserStore } from '@/stores/userStore';
 
 const { useToken } = theme;

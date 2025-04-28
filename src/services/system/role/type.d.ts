@@ -1,4 +1,4 @@
-import type { MenuModel } from '../../Menu/api/type';
+import type { MenuModel } from '../../../../services/system/menu/type';
 
 /**
  * 系统角色

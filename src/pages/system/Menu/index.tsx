@@ -1,5 +1,5 @@
 import { ExclamationCircleFilled } from '@ant-design/icons';
-import { menuService } from './api/menuApi';
+import { menuService } from '../../../services/system/menu/menuApi';
 import {
   App,
   Button,

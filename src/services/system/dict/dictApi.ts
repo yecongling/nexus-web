@@ -1,5 +1,5 @@
 import { HttpRequest } from "@/utils/request";
-import type { DictItemSearchParams, DictModel, DictSearchParams } from "./type";
+import type { DictItemSearchParams, DictModel, DictSearchParams } from "../../../pages/system/Dict/api/type";
 
 /**
  * 字典相关接口

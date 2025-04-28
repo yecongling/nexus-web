@@ -15,7 +15,7 @@ import {
   deleteEndpointType,
   queryEndpointConfigType,
   updateEndpointType,
-} from '@/api/project/endpointTypeConfig/endpointTypeApi';
+} from '@/services/integrated/endpointType/endpointTypeApi';
 import { MyIcon } from '@/components/MyIcon';
 import { addIcon } from '@/utils/utils';
 import EndpointTypeModal from './EndpointTypeModal';

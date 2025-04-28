@@ -9,7 +9,7 @@ import {
   Space,
   Button,
 } from 'antd';
-import type { DictSearchParams } from './api/type';
+import type { DictSearchParams } from '../../../services/system/dict/type';
 
 // 搜索表单属性
 interface SearchFormProps {

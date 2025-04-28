@@ -10,10 +10,10 @@ import './project.scss';
 import { PlusOutlined } from '@ant-design/icons';
 import ProjectCard from './ProjectCard';
 import ProjectInfoModal from './ProjectInfoModal';
-import type { ProjectModel, ProjectSearchParams } from './api/types';
+import type { ProjectModel, ProjectSearchParams } from '../../../services/integrated/project/types';
 import { usePreferencesStore } from '@/stores/store';
 import { usePermission } from '@/hooks/usePermission';
-import { projectService } from './api/projectApi';
+import { projectService } from '../../../services/integrated/project/projectApi';
 import { useQuery } from '@tanstack/react-query';
 const { Search } = Input;
 

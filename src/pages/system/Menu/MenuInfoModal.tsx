@@ -1,6 +1,6 @@
 import { QuestionCircleFilled, SettingOutlined } from '@ant-design/icons';
 import DragModal from '@/components/modal/DragModal';
-import { menuService } from './api/menuApi';
+import { menuService } from '../../../services/system/menu/menuApi';
 import {
   Dropdown,
   Form,

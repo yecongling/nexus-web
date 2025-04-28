@@ -10,13 +10,13 @@ import {
 import styles from './login.module.scss';
 import filing from '@/assets/images/filing.png';
 import { useNavigate } from 'react-router';
-import { loginService } from './api/loginApi';
+import { loginService } from '../../services/login/loginApi';
 // 一些公用的API需要提取出来到api目录下(后续进行更改)
 import { HttpCodeEnum } from '@/enums/httpEnum';
 import { antdUtils } from '@/utils/antdUtil';
 import { useMenuStore } from '@/stores/store';
 import { useQuery } from '@tanstack/react-query';
-import { commonService } from '@/api/common';
+import { commonService } from '@/services/common';
 import { useUserStore } from '@/stores/userStore';
 
 /**
