@@ -1,5 +1,5 @@
 import type React from 'react';
-import { memo, useEffect, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Layout,
   Image,
@@ -58,7 +58,9 @@ const LeftMenu: React.FC = memo(() => {
     mode = 'dark';
   }
   // 是否暗黑模式
-  const isDark = mode === 'dark' || semiDarkSidebar;
+  const isDark = useMemo(() => {
+    return mode === 'dark' || semiDarkSidebar;
+  }, [mode, semiDarkSidebar]);
 
   const getItem = (
     label: React.ReactNode,
@@ -77,30 +79,37 @@ const LeftMenu: React.FC = memo(() => {
   };
 
   // 处理后台返回菜单数据
-  const deepLoopFloat = (menuList: RouteItem[], newArr: MenuItem[] = []) => {
-    for (const item of menuList) {
-      // 处理子路由和权限按钮不显示
-      if (item?.meta?.menuType === 2 || item?.meta?.menuType === 3 || item?.hidden) {
-        continue;
-      }
-      // 下面判断代码解释 *** !item?.children?.length   ==>   (!item.children || item.children.length === 0)
-      if (!item?.children?.length) {
+  const deepLoopFloat = useCallback(
+    (menuList: RouteItem[], newArr: MenuItem[] = []) => {
+      for (const item of menuList) {
+        // 处理子路由和权限按钮不显示
+        if (
+          item?.meta?.menuType === 2 ||
+          item?.meta?.menuType === 3 ||
+          item?.hidden
+        ) {
+          continue;
+        }
+        // 下面判断代码解释 *** !item?.children?.length   ==>   (!item.children || item.children.length === 0)
+        if (!item?.children?.length) {
+          newArr.push(
+            getItem(item.meta?.title, item.path, getIcon(item.meta?.icon)),
+          );
+          continue;
+        }
         newArr.push(
-          getItem(item.meta?.title, item.path, getIcon(item.meta?.icon)),
+          getItem(
+            item.meta?.title,
+            item.path,
+            getIcon(item.meta?.icon),
+            deepLoopFloat(item.children),
+          ),
         );
-        continue;
       }
-      newArr.push(
-        getItem(
-          item.meta?.title,
-          item.path,
-          getIcon(item.meta?.icon),
-          deepLoopFloat(item.children),
-        ),
-      );
-    }
-    return newArr;
-  };
+      return newArr;
+    },
+    [menuList],
+  );
 
   /**
    * 菜单点击跳转

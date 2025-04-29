@@ -11,7 +11,7 @@ import {
   UserOutlined,
 } from '@ant-design/icons';
 import type { ReactNode } from 'react';
-import React from 'react';
+import React, { memo } from 'react';
 import { usePreferencesStore } from '@/stores/store';
 import { commonService } from '@/services/common';
 import { useUserStore } from '@/stores/userStore';
@@ -22,7 +22,7 @@ const { useToken } = theme;
  * 用户信息下拉框
  * @returns
  */
-const UserDropdown: React.FC = () => {
+const UserDropdown: React.FC = memo(() => {
   const { updatePreferences } = usePreferencesStore();
   const userStore = useUserStore();
   const { token } = useToken();
@@ -175,6 +175,6 @@ const UserDropdown: React.FC = () => {
       </Dropdown>
     </>
   );
-};
+});
 
 export default UserDropdown;

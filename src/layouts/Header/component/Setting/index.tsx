@@ -146,8 +146,8 @@ const Setting: React.FC<SettingProps> = memo(({ open, setOpen }) => {
           </div>
         }
         extra={
-          <Space>
-            <RedoOutlined />
+          <Space size={16}>
+            <RedoOutlined className="cursor-pointer"/>
             <CloseOutlined onClick={() => setOpen(false)} />
           </Space>
         }
