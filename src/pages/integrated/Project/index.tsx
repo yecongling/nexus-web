@@ -17,10 +17,10 @@ import ProjectInfoModal from './ProjectInfoModal';
 import type {
   ProjectModel,
   ProjectSearchParams,
-} from '../../../services/integrated/project/types';
+} from '@/services/integrated/project/types';
 import { usePreferencesStore } from '@/stores/store';
 import { usePermission } from '@/hooks/usePermission';
-import { projectService } from '../../../services/integrated/project/projectApi';
+import { projectService } from '@/services/integrated/project/projectApi';
 import { useQuery } from '@tanstack/react-query';
 const { Search } = Input;
 
