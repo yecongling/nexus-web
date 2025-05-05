@@ -32,7 +32,11 @@ import { usePreferencesStore } from '@/stores/store';
 import { usePermission } from '@/hooks/usePermission';
 import { projectService } from '@/services/integrated/project/projectApi';
 import { useQuery } from '@tanstack/react-query';
+import ImportDsl from './ImportDsl';
+import React from 'react';
 const { Search } = Input;
+// 模版中心
+const ProjectTemplate = React.lazy(() => import('./ProjectTemplates'));
 
 /**
  * 项目设计
@@ -52,22 +56,22 @@ const Project: React.FC = () => {
     {
       label: '全部',
       value: 0,
-      icon: <AppstoreOutlined />
+      icon: <AppstoreOutlined />,
     },
     {
       label: '集成项目',
       value: 1,
-      icon: <ApartmentOutlined />
+      icon: <ApartmentOutlined />,
     },
     {
       label: '接口项目',
       value: 2,
-      icon: <ApiOutlined />
+      icon: <ApiOutlined />,
     },
     {
       label: '三方项目',
       value: 3,
-      icon: <SolutionOutlined />
+      icon: <SolutionOutlined />,
     },
   ];
 
@@ -136,6 +140,16 @@ const Project: React.FC = () => {
   const addProject = () => {
     setOpenAddProject(true);
   };
+
+  /**
+   * 打开模版中心
+   */
+  const openTemplate = () => {};
+
+  /**
+   * 打开文件导入弹窗
+   */
+  const openImport = () => {};
 
   /**
    * 编辑项目
@@ -240,7 +254,7 @@ const Project: React.FC = () => {
               </button>
               <button
                 className="w-full flex items-center px-6 py-[7px] rounded-lg text-[13px] font-medium leading-[18px] text-[#676f83] cursor-pointer hover:bg-[#f5f6f7] hover:text-[#1e1e2d] transition-all duration-200 ease-in-out"
-                onClick={addProject}
+                onClick={openTemplate}
                 type="button"
               >
                 <FileAddFilled className="text-[#676f83] shrink-0 mr-2 w-4 h-4" />
@@ -248,7 +262,7 @@ const Project: React.FC = () => {
               </button>
               <button
                 className="w-full flex items-center px-6 py-[7px] rounded-lg text-[13px] font-medium leading-[18px] text-[#676f83] cursor-pointer hover:bg-[#f5f6f7] hover:text-[#1e1e2d] transition-all duration-200 ease-in-out"
-                onClick={addProject}
+                onClick={openImport}
                 type="button"
               >
                 <ExportOutlined className="text-[#676f83] shrink-0 mr-2 w-4 h-4" />
@@ -277,6 +291,10 @@ const Project: React.FC = () => {
         onCancel={onModalCancel}
         project={project}
       />
+      {/* 模版中心 */}
+      <ProjectTemplate />
+      {/* 导入DSL */}
+      <ImportDsl />
     </>
   );
 };

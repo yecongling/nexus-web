@@ -2,6 +2,7 @@ import DragModal from '@/components/modal/DragModal';
 import type { ProjectModel } from '@/services/integrated/project/types';
 import { ApartmentOutlined, ArrowRightOutlined } from '@ant-design/icons';
 import { Button, Form, Input, Space, type InputRef } from 'antd';
+import TextArea from 'antd/es/input/TextArea';
 import { useEffect, useRef } from 'react';
 
 /**
@@ -147,7 +148,7 @@ const ProjectInfoModal: React.FC<ProjectInfoModalProps> = (props) => {
                       ref={inputRef}
                       className="w-full h-10"
                       placeholder="给你的应用起一个名字"
-                      size="large"
+                      size="middle"
                       allowClear
                       maxLength={20}
                     />
@@ -155,8 +156,24 @@ const ProjectInfoModal: React.FC<ProjectInfoModalProps> = (props) => {
                 </div>
               </div>
               {/* 描述 */}
+              <div>
+                <div className="mb-1 flex h-6 items-center">
+                  <span className="">描述</span>
+                  <span>（可选）</span>
+                </div>
+                <TextArea rows={3} placeholder="输入应用的描述" />
+              </div>
               {/* 优先级 */}
               {/* 日志级别 */}
+              <div>
+                <Input
+                  className="w-full h-10"
+                  placeholder="日志级别"
+                  size="middle"
+                  allowClear
+                  maxLength={20}
+                />
+              </div>
             </div>
             {/* 操作按钮-跳转模板 */}
             <div className="pt-5 pb-10 flex justify-between items-center">
@@ -167,8 +184,8 @@ const ProjectInfoModal: React.FC<ProjectInfoModalProps> = (props) => {
                 </div>
               </div>
               <Space>
-                <Button type="default">取消</Button>
-                <Button type="primary">确定</Button>
+                <Button type="default" onClick={onCancel}>取消</Button>
+                <Button type="primary" disabled>确定</Button>
               </Space>
             </div>
           </div>
@@ -178,7 +195,22 @@ const ProjectInfoModal: React.FC<ProjectInfoModalProps> = (props) => {
           <div className="h-2 2xl:h-[59px] absolute left-0 top-0 right-0 border-b border-b-[#1018280a]" />
           <div className="max-w-[760px] border-x border-x-[#1018080a]">
             <div className="w-full h-2 2xl:h-[59px]" />
-            描述信息
+            <div className="px-8 py-4">
+              <h4 className="text-[#354052] text-[13px] font-bold leading-4">
+                显示描述
+              </h4>
+              <div className="text-[12px] font-normal leading-4 text-[#676f83] mt-1 min-h-8 max-w-96">
+                <span>通过简单的配置快速搭建一个基于流程的数据流动</span>
+                <a
+                  target="_blank"
+                  rel="noreferrer"
+                  className="ml-1 text-[#155aef]"
+                  href="https://www.baidu.com"
+                >
+                  了解更多
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       </div>
