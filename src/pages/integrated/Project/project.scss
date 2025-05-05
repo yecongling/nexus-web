@@ -1,34 +1,4 @@
 .projectList {
-  position: relative;
-  transition: box-shadow 0.15s linear, transform 0.15s linear;
-  width: 226px;
-  height: 256px;
-  overflow: hidden;
-  margin-right: 24px;
-  margin-bottom: 24px;
-  cursor: pointer;
-
-  &.addProject {
-    p {
-      width: 72px;
-      height: 72px;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      text-align: center;
-      margin-bottom: 0px;
-      transform: translate(-50%, -50%);
-
-      .addTitle {
-        transform: translateZ(0px);
-        color: rgb(100, 106, 115);
-        font-size: 14px;
-        white-space: nowrap;
-        margin-top: 12px;
-      }
-    }
-  }
-
   &:hover {
     transform: translate3d(0px, -8px, 0px);
 

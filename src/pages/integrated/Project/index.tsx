@@ -11,7 +11,17 @@ import {
 } from 'antd';
 import { useEffect, useRef, useState } from 'react';
 import './project.scss';
-import { DownOutlined, PlusOutlined, TagOutlined } from '@ant-design/icons';
+import {
+  ApartmentOutlined,
+  ApiOutlined,
+  AppstoreOutlined,
+  DownOutlined,
+  ExportOutlined,
+  FileAddFilled,
+  PlusOutlined,
+  SolutionOutlined,
+  TagOutlined,
+} from '@ant-design/icons';
 import ProjectCard from './ProjectCard';
 import ProjectInfoModal from './ProjectInfoModal';
 import type {
@@ -42,18 +52,22 @@ const Project: React.FC = () => {
     {
       label: '全部',
       value: 0,
+      icon: <AppstoreOutlined />
     },
     {
       label: '集成项目',
       value: 1,
+      icon: <ApartmentOutlined />
     },
     {
       label: '接口项目',
       value: 2,
+      icon: <ApiOutlined />
     },
     {
       label: '三方项目',
       value: 3,
+      icon: <SolutionOutlined />
     },
   ];
 
@@ -184,7 +198,7 @@ const Project: React.FC = () => {
               onSearch={handleSearch}
             />
           </div>
-          <div className='w-full flex justify-between items-center'>
+          <div className="w-full flex justify-between items-center">
             <Segmented<any>
               options={segmentedOptions}
               onChange={onSegmentedChange}
@@ -206,21 +220,40 @@ const Project: React.FC = () => {
           </div>
         </div>
         {/* 项目列表 */}
-        <div className="flex flex-wrap mt-2">
+        <div className="grid content-start grid-cols-1 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5 2k:grid-cols-6 gap-4 pt-2 grow relative">
           {/* 数据查询中 */}
           {hasAddPermission && (
             <Card
-              styles={{ body: { padding: '0px' } }}
-              className="projectList addProject"
-              onClick={addProject}
+              className="relative col-span-1 inline-flex flex-col justify-between h-[160px] bg-components-card-bg rounded-xl"
+              classNames={{ body: 'grow p-2! rounded-t-xl' }}
             >
-              <p>
-                <PlusOutlined
-                  className="text-[64px]"
-                  style={{ color: theme.colorPrimary }}
-                />
-                <span className="addTitle">新增项目</span>
-              </p>
+              <div className="px-6 pt-2 pb-1 text-xs font-medium leading-[18px] text-[#676f83]">
+                创建应用
+              </div>
+              <button
+                className="w-full flex items-center mb-1 px-6 py-[7px] rounded-lg text-[13px] font-medium leading-[18px] text-[#676f83] cursor-pointer hover:bg-[#f5f6f7] hover:text-[#1e1e2d] transition-all duration-200 ease-in-out"
+                onClick={addProject}
+                type="button"
+              >
+                <PlusOutlined className="text-[#676f83] shrink-0 mr-2 w-4 h-4" />
+                创建空白应用
+              </button>
+              <button
+                className="w-full flex items-center px-6 py-[7px] rounded-lg text-[13px] font-medium leading-[18px] text-[#676f83] cursor-pointer hover:bg-[#f5f6f7] hover:text-[#1e1e2d] transition-all duration-200 ease-in-out"
+                onClick={addProject}
+                type="button"
+              >
+                <FileAddFilled className="text-[#676f83] shrink-0 mr-2 w-4 h-4" />
+                从应用模板创建
+              </button>
+              <button
+                className="w-full flex items-center px-6 py-[7px] rounded-lg text-[13px] font-medium leading-[18px] text-[#676f83] cursor-pointer hover:bg-[#f5f6f7] hover:text-[#1e1e2d] transition-all duration-200 ease-in-out"
+                onClick={addProject}
+                type="button"
+              >
+                <ExportOutlined className="text-[#676f83] shrink-0 mr-2 w-4 h-4" />
+                导入DSL文件
+              </button>
             </Card>
           )}
           {/* 项目列表 */}

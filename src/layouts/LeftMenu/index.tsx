@@ -126,8 +126,8 @@ const LeftMenu: React.FC = memo(() => {
     // 判断如果是二级路由，不在左边菜单那种的就不去更新
     const route = searchRoute(pathname, menus);
     if (route && Object.keys(route).length) {
-      const title = route.meta?.title;
-      if (title) document.title = `${title} - flex & fusion`;
+      // const title = route.meta?.title;
+      // if (title) document.title = `${title} - flex & fusion`;
       if (!collapsed) setOpenKeys(openKey);
     }
   }, [pathname, collapsed, menus]);

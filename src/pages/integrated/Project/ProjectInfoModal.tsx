@@ -1,6 +1,7 @@
 import DragModal from '@/components/modal/DragModal';
 import type { ProjectModel } from '@/services/integrated/project/types';
-import { Form, Input, Select, type InputRef } from 'antd';
+import { ApartmentOutlined, ArrowRightOutlined } from '@ant-design/icons';
+import { Button, Form, Input, Space, type InputRef } from 'antd';
 import { useEffect, useRef } from 'react';
 
 /**
@@ -43,79 +44,144 @@ const ProjectInfoModal: React.FC<ProjectInfoModalProps> = (props) => {
   };
   return (
     <DragModal
-      title={project ? '编辑项目' : '新增项目'}
       onCancel={onCancel}
-      onOk={handleOk}
       open={open}
-      width={650}
+      footer={null}
+      centered
+      styles={{
+        body: { height: '100%' },
+        header: { padding: '20px', borderBottom: 'none' },
+      }}
+      width="100%"
     >
-      <Form form={form} initialValues={{ type: 1 }} labelCol={{ span: 4 }}>
-        {/* 项目ID */}
-        <Form.Item name="id" hidden>
-          <Input />
-        </Form.Item>
-        {/* 项目名称 */}
-        <Form.Item
-          label="项目名称"
-          name="name"
-          rules={[{ required: true, message: '项目名称必填' }]}
-        >
-          <Input ref={inputRef} autoComplete="off" allowClear autoFocus />
-        </Form.Item>
-        {/* 项目类型 */}
-        <Form.Item
-          label="项目类型"
-          name="type"
-          rules={[{ required: true, message: '请选择项目类型' }]}
-        >
-          <Select
-            options={[
-              { label: '集成项目', value: '1' },
-              { label: '接口项目', value: '2' },
-              { label: '三方项目', value: '3' },
-            ]}
-            allowClear
-          />
-        </Form.Item>
-        {/* 日志级别 */}
-        <Form.Item
-          label="日志级别"
-          name="logLevel"
-          rules={[{ required: true, message: '请选择日志级别' }]}
-        >
-          <Select
-            options={[
-              { label: 'INFO', value: '1' },
-              { label: 'WARN', value: '2' },
-              { label: 'ERROR', value: '3' },
-            ]}
-            allowClear
-          />
-        </Form.Item>
-        {/* 优先级 */}
-        <Form.Item
-          label="优先级"
-          name="priority"
-          rules={[{ required: true, message: '请选择优先级' }]}
-        >
-          <Select
-            options={[
-              { label: '高', value: '1' },
-              { label: '中', value: '2' },
-              { label: '低', value: '3' },
-            ]}
-            allowClear
-          />
-        </Form.Item>
-        {/* 背景 */}
-        <Form.Item label="背景" name="background">
-          <Input allowClear />
-        </Form.Item>
-        {/* 备注 */}
-        <Form.Item label="备注" name="remark">
-          <Input.TextArea allowClear />
-        </Form.Item>
-      </Form>
+      <div className="flex justify-center h-full overflow-y-auto overflow-x-hidden">
+        {/* 左边显示 */}
+        <div className="flex-1 shrink-0 flex justify-end">
+          <div className="px-10">
+            <div className="w-full h-2 2xl:h-[59px]" />
+            <div className="pt-1 pb-6">
+              <span className="font-semibold text-[18px] leading-[1.2] text-[#101828]">
+                创建空白应用
+              </span>
+            </div>
+            <div className="leading-6 mb-2">
+              <span className="text-[#354052] text-[13px] font-semibold leading-4">
+                选择应用类型
+              </span>
+            </div>
+            <div className="flex flex-col w-[660px] gap-4">
+              {/* 基础使用 */}
+              <div className="w-full">
+                <div className="mb-2">
+                  <span className="text-[#676f83] text-[10px] font-medium leading-3">
+                    基础使用
+                  </span>
+                </div>
+                <div className="flex flex-row gap-2">
+                  <div className="w-[191px] h-[84px] p-3 border-[0.5px] relative box-content! rounded-xl cursor-pointer border-[#e9ebf0] shadow-xs hover:shadow-md">
+                    <div className="w-6 h-6 bg-[#7839ee] rounded-md justify-center items-center flex">
+                      <ApartmentOutlined className="w-4 h-4 text-[#ffffffe5]!" />
+                    </div>
+                    <div className="text-[#354052] mt-2 mb-0.5 text-[13px] font-semibold leading-4">
+                      集成应用
+                    </div>
+                    <div className="text-[#676f83] text-[12px] font-normal leading-4">
+                      内置高性能调用的数据调度
+                    </div>
+                  </div>
+                  <div className="w-[191px] h-[84px] p-3 border-[0.5px] relative box-content! rounded-xl cursor-pointer border-[#e9ebf0] shadow-xs hover:shadow-md">
+                    <div className="w-6 h-6 bg-[#7839ee] rounded-md justify-center items-center flex">
+                      <ApartmentOutlined className="w-4 h-4 text-[#ffffffe5]!" />
+                    </div>
+                    <div className="text-[#354052] mt-2 mb-0.5 text-[13px] font-semibold leading-4">
+                      集成应用
+                    </div>
+                    <div className="text-[#676f83] text-[12px] font-normal leading-4">
+                      内置高性能调用的数据调度
+                    </div>
+                  </div>
+                  <div className="w-[191px] h-[84px] p-3 border-[0.5px] relative box-content! rounded-xl cursor-pointer border-[#e9ebf0] shadow-xs hover:shadow-md">
+                    <div className="w-6 h-6 bg-[#7839ee] rounded-md justify-center items-center flex">
+                      <ApartmentOutlined className="w-4 h-4 text-[#ffffffe5]!" />
+                    </div>
+                    <div className="text-[#354052] mt-2 mb-0.5 text-[13px] font-semibold leading-4">
+                      集成应用
+                    </div>
+                    <div className="text-[#676f83] text-[12px] font-normal leading-4">
+                      内置高性能调用的数据调度
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {/* 进阶使用 */}
+              <div className="w-full">
+                <div className="mb-2">
+                  <span className="text-[#676f83] text-[10px] font-medium leading-3">
+                    进阶使用
+                  </span>
+                </div>
+                <div className="flex flex-row gap-2">
+                  <div className="w-[191px] h-[84px] p-3 border-[0.5px] relative box-content! rounded-xl cursor-pointer border-[#e9ebf0] shadow-xs hover:shadow-md">
+                    <div className="w-6 h-6 bg-[#7839ee] rounded-md justify-center items-center flex">
+                      <ApartmentOutlined className="w-4 h-4 text-[#ffffffe5]!" />
+                    </div>
+                    <div className="text-[#354052] mt-2 mb-0.5 text-[13px] font-semibold leading-4">
+                      集成应用
+                    </div>
+                    <div className="text-[#676f83] text-[12px] font-normal leading-4">
+                      内置高性能调用的数据调度
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {/* 分割线 */}
+              <div className="w-full h-[0.5px] my-2 bg-[#10182814]" />
+              {/* 应用名称 */}
+              <div className="flex space-x-3 items-center">
+                <div className="flex-1">
+                  <div className="h-6 flex items-center mb-1">
+                    <span>应用名称 & 图标</span>
+                  </div>
+                  <div className="relative w-full">
+                    <Input
+                      ref={inputRef}
+                      className="w-full h-10"
+                      placeholder="给你的应用起一个名字"
+                      size="large"
+                      allowClear
+                      maxLength={20}
+                    />
+                  </div>
+                </div>
+              </div>
+              {/* 描述 */}
+              {/* 优先级 */}
+              {/* 日志级别 */}
+            </div>
+            {/* 操作按钮-跳转模板 */}
+            <div className="pt-5 pb-10 flex justify-between items-center">
+              <div className="flex gap-1 items-center cursor-pointer text-[12px] text-[#676f83] font-normal leading-4">
+                <span>不知道？试试我们的模板</span>
+                <div className="p-[1px]">
+                  <ArrowRightOutlined />
+                </div>
+              </div>
+              <Space>
+                <Button type="default">取消</Button>
+                <Button type="primary">确定</Button>
+              </Space>
+            </div>
+          </div>
+        </div>
+        {/* 右边显示 */}
+        <div className="flex-1 shrink-0 flex justify-start relative overflow-hidden">
+          <div className="h-2 2xl:h-[59px] absolute left-0 top-0 right-0 border-b border-b-[#1018280a]" />
+          <div className="max-w-[760px] border-x border-x-[#1018080a]">
+            <div className="w-full h-2 2xl:h-[59px]" />
+            描述信息
+          </div>
+        </div>
+      </div>
     </DragModal>
   );
 };
