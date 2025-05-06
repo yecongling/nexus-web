@@ -2,8 +2,6 @@ import { Navigate, useRoutes } from 'react-router';
 import { LazyLoad } from './lazyLoad';
 import React, { type ReactNode, Suspense, useMemo } from 'react';
 import type { RouteObject } from '@/types/route';
-import { ErrorBoundary } from 'react-error-boundary';
-import { ErrorFallback } from './ErrorBoundary';
 import { handleRouter } from '@/utils/utils';
 import { useMenuStore } from '@/stores/store';
 import { Skeleton } from 'antd';
@@ -53,11 +51,9 @@ const generateRouter = (routers: RouteObject[]) => {
      * 错误边界组件（用于单个页面渲染错误的时候显示，单个模块渲染失败不应该影响整个系统的渲染失败）
      */
     item.element = (
-      <ErrorBoundary fallback={<ErrorFallback />}>
-        <Suspense fallback={<Skeleton />}>
-          <item.component />
-        </Suspense>
-      </ErrorBoundary>
+      <Suspense fallback={<Skeleton />}>
+        <item.component />
+      </Suspense>
     );
     item.handle = {
       menuKey: item?.handle?.menuKey,
