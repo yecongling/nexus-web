@@ -3,7 +3,8 @@ import type { ProjectModel } from '@/services/integrated/project/types';
 import { ApartmentOutlined, ArrowRightOutlined } from '@ant-design/icons';
 import { Button, Form, Input, Space, type InputRef } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import clsx from 'clsx';
 
 /**
  * 添加项目弹窗
@@ -15,6 +16,8 @@ const ProjectInfoModal: React.FC<ProjectInfoModalProps> = (props) => {
   const [form] = Form.useForm();
   const inputRef = useRef<InputRef>(null);
 
+  const [type, setType] = useState<number>(1);
+
   useEffect(() => {
     if (open) {
       // 聚焦第一个输入框
@@ -25,6 +28,14 @@ const ProjectInfoModal: React.FC<ProjectInfoModalProps> = (props) => {
       }
     }
   }, [open]);
+
+  /**
+   * 选择类型
+   * @param value 选择的类型
+   */
+  const selectType = (value: number) => {
+    setType(value);
+  };
 
   /**
    * 点击确认的回调
@@ -79,7 +90,15 @@ const ProjectInfoModal: React.FC<ProjectInfoModalProps> = (props) => {
                   </span>
                 </div>
                 <div className="flex flex-row gap-2">
-                  <div className="w-[191px] h-[84px] p-3 border-[0.5px] relative box-content! rounded-xl cursor-pointer border-[#e9ebf0] shadow-xs hover:shadow-md">
+                  <div
+                    className={clsx(
+                      'w-[191px] h-[84px] p-3 border-[0.5px] relative box-content! rounded-xl cursor-pointer border-[#e9ebf0] shadow-xs hover:shadow-md',
+                      {
+                        'border-[#7839ee]': type === 1,
+                      },
+                    )}
+                    onClick={() => selectType(1)}
+                  >
                     <div className="w-6 h-6 bg-[#7839ee] rounded-md justify-center items-center flex">
                       <ApartmentOutlined className="w-4 h-4 text-[#ffffffe5]!" />
                     </div>
@@ -90,7 +109,15 @@ const ProjectInfoModal: React.FC<ProjectInfoModalProps> = (props) => {
                       内置高性能调用的数据调度
                     </div>
                   </div>
-                  <div className="w-[191px] h-[84px] p-3 border-[0.5px] relative box-content! rounded-xl cursor-pointer border-[#e9ebf0] shadow-xs hover:shadow-md">
+                  <div
+                    className={clsx(
+                      'w-[191px] h-[84px] p-3 border-[0.5px] relative box-content! rounded-xl cursor-pointer border-[#e9ebf0] shadow-xs hover:shadow-md',
+                      {
+                        'border-[#7839ee]!': type === 2,
+                      },
+                    )}
+                    onClick={() => selectType(2)}
+                  >
                     <div className="w-6 h-6 bg-[#7839ee] rounded-md justify-center items-center flex">
                       <ApartmentOutlined className="w-4 h-4 text-[#ffffffe5]!" />
                     </div>
@@ -101,7 +128,15 @@ const ProjectInfoModal: React.FC<ProjectInfoModalProps> = (props) => {
                       内置高性能调用的数据调度
                     </div>
                   </div>
-                  <div className="w-[191px] h-[84px] p-3 border-[0.5px] relative box-content! rounded-xl cursor-pointer border-[#e9ebf0] shadow-xs hover:shadow-md">
+                  <div
+                    className={clsx(
+                      'w-[191px] h-[84px] p-3 border-[0.5px] relative box-content! rounded-xl cursor-pointer border-[#e9ebf0] shadow-xs hover:shadow-md',
+                      {
+                        'border-[#7839ee]': type === 3,
+                      },
+                    )}
+                    onClick={() => selectType(3)}
+                  >
                     <div className="w-6 h-6 bg-[#7839ee] rounded-md justify-center items-center flex">
                       <ApartmentOutlined className="w-4 h-4 text-[#ffffffe5]!" />
                     </div>
@@ -184,8 +219,12 @@ const ProjectInfoModal: React.FC<ProjectInfoModalProps> = (props) => {
                 </div>
               </div>
               <Space>
-                <Button type="default" onClick={onCancel}>取消</Button>
-                <Button type="primary" disabled>确定</Button>
+                <Button type="default" onClick={onCancel}>
+                  取消
+                </Button>
+                <Button type="primary" disabled>
+                  确定
+                </Button>
               </Space>
             </div>
           </div>
