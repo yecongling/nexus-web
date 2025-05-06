@@ -7,6 +7,7 @@ import useParentSize from '@/hooks/useParentSize';
 import TableActionButtons from './TableActionButtons';
 import DictTable from './DictTable';
 import getDictTableColumns from './DictTableColumn';
+import { isEqual } from 'lodash-es';
 
 // 数据字典模块
 const Dict: React.FC = () => {
@@ -56,7 +57,7 @@ const Dict: React.FC = () => {
       pageSize: searchParams.pageSize,
     };
     // 判断参数是否发生变化
-    if (JSON.stringify(search) === JSON.stringify(searchParams)) {
+    if (isEqual(search, searchParams)) {
       // 参数没有变化，手动刷新数据
       refetch();
       return;

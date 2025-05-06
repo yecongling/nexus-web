@@ -17,6 +17,7 @@ import type { UserModel } from '@/services/system/user/type';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import TableActionButtons from './TableActionButtons';
 import UserPasswordModal from './UserPasswordModal';
+import { isEqual } from 'lodash-es';
 
 /**
  * 用户管理
@@ -85,12 +86,12 @@ const User: React.FC = () => {
       pageSize: searchParams.pageSize,
     };
     // 判断参数是否发生变化
-    if (JSON.stringify(search) === JSON.stringify(searchParams)) {
+    if (isEqual(search, searchParams)) {
       // 参数没有变化，手动刷新数据
       refetch();
       return;
     }
-    setSearchParams((prev) => ({ ...prev, ...search }));
+    setSearchParams((prev: UserSearchParams) => ({ ...prev, ...search }));
   };
 
   // 处理编辑

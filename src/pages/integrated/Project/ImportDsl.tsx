@@ -1,12 +1,19 @@
+import DragModal from '@/components/modal/DragModal';
+
 /**
  * 导入DSL文件
- * @returns 
+ * @returns
  */
-const ImportDsl = () => {
+const ImportDsl: React.FC<ImportDslModelProps> = ({ open, onClose }) => {
   return (
-    <div>
+    <DragModal centered open={open} title="导入DSL" onCancel={onClose}>
       <h1>ImportDsl</h1>
-    </div>
+    </DragModal>
   );
 };
 export default ImportDsl;
+
+export interface ImportDslModelProps {
+  open: boolean;
+  onClose: () => void;
+}

@@ -22,6 +22,7 @@ import {
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { UserSearchParams } from '@/services/system/role/type';
 import { useQuery } from '@tanstack/react-query';
+import { isEqual } from 'lodash-es';
 
 /**
  * 添加用户弹窗
@@ -61,7 +62,7 @@ const AddUser: React.FC<AddUserProps> = ({ open, onOk, onCancel, roleId }) => {
       pageSize: searchParams.pageSize,
     };
     // 判断参数是否发生变化
-    if (JSON.stringify(search) === JSON.stringify(searchParams)) {
+    if (isEqual(search, searchParams)) {
       // 参数没有变化，手动刷新数据
       refetch();
       return;

@@ -9,7 +9,7 @@ import {
   Button,
   Space,
 } from 'antd';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useReducer, useRef, useState } from 'react';
 import './project.scss';
 import {
   ApartmentOutlined,
@@ -34,9 +34,20 @@ import { projectService } from '@/services/integrated/project/projectApi';
 import { useQuery } from '@tanstack/react-query';
 import ImportDsl from './ImportDsl';
 import React from 'react';
+import type { ProjectModalState } from './types';
+import { isEqual } from 'lodash-es';
 const { Search } = Input;
 // 模版中心
 const ProjectTemplate = React.lazy(() => import('./ProjectTemplates'));
+
+// 提取关闭弹窗的逻辑
+const closeAllModals = (dispatch: React.Dispatch<Partial<ProjectModalState>>) => {
+  dispatch({
+    openAddModal: false,
+    openTemplateModal: false,
+    openImportModal: false,
+  });
+};
 
 /**
  * 项目设计
@@ -44,15 +55,30 @@ const ProjectTemplate = React.lazy(() => import('./ProjectTemplates'));
 const Project: React.FC = () => {
   const { preferences } = usePreferencesStore();
   const { theme } = preferences;
-  // 新增弹窗
-  const [openAddProject, setOpenAddProject] = useState<boolean>(false);
+
+  // 新增弹窗、模版弹窗、导入弹窗
+  const [state, dispatch] = useReducer(
+    (prev: ProjectModalState, action: Partial<ProjectModalState>) => ({
+      ...prev,
+      ...action,
+    }),
+    {
+      // 新增窗口的打开状态
+      openAddModal: false,
+      // 模版窗口的打开状态
+      openTemplateModal: false,
+      // 导入窗口的打开状态
+      openImportModal: false,
+    },
+  );
+
   // 搜索框聚焦
   const searchRef = useRef<InputRef>(null);
   // 是否有新增权限
   const hasAddPermission = usePermission(['engine:project:add']);
 
   // 分段控制器选项
-  const segmentedOptions: SegmentedProps['options'] = [
+  const segmentedOptions: SegmentedProps<number>['options'] = [
     {
       label: '全部',
       value: 0,
@@ -99,8 +125,7 @@ const Project: React.FC = () => {
       pageNum: searchParams.pageNum,
       pageSize: searchParams.pageSize,
     };
-    // 判断参数是否发生变化
-    if (JSON.stringify(search) === JSON.stringify(searchParams)) {
+    if (isEqual(search, searchParams)) {
       // 参数没有变化，手动刷新数据
       refetch();
       return;
@@ -138,18 +163,46 @@ const Project: React.FC = () => {
    * 新增项目
    */
   const addProject = () => {
-    setOpenAddProject(true);
+    dispatch({
+      openAddModal: true,
+    });
   };
 
   /**
    * 打开模版中心
    */
-  const openTemplate = () => {};
+  const openTemplate = () => {
+    dispatch({
+      openAddModal: false,
+      openTemplateModal: true,
+      openImportModal: false,
+    });
+  };
+
+  /**
+   * 关闭模版中心
+   */
+  const closeTemplate = () => {
+    closeAllModals(dispatch);
+  };
 
   /**
    * 打开文件导入弹窗
    */
-  const openImport = () => {};
+  const openImport = () => {
+    dispatch({
+      openAddModal: false,
+      openTemplateModal: false,
+      openImportModal: true,
+    });
+  };
+
+  /**
+   * 关闭文件导入弹窗
+   */
+  const closeImport = () => {
+    closeAllModals(dispatch);
+  };
 
   /**
    * 编辑项目
@@ -161,7 +214,9 @@ const Project: React.FC = () => {
       (item: ProjectModel) => item.id === projectId,
     );
     setProject(project);
-    setOpenAddProject(true);
+    dispatch({
+      openAddModal: true,
+    });
   };
 
   /**
@@ -174,7 +229,9 @@ const Project: React.FC = () => {
       projectService.updateProject(project).then((success: boolean) => {
         if (success) {
           refetch();
-          setOpenAddProject(false);
+          dispatch({
+            openAddModal: false,
+          });
         }
       });
     } else {
@@ -182,7 +239,9 @@ const Project: React.FC = () => {
       projectService.addProject(project).then((success: boolean) => {
         if (success) {
           refetch();
-          setOpenAddProject(false);
+          dispatch({
+            openAddModal: false,
+          });
         }
       });
     }
@@ -192,7 +251,9 @@ const Project: React.FC = () => {
    * 新增项目取消
    */
   const onModalCancel = () => {
-    setOpenAddProject(false);
+    dispatch({
+      openAddModal: false,
+    });
   };
 
   return (
@@ -213,7 +274,7 @@ const Project: React.FC = () => {
             />
           </div>
           <div className="w-full flex justify-between items-center">
-            <Segmented<any>
+            <Segmented<number>
               options={segmentedOptions}
               onChange={onSegmentedChange}
               value={searchParams.type}
@@ -285,16 +346,21 @@ const Project: React.FC = () => {
       </div>
       {/* 新增弹窗 */}
       <ProjectInfoModal
-        open={openAddProject}
+        open={state.openAddModal}
         type={searchParams.type}
         onOk={onModalOk}
         onCancel={onModalCancel}
         project={project}
+        dispatch={dispatch}
       />
       {/* 模版中心 */}
-      <ProjectTemplate />
+      <ProjectTemplate
+        open={state.openTemplateModal}
+        dispatch={dispatch}
+        onClose={closeTemplate}
+      />
       {/* 导入DSL */}
-      <ImportDsl />
+      <ImportDsl open={state.openImportModal} onClose={closeImport} />
     </>
   );
 };

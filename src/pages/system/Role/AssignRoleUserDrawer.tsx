@@ -29,8 +29,9 @@ import {
 import { memo, useRef, useState } from 'react';
 import AddUser from './AddUserModal';
 import { roleService } from '@/services/system/role/roleApi';
-import type { UserSearchParams } from './api/type';
+import type { UserSearchParams } from '@/services/system/role/type';
 import { useQuery } from '@tanstack/react-query';
+import { isEqual } from 'lodash-es';
 
 /**
  * 给角色分配用户
@@ -148,12 +149,12 @@ const RoleUserDrawer: React.FC<RoleUserDrawerProps> = memo(
         pageSize: searchParams.pageSize,
       };
       // 判断参数是否发生变化
-      if (JSON.stringify(search) === JSON.stringify(searchParams)) {
+      if (isEqual(search, searchParams)) {
         // 参数没有变化，手动刷新数据
         refetch();
         return;
       }
-      setSearchParams((prev) => ({ ...prev, ...search }));
+      setSearchParams((prev: UserSearchParams) => ({ ...prev, ...search }));
     };
 
     /**

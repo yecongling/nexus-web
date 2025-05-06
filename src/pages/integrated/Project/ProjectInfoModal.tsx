@@ -3,15 +3,21 @@ import type { ProjectModel } from '@/services/integrated/project/types';
 import { ApartmentOutlined, ArrowRightOutlined } from '@ant-design/icons';
 import { Button, Form, Input, Space, type InputRef } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
-import { useEffect, useRef, useState } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
+import type { ProjectModalState } from './types';
 
 /**
  * 添加项目弹窗
  * @returns
  */
-const ProjectInfoModal: React.FC<ProjectInfoModalProps> = (props) => {
-  const { open, onOk, onCancel, project } = props;
+const ProjectInfoModal: React.FC<ProjectInfoModalProps> = memo(({
+  open,
+  onOk,
+  onCancel,
+  project,
+  dispatch,
+}) => {
   // 项目表单数据
   const [form] = Form.useForm();
   const inputRef = useRef<InputRef>(null);
@@ -54,6 +60,18 @@ const ProjectInfoModal: React.FC<ProjectInfoModalProps> = (props) => {
         form.focusField(errorInfo.errorFields[0].name);
       });
   };
+
+  /**
+   * 打开模版
+   */
+  const openTemplateModal = () => {
+    dispatch({
+      openAddModal: false,
+      openTemplateModal: true,
+      openImportModal: false,
+    });
+  };
+
   return (
     <DragModal
       onCancel={onCancel}
@@ -64,13 +82,13 @@ const ProjectInfoModal: React.FC<ProjectInfoModalProps> = (props) => {
         body: { height: '100%' },
         header: { padding: '20px', borderBottom: 'none' },
       }}
-      width="100%"
+      width="90%"
     >
       <div className="flex justify-center h-full overflow-y-auto overflow-x-hidden">
         {/* 左边显示 */}
         <div className="flex-1 shrink-0 flex justify-end">
           <div className="px-10">
-            <div className="w-full h-2 2xl:h-[59px]" />
+            <div className="w-full h-2 2xl:h-[30px]" />
             <div className="pt-1 pb-6">
               <span className="font-semibold text-[18px] leading-[1.2] text-[#101828]">
                 创建空白应用
@@ -94,7 +112,7 @@ const ProjectInfoModal: React.FC<ProjectInfoModalProps> = (props) => {
                     className={clsx(
                       'w-[191px] h-[84px] p-3 border-[0.5px] relative box-content! rounded-xl cursor-pointer border-[#e9ebf0] shadow-xs hover:shadow-md',
                       {
-                        'border-[#7839ee]': type === 1,
+                        'border-[#7839ee]!': type === 1,
                       },
                     )}
                     onClick={() => selectType(1)}
@@ -132,7 +150,7 @@ const ProjectInfoModal: React.FC<ProjectInfoModalProps> = (props) => {
                     className={clsx(
                       'w-[191px] h-[84px] p-3 border-[0.5px] relative box-content! rounded-xl cursor-pointer border-[#e9ebf0] shadow-xs hover:shadow-md',
                       {
-                        'border-[#7839ee]': type === 3,
+                        'border-[#7839ee]!': type === 3,
                       },
                     )}
                     onClick={() => selectType(3)}
@@ -212,7 +230,10 @@ const ProjectInfoModal: React.FC<ProjectInfoModalProps> = (props) => {
             </div>
             {/* 操作按钮-跳转模板 */}
             <div className="pt-5 pb-10 flex justify-between items-center">
-              <div className="flex gap-1 items-center cursor-pointer text-[12px] text-[#676f83] font-normal leading-4">
+              <div
+                className="flex gap-1 items-center cursor-pointer text-[12px] text-[#676f83] font-normal leading-4"
+                onClick={openTemplateModal}
+              >
                 <span>不知道？试试我们的模板</span>
                 <div className="p-[1px]">
                   <ArrowRightOutlined />
@@ -222,7 +243,7 @@ const ProjectInfoModal: React.FC<ProjectInfoModalProps> = (props) => {
                 <Button type="default" onClick={onCancel}>
                   取消
                 </Button>
-                <Button type="primary" disabled>
+                <Button type="primary" disabled onClick={handleOk}>
                   确定
                 </Button>
               </Space>
@@ -231,9 +252,9 @@ const ProjectInfoModal: React.FC<ProjectInfoModalProps> = (props) => {
         </div>
         {/* 右边显示 */}
         <div className="flex-1 shrink-0 flex justify-start relative overflow-hidden">
-          <div className="h-2 2xl:h-[59px] absolute left-0 top-0 right-0 border-b border-b-[#1018280a]" />
+          <div className="h-2 2xl:h-[39px] absolute left-0 top-0 right-0 border-b border-b-[#1018280a]" />
           <div className="max-w-[760px] border-x border-x-[#1018080a]">
-            <div className="w-full h-2 2xl:h-[59px]" />
+            <div className="w-full h-2 2xl:h-[30px]" />
             <div className="px-8 py-4">
               <h4 className="text-[#354052] text-[13px] font-bold leading-4">
                 显示描述
@@ -255,7 +276,7 @@ const ProjectInfoModal: React.FC<ProjectInfoModalProps> = (props) => {
       </div>
     </DragModal>
   );
-};
+});
 export default ProjectInfoModal;
 
 /**
@@ -286,4 +307,6 @@ export interface ProjectInfoModalProps {
    * 项目数据
    */
   project?: ProjectModel;
+  // 状态更新函数
+  dispatch: React.Dispatch<Partial<ProjectModalState>>;
 }

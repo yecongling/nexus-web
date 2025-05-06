@@ -19,6 +19,7 @@ import { useQuery } from '@tanstack/react-query';
 import SearchBar from './SearchBar';
 import ActionButtons from './ActionButtons';
 import DataTable from './DataTable';
+import { isEqual } from 'lodash-es';
 
 /**
  * 系统菜单维护
@@ -180,7 +181,7 @@ const Menu: React.FC = () => {
       ),
     );
     // 判断参数是否发生变化
-    if (JSON.stringify(queryCondition) === JSON.stringify(searchParams)) {
+    if (isEqual(queryCondition, searchParams)) {
       // 参数没有变化，手动刷新数据
       refetch();
       return;
