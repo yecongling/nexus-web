@@ -23,7 +23,7 @@ import {
   TagOutlined,
 } from '@ant-design/icons';
 import ProjectCard from './ProjectCard';
-import ProjectInfoModal from './ProjectInfoModal';
+import ProjectCreate from './ProjectCreate';
 import type {
   ProjectModel,
   ProjectSearchParams,
@@ -41,7 +41,9 @@ const { Search } = Input;
 const ProjectTemplate = React.lazy(() => import('./ProjectTemplates'));
 
 // 提取关闭弹窗的逻辑
-const closeAllModals = (dispatch: React.Dispatch<Partial<ProjectModalState>>) => {
+const closeAllModals = (
+  dispatch: React.Dispatch<Partial<ProjectModalState>>,
+) => {
   dispatch({
     openAddModal: false,
     openTemplateModal: false,
@@ -198,6 +200,28 @@ const Project: React.FC = () => {
   };
 
   /**
+   * 从模版创建项目
+   */
+  const onCreateFromTemplate = () => {
+    dispatch({
+      openAddModal: false,
+      openTemplateModal: true,
+      openImportModal: false,
+    });
+  };
+
+  /**
+   * 从空白创建项目
+   */
+  const onCreateFromBlank = () => {
+    dispatch({
+      openAddModal: true,
+      openTemplateModal: false,
+      openImportModal: false,
+    });
+  };
+
+  /**
    * 关闭文件导入弹窗
    */
   const closeImport = () => {
@@ -345,19 +369,17 @@ const Project: React.FC = () => {
         </div>
       </div>
       {/* 新增弹窗 */}
-      <ProjectInfoModal
+      <ProjectCreate
         open={state.openAddModal}
-        type={searchParams.type}
         onOk={onModalOk}
         onCancel={onModalCancel}
-        project={project}
-        dispatch={dispatch}
+        onCreateFromTemplate={onCreateFromTemplate}
       />
       {/* 模版中心 */}
       <ProjectTemplate
         open={state.openTemplateModal}
-        dispatch={dispatch}
         onClose={closeTemplate}
+        onCreateFromBlank={onCreateFromBlank}
       />
       {/* 导入DSL */}
       <ImportDsl open={state.openImportModal} onClose={closeImport} />
