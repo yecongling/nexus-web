@@ -282,10 +282,10 @@ const Project: React.FC = () => {
 
   return (
     <>
-      <div className="flex-1 pt-6 pr-6 pl-6 overflow-y-scroll bg-[#f5f6f7]">
-        <div className="mb-[20px] text-[18px] font-bold">项目列表</div>
+      <div className="flex flex-col h-full pt-2 pr-4 pl-4 bg-[#f5f6f7]">
+        <div className="mb-[8px] text-[18px] font-bold">项目列表</div>
         {/* 卡片列表和筛选框 */}
-        <div className="mb-[20px]">
+        <div className="mb-[8px]">
           <div className="w-[600px] my-4 mx-auto">
             {/* 检索 */}
             <Search
@@ -319,7 +319,7 @@ const Project: React.FC = () => {
           </div>
         </div>
         {/* 项目列表 */}
-        <div className="grid content-start grid-cols-1 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5 2k:grid-cols-6 gap-4 pt-2 grow relative">
+        <div className="flex-1 overflow-x-hidden overflow-y-auto grid content-start grid-cols-1 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5 2k:grid-cols-6 gap-4 pt-2 grow relative">
           {/* 数据查询中 */}
           {hasAddPermission && (
             <Card

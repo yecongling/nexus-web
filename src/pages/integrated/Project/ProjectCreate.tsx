@@ -50,11 +50,12 @@ const ProjectInfoModal: React.FC<ProjectInfoModalProps> = memo(
         open={open}
         footer={null}
         centered
+        style={{ height: '95vh' }} // 控制 Modal 外壳
         styles={{
-          body: { height: '100%' },
+          body: { height: 'calc(95vh - 50px)', overflowY: 'auto' },
           header: { padding: '20px', borderBottom: 'none' },
         }}
-        width="90%"
+        width="95%"
       >
         <div className="flex justify-center h-full overflow-y-auto overflow-x-hidden">
           {/* 左边显示 */}
