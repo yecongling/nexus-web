@@ -306,7 +306,7 @@ const Project: React.FC = () => {
             <div>
               {/* 区分我创建的、标签页 */}
               <Checkbox>我创建的</Checkbox>
-              <Dropdown dropdownRender={renderDropDown} trigger={['click']}>
+              <Dropdown popupRender={renderDropDown} trigger={['click']}>
                 <Button color="default" variant="filled">
                   <Space>
                     <TagOutlined />

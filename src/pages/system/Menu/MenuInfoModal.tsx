@@ -259,7 +259,7 @@ const MenuInfoModal: React.FC<MenuInfoModalProps> = ({
                   <Dropdown
                     trigger={['hover']}
                     placement="bottom"
-                    dropdownRender={() => (
+                    popupRender={() => (
                       <IconPanel onSelect={handleIconSelect} />
                     )}
                     overlayClassName="w-[360px] h-[300px] bg-white overflow-y-auto p-2 shadow-xl"
