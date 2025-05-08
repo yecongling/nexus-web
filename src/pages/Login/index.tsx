@@ -145,9 +145,9 @@ const Login: React.FC = () => {
   };
 
   return (
-    <>
+    <div className='w-full h-full flex flex-col'>
       {/* 标题 */}
-      <div className="h-[66px] flex items-center ml-40">
+      <div className="h-[80px] flex items-center ml-40">
         <div className="flex items-center">
           <img className="login-icon my-0" width="40" src={logo} alt="logo" />
           <span
@@ -304,7 +304,7 @@ const Login: React.FC = () => {
           蜀ICP备2023022276号-2
         </a>
       </div>
-    </>
+    </div>
   );
 };
 export default Login;
