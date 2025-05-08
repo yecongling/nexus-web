@@ -20,7 +20,7 @@ const App: React.FC = () => {
   const { notification, message, modal } = AntdApp.useApp();
 
   // 使用 TanStack Query 获取菜单数据
-  const { isLoading, isError, error, refetch } = useQuery({
+  const { isLoading, refetch } = useQuery({
     queryKey: ['menuData'],
     queryFn: async () => {
       const menu = await commonService.getMenuListByRoleId(role);
@@ -29,16 +29,6 @@ const App: React.FC = () => {
     },
     enabled: false,
   });
-
-  useEffect(() => {
-    if (isError) {
-      notification.error({
-        message: '菜单加载失败',
-        description: `原因：${error.message || '未知错误'}`,
-        duration: 0,
-      });
-    }
-  }, [isError, error]);
 
   useEffect(() => {
     antdUtils.setMessageInstance(message);

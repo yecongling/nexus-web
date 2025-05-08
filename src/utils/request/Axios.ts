@@ -84,7 +84,7 @@ export class RAxios {
    * @param options 请求项
    */
   request<T = any>(
-    config: AxiosRequestConfig,
+    config: CreateAxiosOptions,
     options?: RequestOptions,
   ): Promise<T> {
     let conf: CreateAxiosOptions = cloneDeep(config);

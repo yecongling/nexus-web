@@ -85,12 +85,12 @@ const Login: React.FC = () => {
         case HttpCodeEnum.SUCCESS:
           {
             // 没有配置首页地址默认跳到第一个菜单
-            const { token, refreshToken, roleId } = data;
+            const { accessToken, refreshToken, roleId } = data;
 
-            userStore.login(values.username, token, refreshToken, roleId);
+            userStore.login(values.username, accessToken, refreshToken, roleId);
             let { homePath } = data;
             // 登录成功根据角色获取菜单
-            const menu = await commonService.getMenuListByRoleId(roleId, token);
+            const menu = await commonService.getMenuListByRoleId(roleId, accessToken);
             setMenus(menu);
             // 判断是否配置了默认跳转的首页地址
             if (!homePath) {

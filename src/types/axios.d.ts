@@ -26,4 +26,6 @@ export interface RequestOptions {
   joinTime?: boolean;
   // 是否加密数据 1 加密 0 不加密 默认1
   encrypt?: number;
+  // 是否跳过认证拦截器，默认false
+  skipAuthInterceptor?: boolean;
 }

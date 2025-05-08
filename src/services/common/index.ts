@@ -78,7 +78,7 @@ export const commonService: ICommonService = {
         url: CommonApi.refreshToken,
         data: { refreshToken },
       },
-      { successMessageMode: 'none' },
+      { successMessageMode: 'none', skipAuthInterceptor: true },
     );
   },
 };

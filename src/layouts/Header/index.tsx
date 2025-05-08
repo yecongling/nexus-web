@@ -84,7 +84,7 @@ const Header: React.FC = memo(() => {
           </Badge>
           <Dropdown
             placement="bottomRight"
-            dropdownRender={() => <MessageBox />}
+            popupRender={() => <MessageBox />}
           >
             <Badge count={5}>
               <BellOutlined style={{ cursor: 'pointer', fontSize: '18px' }} />
