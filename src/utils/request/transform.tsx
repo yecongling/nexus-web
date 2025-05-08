@@ -18,6 +18,13 @@ import { isString } from '../is';
 import { encrypt } from '../encrypt';
 import type React from 'react';
 import { useUserStore } from '@/stores/userStore';
+import { HttpRequest } from '.';
+import { commonService } from '@/services/common';
+
+// 标记是否正在刷新token
+let isRefreshing = false;
+// 存储等待的请求
+const refreshSubscribers: ((token: string) => void)[] = [];
 
 export interface CreateAxiosOptions extends AxiosRequestConfig {
   authenticationScheme?: string;
@@ -90,7 +97,6 @@ export const transform: AxiosTransform = {
     res: AxiosResponse<Response>,
     options: RequestOptions,
   ) => {
-    const userStore = useUserStore.getState();
     const { isTransformResponse, isReturnNativeResponse } = options;
     // 是否返回原生响应头
     if (isReturnNativeResponse) {
@@ -117,23 +123,11 @@ export const transform: AxiosTransform = {
       return rtn;
     }
     if (options.errorMessageMode === 'modal') {
-      if (code === HttpCodeEnum.RC401 || code === HttpCodeEnum.RC101) {
-        antdUtils.modal?.confirm({
-          title: '凭证失效',
-          content: '当前用户身份验证凭证已过期或无效，请重新登录！',
-          onOk() {
-            userStore.logout();
-            window.location.href = '/login';
-          },
-          okText: '确定',
-        });
-      } else {
-        antdUtils.modal?.error({
-          title: `服务异常（状态码：${code}）`,
-          content: msg,
-          okText: '确定',
-        });
-      }
+      antdUtils.modal?.error({
+        title: `服务异常（状态码：${code}）`,
+        content: msg,
+        okText: '确定',
+      });
     } else if (options.errorMessageMode === 'message') {
       antdUtils.message?.error(msg);
     }
@@ -208,7 +202,7 @@ export const transform: AxiosTransform = {
    */
   requestInterceptors: (config, options) => {
     const userStore = useUserStore.getState();
-    const token = options?.requestOptions?.tempToken || userStore.token;
+    const token = options?.requestOptions?.token || userStore.token;
     const cpt = options?.requestOptions?.encrypt;
     // 进行数据加密
     if (config.data && cpt === 1) {
@@ -270,10 +264,56 @@ export const transform: AxiosTransform = {
    * 响应错误处理(这种是针对后端服务有响应的，比如404之类的)
    * @param error
    */
-  responseInterceptorsCatch: (error: any) => {
+  responseInterceptorsCatch: async (error: any) => {
+    const userStore = useUserStore.getState();
+    const config = error.config;
     const err: string = error?.toString?.() ?? '';
     const result = error.response?.data ?? {};
     const { code: responseCode, message: responseMessage } = result;
+    // 判断responseCode是否为401(即token失效)
+    if (responseCode === HttpCodeEnum.RC401) {
+      // 判断是否正在刷新token
+      if (!isRefreshing) {
+        isRefreshing = true;
+        try {
+          // 调用刷新token的接口
+          const newToken = await commonService.refreshToken(
+            userStore.refreshToken,
+          );
+          // 更新token到store
+          userStore.setToken(newToken);
+
+          // 执行等待的请求
+          for (const subscriber of refreshSubscribers) {
+            subscriber(newToken);
+          }
+          // 重新发起原始请求
+          return HttpRequest.request({ ...config }, { token: newToken });
+        } catch (refreshError) {
+          // 刷新 token 失败，跳转登录页
+          antdUtils.modal?.confirm({
+            title: '凭证失效',
+            content: '当前用户身份验证凭证已过期或无效，请重新登录！',
+            onOk() {
+              userStore.logout();
+              window.location.href = '/login';
+            },
+            okText: '确定',
+          });
+          return Promise.reject(refreshError);
+        } finally {
+          isRefreshing = false;
+        }
+      } else {
+        // 正在刷新token，将请求加入队列
+        return new Promise((resolve) => {
+          refreshSubscribers.push((token: string) => {
+            resolve(HttpRequest.post({ ...config }, { token: token }));
+          });
+        });
+      }
+    }
+
     const { code, message } = error || {};
     let errMessage: string | React.ReactNode = '';
     if (responseCode === HttpCodeEnum.RC404 && responseMessage) {

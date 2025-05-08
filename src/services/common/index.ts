@@ -10,6 +10,11 @@ enum CommonApi {
    * 退出登录
    */
   logout = '/logout',
+
+  /**
+   * 刷新token
+   */
+  refreshToken = '/refreshToken',
 }
 
 /**
@@ -28,6 +33,12 @@ interface ICommonService {
    * @param token 用户token
    */
   logout(token: string): Promise<boolean>;
+
+  /**
+   * 刷新token
+   * @param refreshToken 刷新token
+   */
+  refreshToken(refreshToken: string): Promise<string>;
 }
 
 /**
@@ -45,7 +56,7 @@ export const commonService: ICommonService = {
         url: CommonApi.getMenuListByRoleId,
         params: { roleId },
       },
-      { successMessageMode: 'none', tempToken: token },
+      { successMessageMode: 'none', token },
     );
   },
 
@@ -55,5 +66,19 @@ export const commonService: ICommonService = {
    */
   logout(token: string): Promise<boolean> {
     return HttpRequest.post({ url: CommonApi.logout, params: { token } });
+  },
+
+  /**
+   * 刷新token
+   * @param refreshToken 刷新token
+   */
+  refreshToken(refreshToken: string): Promise<string> {
+    return HttpRequest.post(
+      {
+        url: CommonApi.refreshToken,
+        data: { refreshToken },
+      },
+      { successMessageMode: 'none' },
+    );
   },
 };

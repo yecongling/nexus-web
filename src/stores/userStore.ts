@@ -7,10 +7,14 @@ interface UserState {
   isLogin: boolean;
   homePath: string;
   token: string;
+  // 刷新token
+  refreshToken: string;
   role: string;
+  setToken: (token: string) => void;
   login: (
     loginUser: string,
     token: string,
+    refreshToken: string,
     role: string,
   ) => void;
   logout: () => void;
@@ -25,9 +29,11 @@ export const useUserStore = create<UserState>()(
       isLogin: false,
       homePath: '/home',
       token: '',
+      refreshToken: '',
       role: '',
-      login: (loginUser = '', token = '', role = '') =>
-        set({ loginUser, isLogin: true, token, role }),
+      login: (loginUser = '', token = '', refreshToken = '', role = '') =>
+        set({ loginUser, isLogin: true, token, refreshToken, role }),
+      setToken: (token: string) => set({ token }),
       logout: () =>
         set({
           loginUser: '',
