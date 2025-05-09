@@ -9,9 +9,9 @@ export interface ProjectModel {
   // 项目类型
   type: number;
   // 项目状态
-  status: number;
+  status?: number;
   // 项目优先级
-  priority: number;
+  priority?: number;
   // 日志级别
   logLevel: number;
   // 背景图

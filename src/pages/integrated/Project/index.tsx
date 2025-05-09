@@ -246,7 +246,7 @@ const Project: React.FC = () => {
   /**
    * 新增（编辑）项目确认
    */
-  const onModalOk = (project: ProjectModel) => {
+  const onModalOk = (project: Partial<ProjectModel>) => {
     // 首先确定是新增还是修改(有没有项目ID)
     if (project.id) {
       // 修改
@@ -356,15 +356,8 @@ const Project: React.FC = () => {
             </Card>
           )}
           {/* 项目列表 */}
-          {(result?.data || []).map((item: ProjectModel) => (
-            <ProjectCard
-              key={item.id}
-              id={item.id}
-              name={item.name}
-              background={item.background}
-              type={item.type}
-              onEditProject={editProject}
-            />
+          {(result || []).map((item: ProjectModel) => (
+            <ProjectCard key={item.id} project={item} onRefresh={refetch} />
           ))}
         </div>
       </div>

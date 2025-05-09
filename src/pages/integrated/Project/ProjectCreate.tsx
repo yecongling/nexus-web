@@ -1,7 +1,7 @@
 import DragModal from '@/components/modal/DragModal';
 import type { ProjectModel } from '@/services/integrated/project/types';
 import { ApartmentOutlined, ArrowRightOutlined } from '@ant-design/icons';
-import { Button, Form, Input, Space, type InputRef } from 'antd';
+import { Button, Input, Select, Space, type InputRef } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import { memo, useRef, useState } from 'react';
 import clsx from 'clsx';
@@ -12,11 +12,15 @@ import clsx from 'clsx';
  */
 const ProjectInfoModal: React.FC<ProjectInfoModalProps> = memo(
   ({ open, onOk, onCancel, onCreateFromTemplate }) => {
-    // 项目表单数据
-    const [form] = Form.useForm();
     const inputRef = useRef<InputRef>(null);
-
+    // 项目类型
     const [type, setType] = useState<number>(1);
+    // 项目名称
+    const [name, setName] = useState<string>('');
+    // 项目描述
+    const [description, setDescription] = useState<string>('');
+    // 日志级别
+    const [logLevel, setLogLevel] = useState<number>(1);
 
     /**
      * 选择类型
@@ -30,18 +34,13 @@ const ProjectInfoModal: React.FC<ProjectInfoModalProps> = memo(
      * 点击确认的回调
      */
     const handleOk = () => {
-      // 先保存数据
-      form
-        .validateFields()
-        .then((values) => {
-          // 然后调用ok
-          onOk(values);
-        })
-        .catch((errorInfo) => {
-          // 滚动并聚焦到第一个错误字段
-          form.scrollToField(errorInfo.errorFields[0].name);
-          form.focusField(errorInfo.errorFields[0].name);
-        });
+      const data = {
+        type,
+        name,
+        description,
+        logLevel,
+      };
+      onOk(data);
     };
 
     return (
@@ -113,7 +112,7 @@ const ProjectInfoModal: React.FC<ProjectInfoModalProps> = memo(
                         <ApartmentOutlined className="w-4 h-4 text-[#ffffffe5]!" />
                       </div>
                       <div className="text-[#354052] mt-2 mb-0.5 text-[13px] font-semibold leading-4">
-                        集成应用
+                        接口应用
                       </div>
                       <div className="text-[#676f83] text-[12px] font-normal leading-4">
                         内置高性能调用的数据调度
@@ -132,7 +131,7 @@ const ProjectInfoModal: React.FC<ProjectInfoModalProps> = memo(
                         <ApartmentOutlined className="w-4 h-4 text-[#ffffffe5]!" />
                       </div>
                       <div className="text-[#354052] mt-2 mb-0.5 text-[13px] font-semibold leading-4">
-                        集成应用
+                        三方应用
                       </div>
                       <div className="text-[#676f83] text-[12px] font-normal leading-4">
                         内置高性能调用的数据调度
@@ -153,7 +152,7 @@ const ProjectInfoModal: React.FC<ProjectInfoModalProps> = memo(
                         <ApartmentOutlined className="w-4 h-4 text-[#ffffffe5]!" />
                       </div>
                       <div className="text-[#354052] mt-2 mb-0.5 text-[13px] font-semibold leading-4">
-                        集成应用
+                        工作流
                       </div>
                       <div className="text-[#676f83] text-[12px] font-normal leading-4">
                         内置高性能调用的数据调度
@@ -172,6 +171,7 @@ const ProjectInfoModal: React.FC<ProjectInfoModalProps> = memo(
                     <div className="relative w-full">
                       <Input
                         ref={inputRef}
+                        onChange={(e) => setName(e.target.value)}
                         className="w-full h-10"
                         placeholder="给你的应用起一个名字"
                         size="middle"
@@ -187,16 +187,39 @@ const ProjectInfoModal: React.FC<ProjectInfoModalProps> = memo(
                     <span className="">描述</span>
                     <span>（可选）</span>
                   </div>
-                  <TextArea rows={3} placeholder="输入应用的描述" />
+                  <TextArea
+                    rows={3}
+                    placeholder="输入应用的描述"
+                    onChange={(e) => setDescription(e.target.value)}
+                  />
                 </div>
                 {/* 优先级 */}
                 {/* 日志级别 */}
                 <div>
-                  <Input
+                  <Select
+                    options={[
+                      {
+                        label: 'DEBUG',
+                        value: 1,
+                      },
+                      {
+                        label: 'INFO',
+                        value: 2,
+                      },
+                      {
+                        label: 'WARN',
+                        value: 3,
+                      },
+                      {
+                        label: 'ERROR',
+                        value: 4,
+                      },
+                    ]}
                     className="w-full h-10"
                     placeholder="日志级别"
                     size="middle"
                     allowClear
+                    onChange={(value) => setLogLevel(value)}
                     maxLength={20}
                   />
                 </div>
@@ -216,7 +239,11 @@ const ProjectInfoModal: React.FC<ProjectInfoModalProps> = memo(
                   <Button type="default" onClick={onCancel}>
                     取消
                   </Button>
-                  <Button type="primary" disabled onClick={handleOk}>
+                  <Button
+                    type="primary"
+                    disabled={name.trim().length === 0}
+                    onClick={handleOk}
+                  >
                     确定
                   </Button>
                 </Space>
@@ -265,7 +292,7 @@ export interface ProjectInfoModalProps {
    * 窗口确认按钮点击回调
    * @returns
    */
-  onOk: (project: ProjectModel) => void;
+  onOk: (project: Partial<ProjectModel>) => void;
   /**
    * 窗口取消按钮点击回调
    * @returns
