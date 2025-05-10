@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router';
 import GlobalConfigProvider from './GlobalConfigProvider';
 import './index.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import './i18n';
 
 const container = document.getElementById('root');
 if (container) {

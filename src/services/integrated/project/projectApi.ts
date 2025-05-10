@@ -51,7 +51,7 @@ export const projectService: IProjectService = {
   async getProjectList(
     searchParams: ProjectSearchParams,
   ): Promise<Record<string, any>> {
-    const response = await HttpRequest.post(
+    const response = await HttpRequest.get(
       {
         url: ProjectApi.getProjectList,
         params: searchParams,

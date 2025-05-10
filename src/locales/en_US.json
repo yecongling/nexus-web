@@ -1,0 +1,22 @@
+{
+  "login": {
+    "title": "login",
+    "username": "username",
+    "password": "password"
+  },
+  "common": {
+    "language": "language"
+  },
+  "engine": {
+    "project": {
+      "segment": {
+        "all": "all",
+        "integrated": "integrated",
+        "interface": "interface",
+        "tripartite": "tripartite"
+      },
+      "list": "Project List",
+      "createBy": "Create by me"
+    }
+  }
+}

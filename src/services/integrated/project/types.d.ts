@@ -40,4 +40,6 @@ export interface ProjectSearchParams {
   pageNum: number;
   // 每页条数
   pageSize: number;
+  // 是否是我创建的
+  isMine?: boolean;
 }

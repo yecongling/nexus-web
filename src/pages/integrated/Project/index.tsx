@@ -36,6 +36,7 @@ import ImportDsl from './ImportDsl';
 import React from 'react';
 import type { ProjectModalState } from './types';
 import { isEqual } from 'lodash-es';
+import { useTranslation } from 'react-i18next';
 const { Search } = Input;
 // 模版中心
 const ProjectTemplate = React.lazy(() => import('./ProjectTemplates'));
@@ -56,6 +57,7 @@ const closeAllModals = (
  */
 const Project: React.FC = () => {
   const { preferences } = usePreferencesStore();
+  const { t } = useTranslation();
   const { theme } = preferences;
 
   // 新增弹窗、模版弹窗、导入弹窗
@@ -82,22 +84,22 @@ const Project: React.FC = () => {
   // 分段控制器选项
   const segmentedOptions: SegmentedProps<number>['options'] = [
     {
-      label: '全部',
+      label: t('engine.project.segment.all'),
       value: 0,
       icon: <AppstoreOutlined />,
     },
     {
-      label: '集成项目',
+      label: t('engine.project.segment.integrated'),
       value: 1,
       icon: <ApartmentOutlined />,
     },
     {
-      label: '接口项目',
+      label: t('engine.project.segment.interface'),
       value: 2,
       icon: <ApiOutlined />,
     },
     {
-      label: '三方项目',
+      label: t('engine.project.segment.tripartite'),
       value: 3,
       icon: <SolutionOutlined />,
     },
@@ -152,6 +154,28 @@ const Project: React.FC = () => {
       type: value,
     });
   };
+
+  /**
+   * 我的项目切换
+   * @param value 值
+   */
+  const onCreatedChange = (value: boolean) => {
+    setSearchParams({
+      ...searchParams,
+      isMine: value,
+    });
+  };
+
+  /**
+   * 标签切换
+   * @param value 标签值
+   */
+  const onTagsChange = (value: string[]) => {};
+
+  /**
+   * 渲染标签
+   * @returns 渲染下拉框
+   */
 
   const renderDropDown = () => {
     return (
@@ -283,7 +307,7 @@ const Project: React.FC = () => {
   return (
     <>
       <div className="flex flex-col h-full pt-2 pr-4 pl-4 bg-[#f5f6f7]">
-        <div className="mb-[8px] text-[18px] font-bold">项目列表</div>
+        <div className="mb-[8px] text-[18px] font-bold">{t('engine.project.list')}</div>
         {/* 卡片列表和筛选框 */}
         <div className="mb-[8px]">
           <div className="w-[600px] my-4 mx-auto">
@@ -305,7 +329,9 @@ const Project: React.FC = () => {
             />
             <div>
               {/* 区分我创建的、标签页 */}
-              <Checkbox>我创建的</Checkbox>
+              <Checkbox onChange={(e) => onCreatedChange(e.target.checked)}>
+                我创建的
+              </Checkbox>
               <Dropdown popupRender={renderDropDown} trigger={['click']}>
                 <Button color="default" variant="filled">
                   <Space>
