@@ -3,12 +3,17 @@ import { useEffect, useState } from 'react';
 import screenfull from 'screenfull';
 import { FullscreenExitOutlined, FullscreenOutlined } from '@ant-design/icons';
 import { Tooltip, message } from 'antd';
+import { useTranslation } from 'react-i18next';
 
 /**
  * 全屏展示组件
  * @returns 组件内容
  */
 const FullScreen: React.FC = () => {
+  const { t } = useTranslation();
+  /**
+   * 全屏展示
+   */
   const [fullScreen, setFullScreen] = useState<boolean>(
     screenfull.isFullscreen,
   );
@@ -27,7 +32,7 @@ const FullScreen: React.FC = () => {
 
   return (
     <>
-      <Tooltip title="全屏" placement="bottom">
+      <Tooltip title={t('header.fullScreen')} placement="bottom">
         {fullScreen ? (
           <FullscreenExitOutlined
             style={{ cursor: 'pointer', fontSize: '18px' }}

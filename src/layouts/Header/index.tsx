@@ -15,6 +15,7 @@ import FullScreen from './component/FullScreen';
 import BreadcrumbNav from './component/BreadcrumbNav';
 import UserDropdown from './component/UserDropdown';
 import { usePreferencesStore } from '@/stores/store';
+import { useTranslation } from 'react-i18next';
 
 const Setting = React.lazy(() => import('./component/Setting'));
 
@@ -26,6 +27,7 @@ const Header: React.FC = memo(() => {
   // 从全局状态中获取配置是否开启面包屑、图标
   const { preferences, updatePreferences } = usePreferencesStore();
   const { breadcrumb } = preferences;
+  const { t } = useTranslation();
 
   /**
    * 跳转到github
@@ -58,7 +60,7 @@ const Header: React.FC = memo(() => {
         >
           <Input
             variant="filled"
-            placeholder="输入内容查询"
+            placeholder={t('common.input.search')}
             suffix={
               <SearchOutlined style={{ cursor: 'pointer', fontSize: '18px' }} />
             }
@@ -70,7 +72,7 @@ const Header: React.FC = memo(() => {
               onClick={routeGitHub}
             />
           </Tooltip>
-          <Tooltip placement="bottom" title="锁屏">
+          <Tooltip placement="bottom" title={t('header.lock')}>
             <LockOutlined
               style={{ cursor: 'pointer', fontSize: '18px' }}
               onClick={() => {
@@ -90,7 +92,7 @@ const Header: React.FC = memo(() => {
               <BellOutlined style={{ cursor: 'pointer', fontSize: '18px' }} />
             </Badge>
           </Dropdown>
-          <Tooltip placement="bottomRight" title="系统设置">
+          <Tooltip placement="bottomRight" title={t('header.setting')}>
             <SettingOutlined
               style={{ cursor: 'pointer', fontSize: '18px' }}
               onClick={() => setOpenSetting(true)}

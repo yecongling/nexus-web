@@ -15,6 +15,7 @@ import React, { memo } from 'react';
 import { usePreferencesStore } from '@/stores/store';
 import { commonService } from '@/services/common';
 import { useUserStore } from '@/stores/userStore';
+import { useTranslation } from 'react-i18next';
 
 const { useToken } = theme;
 
@@ -27,6 +28,7 @@ const UserDropdown: React.FC = memo(() => {
   const userStore = useUserStore();
   const { token } = useToken();
   const { modal } = App.useApp();
+  const { t } = useTranslation();
 
   const navigate = useNavigate();
 
@@ -34,12 +36,12 @@ const UserDropdown: React.FC = memo(() => {
   const items: MenuProps['items'] = [
     {
       key: 'doc',
-      label: '文档',
+      label: t('header.userDropdown.doc'),
       icon: <FileMarkdownOutlined />,
     },
     {
       key: '1',
-      label: '个人中心',
+      label: t('header.userDropdown.personal'),
       icon: <UserOutlined />,
       disabled: false,
       onClick: () => {
@@ -48,7 +50,7 @@ const UserDropdown: React.FC = memo(() => {
     },
     {
       key: 'help',
-      label: '问题 & 帮助',
+      label: t('header.userDropdown.support'),
       icon: <QuestionCircleFilled />,
       popupStyle: {
         width: 220,
@@ -57,7 +59,7 @@ const UserDropdown: React.FC = memo(() => {
       children: [
         {
           key: 'help1',
-          label: '问题反馈',
+          label: t('header.userDropdown.feedback'),
           icon: <QuestionCircleFilled />,
           onClick: () => {
             // 跳转到问题反馈
@@ -65,7 +67,7 @@ const UserDropdown: React.FC = memo(() => {
         },
         {
           key: 'help2',
-          label: '常见问题',
+          label: t('header.userDropdown.question'),
           icon: <QuestionCircleFilled />,
           onClick: () => {
             // 跳转到常见问题
@@ -78,7 +80,7 @@ const UserDropdown: React.FC = memo(() => {
     },
     {
       key: '3',
-      label: '刷新缓存',
+      label: t('header.userDropdown.refresh'),
       icon: <SyncOutlined />,
       onClick: () => {
         // 后端的缓存信息（相当于把缓存数据刷新）
@@ -89,7 +91,7 @@ const UserDropdown: React.FC = memo(() => {
     },
     {
       key: 'lock',
-      label: '锁屏',
+      label: t('header.lock'),
       icon: <LockOutlined />,
       onClick: () => {
         updatePreferences('widget', 'lockScreenStatus', true);
@@ -100,16 +102,15 @@ const UserDropdown: React.FC = memo(() => {
     },
     {
       key: '4',
-      label: '退出登录',
+      label: t('header.userDropdown.logout'),
       icon: <LogoutOutlined />,
       disabled: false,
       danger: true,
       onClick: () => {
         modal.confirm({
-          title: '退出登录',
+          title: t('header.userDropdown.logout'),
           icon: <ExclamationCircleOutlined />,
-          content: '确认退出登录吗？',
-          okText: '确认',
+          content: t('login.confirmLogout'),
           onOk: () => {
             const token = userStore.token;
 
@@ -119,13 +120,12 @@ const UserDropdown: React.FC = memo(() => {
                 // 清空token
                 userStore.logout();
                 // 修改回document.title
-                document.title = 'fusion - 登录';
+                document.title = 'fusion';
                 // 退出到登录页面
                 navigate('/login', { replace: true });
               }
             });
           },
-          cancelText: '取消',
         });
       },
     },

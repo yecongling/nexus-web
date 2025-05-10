@@ -20,6 +20,7 @@ import type React from 'react';
 import { useUserStore } from '@/stores/userStore';
 import { HttpRequest } from '.';
 import { commonService } from '@/services/common';
+import { t } from 'i18next';
 
 // 标记是否正在刷新token
 let isRefreshing = false;
@@ -111,7 +112,7 @@ export const transform: AxiosTransform = {
     // 错误的时候返回
     const { data } = res;
     if (!data) {
-      throw new Error('api接口请求失败，没有返回数据');
+      throw new Error(t('common.noData'));
     }
     const { code, data: rtn, message: msg } = data;
     // 系统默认200状态码为正常成功请求，可在枚举中配置自己的
@@ -126,14 +127,14 @@ export const transform: AxiosTransform = {
     }
     if (options.errorMessageMode === 'modal') {
       antdUtils.modal?.error({
-        title: `服务异常（状态码：${code}）`,
+        title: `${t('common.serverException')},${t('common.statusCode')}(${code})`,
         content: msg,
-        okText: '确定',
+        okText: t('common.button.confirm'),
       });
     } else if (options.errorMessageMode === 'message') {
       antdUtils.message?.error(msg);
     }
-    throw new Error(msg || '接口请求失败');
+    throw new Error(msg || t('common.requestFailed'));
   },
 
   // 请求之前处理config
@@ -240,15 +241,15 @@ export const transform: AxiosTransform = {
     const code = (error as AxiosError).status;
     let errMessage = '';
     if (code === HttpCodeEnum.RC502) {
-      errMessage = '接口请求失败，请检查接口服务是否可正常访问！';
+      errMessage = t('common.requestFailed');
     } else if (code === HttpCodeEnum.RC500) {
-      errMessage = '接口服务器内部错误，请稍后再试！';
+      errMessage = `${t('common.serverException')},${t('common.retry')}`;
     }
     if (errMessage) {
       antdUtils.modal?.error({
-        title: `服务异常，状态码(${code})`,
+        title: `${t('common.serverException')},${t('common.statusCode')}(${code})`,
         content: errMessage,
-        okText: '确定',
+        okText: t('common.button.confirm'),
       });
     }
     return Promise.reject(error);
@@ -269,15 +270,15 @@ export const transform: AxiosTransform = {
       responseCode === HttpCodeEnum.RC401
     ) {
       antdUtils.modal?.confirm({
-        title: '凭证失效',
-        content: '当前用户身份验证凭证已过期或无效，请重新登录！',
+        title: t('login.loginValid'),
+        content: t('login.retryLogin'),
         onOk() {
           userStore.logout();
           window.location.href = '/login';
         },
-        okText: '确定',
+        okText: t('common.button.confirm'),
       });
-      return Promise.reject('凭证失效');
+      return Promise.reject(t('login.loginValid'));
     }
     // 判断responseCode是否为401(即token失效),添加_retry属性防止重复刷新token
     if (
@@ -295,7 +296,7 @@ export const transform: AxiosTransform = {
               .refreshToken(userStore.refreshToken)
               .then((newToken: string) => {
                 if (!newToken) {
-                  throw new Error('刷新token失败');
+                  throw new Error('refresh token failed');
                 }
                 // 更新token到store
                 userStore.setToken(newToken);
@@ -311,13 +312,13 @@ export const transform: AxiosTransform = {
         } catch (refreshError) {
           // 刷新 token 失败，跳转登录页
           antdUtils.modal?.confirm({
-            title: '凭证失效',
-            content: '当前用户身份验证凭证已过期或无效，请重新登录！',
+            title: t('login.loginValid'),
+            content: t('login.retryLogin'),
             onOk() {
               userStore.logout();
               window.location.href = '/login';
             },
-            okText: '确定',
+            okText: t('common.button.confirm'),
           });
           return Promise.reject(refreshError);
         } finally {
@@ -354,18 +355,18 @@ export const transform: AxiosTransform = {
         </>
       );
     } else if (code === 'ECONNABORTED' && message.indexOf('timeout') !== -1) {
-      errMessage = '接口请求超时，请稍后重试';
+      errMessage = t('common.requestTimeout');
     } else if (err?.includes('Network Error')) {
-      errMessage = '网络异常';
+      errMessage = t('common.networkException');
     } else if (responseCode && responseMessage) {
       errMessage = responseMessage;
     }
 
     if (errMessage) {
       antdUtils.modal?.error({
-        title: `服务异常（状态码：${responseCode || code}）`,
+        title: `${t('common.serverException')}（${t('common.statusCode')}：${responseCode || code}）`,
         content: errMessage,
-        okText: '确定',
+        okText: t('common.button.confirm'),
       });
       return Promise.reject(error);
     }

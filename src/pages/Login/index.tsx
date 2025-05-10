@@ -18,6 +18,7 @@ import { useMenuStore } from '@/stores/store';
 import { useQuery } from '@tanstack/react-query';
 import { commonService } from '@/services/common';
 import { useUserStore } from '@/stores/userStore';
+import { useTranslation } from 'react-i18next';
 
 /**
  * 登录模块
@@ -29,6 +30,7 @@ const Login: React.FC = () => {
   const navigate = useNavigate();
   const { setMenus } = useMenuStore();
   const userStore = useUserStore();
+  const { t } = useTranslation();
   // 加载状态
   const [loading, setLoading] = useState<boolean>(false);
   // 验证码
@@ -90,7 +92,10 @@ const Login: React.FC = () => {
             userStore.login(values.username, accessToken, refreshToken, roleId);
             let { homePath } = data;
             // 登录成功根据角色获取菜单
-            const menu = await commonService.getMenuListByRoleId(roleId, accessToken);
+            const menu = await commonService.getMenuListByRoleId(
+              roleId,
+              accessToken,
+            );
             setMenus(menu);
             // 判断是否配置了默认跳转的首页地址
             if (!homePath) {
@@ -101,7 +106,7 @@ const Login: React.FC = () => {
               } else {
                 // 没有配置默认首页地址，也没有菜单，则提示错误
                 antdUtils.notification?.error({
-                  message: '登录失败',
+                  message: t('login.loginFail'),
                   description:
                     '没有配置默认首页地址，也没有菜单，请联系管理员！',
                 });
@@ -110,8 +115,8 @@ const Login: React.FC = () => {
             }
             userStore.setHomePath(homePath);
             antdUtils.notification?.success({
-              message: '登录成功',
-              description: '欢迎来到fusion!',
+              message: t('login.loginSuccess'),
+              description: t('login.welcome'),
             });
             // 跳转到首页
             navigate(homePath);
@@ -120,11 +125,15 @@ const Login: React.FC = () => {
         default:
           // 默认按登录失败处理
           antdUtils.modal?.error({
-            title: '登录失败',
+            title: t('login.loginFail'),
             content: (
               <>
-                <p>错误状态码:{code}</p>
-                <p>失败原因:{message}</p>
+                <p>
+                  {t('common.statusCode')}:{code}
+                </p>
+                <p>
+                  {t('common.reason')}:{message}
+                </p>
               </>
             ),
           });
@@ -145,7 +154,7 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className='w-full h-full flex flex-col'>
+    <div className="w-full h-full flex flex-col">
       {/* 标题 */}
       <div className="h-[80px] flex items-center ml-40">
         <div className="flex items-center">
@@ -166,8 +175,8 @@ const Login: React.FC = () => {
         <div className={styles['login-box']}>
           {/* 左边图案和标题 */}
           <div className={styles['login-left']}>
-            <div className="title mt-20">
-              <p className="text-[20px] m-0">
+            <div className="title mt-18">
+              <p className="text-[24px] m-0 mb-2">
                 <span
                   style={{
                     fontFamily:
@@ -175,7 +184,7 @@ const Login: React.FC = () => {
                     fontWeight: 700,
                   }}
                 >
-                  灵活、强大、集成、高效
+                  {t('login.description')}
                 </span>
               </p>
               <p className="text-[14px] mt-3 italic">FLEX AND STRONG</p>
@@ -185,7 +194,7 @@ const Login: React.FC = () => {
           <div className={styles['login-form']}>
             <div className="login-title">
               <p className="text-[28px] text-center m-0">
-                <span className="font-bold">用户登录</span>
+                <span className="font-bold">{t('login.title')}</span>
               </p>
             </div>
             <div className="form" style={{ marginTop: '40px' }}>
@@ -204,7 +213,9 @@ const Login: React.FC = () => {
               >
                 <Form.Item
                   name="username"
-                  rules={[{ required: true, message: '请输入用户名' }]}
+                  rules={[
+                    { required: true, message: t('login.enterUsername') },
+                  ]}
                 >
                   <Input
                     size="large"
@@ -212,19 +223,21 @@ const Login: React.FC = () => {
                     autoFocus
                     autoComplete="off"
                     allowClear
-                    placeholder="用户名：admin"
+                    // placeholder="用户名：admin"
                     prefix={<UserOutlined />}
                   />
                 </Form.Item>
                 <Form.Item
                   name="password"
-                  rules={[{ required: true, message: '请输入密码' }]}
+                  rules={[
+                    { required: true, message: t('login.enterPassword') },
+                  ]}
                 >
                   <Input.Password
                     size="large"
                     allowClear
                     autoComplete="off"
-                    placeholder="密码：123456qwe,."
+                    // placeholder="密码：123456qwe,."
                     prefix={<LockOutlined />}
                   />
                 </Form.Item>
@@ -234,12 +247,14 @@ const Login: React.FC = () => {
                       <Form.Item
                         name="captcha"
                         noStyle
-                        rules={[{ required: true, message: '请输入验证码' }]}
+                        rules={[
+                          { required: true, message: t('login.enterCaptcha') },
+                        ]}
                       >
                         <Input
                           size="large"
                           allowClear
-                          placeholder="输入右侧验证码"
+                          placeholder={t('login.enterCaptcha')}
                           prefix={<SecurityScanOutlined />}
                         />
                       </Form.Item>
@@ -262,7 +277,7 @@ const Login: React.FC = () => {
                 </Form.Item>
                 {/* 记住密码 */}
                 <Form.Item name="remember" valuePropName="checked">
-                  <Checkbox>记住密码</Checkbox>
+                  <Checkbox>{t('login.remember')}</Checkbox>
                 </Form.Item>
                 <Form.Item>
                   <Button
@@ -272,7 +287,7 @@ const Login: React.FC = () => {
                     type="primary"
                     htmlType="submit"
                   >
-                    登录
+                    {t('login.login')}
                   </Button>
                 </Form.Item>
               </Form>
@@ -282,7 +297,7 @@ const Login: React.FC = () => {
       </div>
       <div className="w-[440px] my-0 mx-auto py-[20px] px-0">
         <p className="text-center mb-2">
-          Copyright@2025 499475142@qq.com 版权所有
+          Copyright@2025 499475142@qq.com All Rights Reserved
         </p>
         <a
           target="_blank"

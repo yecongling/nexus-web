@@ -307,15 +307,17 @@ const Project: React.FC = () => {
   return (
     <>
       <div className="flex flex-col h-full pt-2 pr-4 pl-4 bg-[#f5f6f7]">
-        <div className="mb-[8px] text-[18px] font-bold">{t('engine.project.list')}</div>
+        <div className="mb-[8px] text-[18px] font-bold">
+          {t('engine.project.list')}
+        </div>
         {/* 卡片列表和筛选框 */}
         <div className="mb-[8px]">
           <div className="w-[600px] my-4 mx-auto">
             {/* 检索 */}
             <Search
-              enterButton="检索"
+              enterButton={t('common.input.search')}
               allowClear
-              placeholder="请输入检索内容"
+              placeholder={t('common.input.placeHolder')}
               ref={searchRef}
               size="large"
               onSearch={handleSearch}
@@ -330,13 +332,13 @@ const Project: React.FC = () => {
             <div>
               {/* 区分我创建的、标签页 */}
               <Checkbox onChange={(e) => onCreatedChange(e.target.checked)}>
-                我创建的
+                {t('engine.project.createBy')}
               </Checkbox>
               <Dropdown popupRender={renderDropDown} trigger={['click']}>
                 <Button color="default" variant="filled">
                   <Space>
                     <TagOutlined />
-                    全部标签
+                    {t('engine.project.allTags')}
                     <DownOutlined />
                   </Space>
                 </Button>
@@ -353,7 +355,7 @@ const Project: React.FC = () => {
               classNames={{ body: 'grow p-2! rounded-t-xl' }}
             >
               <div className="px-6 pt-2 pb-1 text-xs font-medium leading-[18px] text-[#676f83]">
-                创建应用
+                {t('engine.project.newProject.createApp')}
               </div>
               <button
                 className="w-full flex items-center mb-1 px-6 py-[7px] rounded-lg text-[13px] font-medium leading-[18px] text-[#676f83] cursor-pointer hover:bg-[#f5f6f7] hover:text-[#1e1e2d] transition-all duration-200 ease-in-out"
@@ -361,7 +363,7 @@ const Project: React.FC = () => {
                 type="button"
               >
                 <PlusOutlined className="text-[#676f83] shrink-0 mr-2 w-4 h-4" />
-                创建空白应用
+                {t('engine.project.newProject.startFromBlank')}
               </button>
               <button
                 className="w-full flex items-center px-6 py-[7px] rounded-lg text-[13px] font-medium leading-[18px] text-[#676f83] cursor-pointer hover:bg-[#f5f6f7] hover:text-[#1e1e2d] transition-all duration-200 ease-in-out"
@@ -369,7 +371,7 @@ const Project: React.FC = () => {
                 type="button"
               >
                 <FileAddFilled className="text-[#676f83] shrink-0 mr-2 w-4 h-4" />
-                从应用模板创建
+                {t('engine.project.newProject.startFromTemplate')}
               </button>
               <button
                 className="w-full flex items-center px-6 py-[7px] rounded-lg text-[13px] font-medium leading-[18px] text-[#676f83] cursor-pointer hover:bg-[#f5f6f7] hover:text-[#1e1e2d] transition-all duration-200 ease-in-out"
@@ -377,7 +379,7 @@ const Project: React.FC = () => {
                 type="button"
               >
                 <ExportOutlined className="text-[#676f83] shrink-0 mr-2 w-4 h-4" />
-                导入DSL文件
+                {t('engine.project.newProject.importFromDSL')}
               </button>
             </Card>
           )}

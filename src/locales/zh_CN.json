@@ -4,8 +4,17 @@
     "username": "用户名",
     "password": "密码"
   },
+  "header": {
+    "setting": "系统设置",
+    "lock": "锁屏",
+    "logout": "退出登录"
+  },
   "common": {
-    "language": "语言"
+    "language": "语言",
+    "input": {
+      "search": "搜索",
+      "placeHolder": "请输出检索内容"
+    }
   },
   "engine": {
     "project": {
@@ -16,7 +25,14 @@
         "tripartite": "三方项目"
       },
       "list": "项目列表",
-      "createBy": "我创建的"
+      "createBy": "我创建的",
+      "allTags": "全部标签"
+    },
+    "newProject": {
+      "createApp": "创建应用",
+      "startFromBlank": "创建空白项目",
+      "startFromTemplate": "从应用模板创建",
+      "importFromDSL": "导入 DSL"
     }
   }
 }
