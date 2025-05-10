@@ -41,7 +41,7 @@ const UserDropdown: React.FC = memo(() => {
     },
     {
       key: '1',
-      label: t('header.userDropdown.personal'),
+      label: t('header.userDropdown.profile'),
       icon: <UserOutlined />,
       disabled: false,
       onClick: () => {
