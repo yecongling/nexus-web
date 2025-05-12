@@ -1,0 +1,18 @@
+const translation = {
+  header: {
+    setting: 'Setting',
+    lock: 'Lock',
+    logout: 'quit',
+    fullScreen: 'Full Screen',
+    userDropdown: {
+      doc: 'Docs',
+      profile: 'Profile',
+      support: 'Support',
+      feedback: 'Feedback',
+      question: 'Question',
+      refresh: 'Refresh Cache',
+      logout: 'Log out',
+    },
+  },
+};
+export default translation;

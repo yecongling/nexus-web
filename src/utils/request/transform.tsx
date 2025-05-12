@@ -305,7 +305,10 @@ export const transform: AxiosTransform = {
                 for (const subscriber of refreshSubscribers) {
                   subscriber(newToken);
                 }
-                // 重新发起原始请求
+                // 重新发起原始请求(这里需要注意一点的是，内部的url可能是有前缀的，所以需要把前缀去掉)
+                if (config.url?.startsWith('/api')) {
+                  config.url = config.url.slice(4);
+                }
                 return HttpRequest.request({ ...config }, { token: newToken });
               }),
           );

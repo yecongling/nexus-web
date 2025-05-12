@@ -1,0 +1,36 @@
+import i18n from 'i18next';
+import { LanguagesSupported } from './language';
+import { initReactI18next } from 'react-i18next';
+
+/**
+ * 加载语言资源
+ * @param lang 语言
+ */
+const loadLangResources = (lang: string) => ({
+  translation: {
+    common: require(`./${lang}/common`).default,
+    layout: require(`./${lang}/layout`).default,
+    menu: require(`./${lang}/menu`).default,
+  },
+});
+
+type Resource = Record<string, ReturnType<typeof loadLangResources>>;
+
+/**
+ * 加载支持的语言资源
+ */
+export const resources = LanguagesSupported.reduce<Resource>((acc, lang) => {
+  acc[lang] = loadLangResources(lang);
+  return acc;
+}, {});
+
+i18n.use(initReactI18next).init({
+  lng: 'en-US',
+  fallbackLng: 'en-US',
+  resources,
+  interpolation: {
+    escapeValue: false,
+  },
+});
+export const changeLanguage = i18n.changeLanguage;
+export default i18n;
