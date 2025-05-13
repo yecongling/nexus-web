@@ -28,6 +28,7 @@ import {
 import type { RouteItem } from '@/types/route';
 import { getIcon, getOpenKeys, searchRoute } from '@/utils/utils';
 import { useMenuStore, usePreferencesStore } from '@/stores/store';
+import { useTranslation } from 'react-i18next';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -41,6 +42,7 @@ const LeftMenu: React.FC = memo(() => {
   const { menus } = useMenuStore();
   const { pathname } = useLocation();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   // 定义一些状态变量
   const [menuList, setMenuList] = useState<MenuItem[]>([]);
   const [loading, setLoading] = useState(false);
@@ -63,7 +65,7 @@ const LeftMenu: React.FC = memo(() => {
   }, [mode, semiDarkSidebar]);
 
   const getItem = (
-    label: React.ReactNode,
+    label: any,
     key?: React.Key | null,
     icon?: React.ReactNode,
     children?: MenuItem[],
@@ -73,7 +75,7 @@ const LeftMenu: React.FC = memo(() => {
       key,
       icon,
       children,
-      label,
+      label: t(label),
       type,
     } as MenuItem;
   };
