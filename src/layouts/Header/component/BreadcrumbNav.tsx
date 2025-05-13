@@ -5,6 +5,7 @@ import { Link, useLocation } from 'react-router';
 import type { RouteItem } from '@/types/route';
 import { getIcon } from '@/utils/utils';
 import { useMenuStore, usePreferencesStore } from '@/stores/store';
+import { t } from 'i18next';
 
 /**
  * 面包屑
@@ -71,7 +72,7 @@ function patchBreadcrumb(
         pth.title = (
           <>
             {joinIcon && item.meta?.icon && getIcon(item.meta.icon)}
-            <span style={{ padding: '0 4px' }}>{item.meta?.title}</span>
+            <span style={{ padding: '0 4px' }}>{t(item.meta?.title as string)}</span>
           </>
         );
         pth.key = item.path;
@@ -79,7 +80,7 @@ function patchBreadcrumb(
           pth.title = (
             <>
               {joinIcon && item.meta?.icon && getIcon(item.meta.icon)}
-              <Link to={item.path}>{item.meta?.title}</Link>
+              <Link to={item.path}>{t(item.meta?.title as string)}</Link>
             </>
           );
         }

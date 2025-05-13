@@ -32,7 +32,7 @@ const FullScreen: React.FC = () => {
 
   return (
     <>
-      <Tooltip title={t('header.fullScreen')} placement="bottom">
+      <Tooltip title={t('layout.header.fullScreen')} placement="bottom">
         {fullScreen ? (
           <FullscreenExitOutlined
             style={{ cursor: 'pointer', fontSize: '18px' }}
