@@ -1,7 +1,10 @@
 import { ConfigProvider, App as AntdApp } from 'antd';
 import App from './App';
 import zhCN from 'antd/locale/zh_CN';
+import enUS from 'antd/locale/en_US';
 import 'dayjs/locale/zh-cn';
+import 'dayjs/locale/en';
+import dayjs from 'dayjs';
 import { usePreferencesStore } from './stores/store';
 /**
  * 全局配置组件（为了将antd的ConfigProvider和App嵌套，不然App中的antdUtil中的组件无法使用全局配置）
@@ -9,7 +12,10 @@ import { usePreferencesStore } from './stores/store';
 const GlobalConfigProvider = () => {
   // 获取数据的钩子函数
   const { preferences } = usePreferencesStore();
-  const { theme } = preferences;
+  const { theme, app } = preferences;
+  const { locale } = app;
+
+  dayjs.locale(locale === 'zh-CN' ? 'zh-cn' : 'en');
   return (
     <ConfigProvider
       theme={{
@@ -29,7 +35,7 @@ const GlobalConfigProvider = () => {
           },
         },
       }}
-      locale={zhCN}
+      locale={locale === 'zh-CN' ? zhCN : enUS}
     >
       <AntdApp style={{ height: '100%' }}>
         <App />

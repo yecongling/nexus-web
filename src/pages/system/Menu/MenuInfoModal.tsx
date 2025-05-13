@@ -206,7 +206,7 @@ const MenuInfoModal: React.FC<MenuInfoModalProps> = ({
             <TreeSelect
               showSearch
               style={{ width: '100%' }}
-              dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+              styles={{ popup: { root: { maxHeight: 400, overflow: 'auto' } } }}
               placeholder="请选择上级目录"
               treeData={directoryData}
             />
