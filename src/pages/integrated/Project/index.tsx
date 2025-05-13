@@ -317,7 +317,7 @@ const Project: React.FC = () => {
             <Search
               enterButton={t('common.operation.search')}
               allowClear
-              placeholder={t('common.placeHolder')}
+              placeholder={t('common.placeholder')}
               ref={searchRef}
               size="large"
               onSearch={handleSearch}
