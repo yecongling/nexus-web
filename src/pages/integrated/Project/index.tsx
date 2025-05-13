@@ -84,22 +84,22 @@ const Project: React.FC = () => {
   // 分段控制器选项
   const segmentedOptions: SegmentedProps<number>['options'] = [
     {
-      label: t('engine.project.segment.all'),
+      label: t('project.segment.all'),
       value: 0,
       icon: <AppstoreOutlined />,
     },
     {
-      label: t('engine.project.segment.integrated'),
+      label: t('project.segment.integrated'),
       value: 1,
       icon: <ApartmentOutlined />,
     },
     {
-      label: t('engine.project.segment.interface'),
+      label: t('project.segment.interface'),
       value: 2,
       icon: <ApiOutlined />,
     },
     {
-      label: t('engine.project.segment.tripartite'),
+      label: t('project.segment.tripartite'),
       value: 3,
       icon: <SolutionOutlined />,
     },
@@ -308,16 +308,16 @@ const Project: React.FC = () => {
     <>
       <div className="flex flex-col h-full pt-2 pr-4 pl-4 bg-[#f5f6f7]">
         <div className="mb-[8px] text-[18px] font-bold">
-          {t('engine.project.list')}
+          {t('project.list')}
         </div>
         {/* 卡片列表和筛选框 */}
         <div className="mb-[8px]">
           <div className="w-[600px] my-4 mx-auto">
             {/* 检索 */}
             <Search
-              enterButton={t('common.input.search')}
+              enterButton={t('common.operation.search')}
               allowClear
-              placeholder={t('common.input.placeHolder')}
+              placeholder={t('common.placeHolder')}
               ref={searchRef}
               size="large"
               onSearch={handleSearch}
@@ -332,13 +332,13 @@ const Project: React.FC = () => {
             <div>
               {/* 区分我创建的、标签页 */}
               <Checkbox onChange={(e) => onCreatedChange(e.target.checked)}>
-                {t('engine.project.createBy')}
+                {t('project.createBy')}
               </Checkbox>
               <Dropdown popupRender={renderDropDown} trigger={['click']}>
                 <Button color="default" variant="filled">
                   <Space>
                     <TagOutlined />
-                    {t('engine.project.allTags')}
+                    {t('project.allTags')}
                     <DownOutlined />
                   </Space>
                 </Button>
@@ -355,7 +355,7 @@ const Project: React.FC = () => {
               classNames={{ body: 'grow p-2! rounded-t-xl' }}
             >
               <div className="px-6 pt-2 pb-1 text-xs font-medium leading-[18px] text-[#676f83]">
-                {t('engine.project.newProject.createApp')}
+                {t('project.newProject.createApp')}
               </div>
               <button
                 className="w-full flex items-center mb-1 px-6 py-[7px] rounded-lg text-[13px] font-medium leading-[18px] text-[#676f83] cursor-pointer hover:bg-[#f5f6f7] hover:text-[#1e1e2d] transition-all duration-200 ease-in-out"
@@ -363,7 +363,7 @@ const Project: React.FC = () => {
                 type="button"
               >
                 <PlusOutlined className="text-[#676f83] shrink-0 mr-2 w-4 h-4" />
-                {t('engine.project.newProject.startFromBlank')}
+                {t('project.newProject.startFromBlank')}
               </button>
               <button
                 className="w-full flex items-center px-6 py-[7px] rounded-lg text-[13px] font-medium leading-[18px] text-[#676f83] cursor-pointer hover:bg-[#f5f6f7] hover:text-[#1e1e2d] transition-all duration-200 ease-in-out"
@@ -371,7 +371,7 @@ const Project: React.FC = () => {
                 type="button"
               >
                 <FileAddFilled className="text-[#676f83] shrink-0 mr-2 w-4 h-4" />
-                {t('engine.project.newProject.startFromTemplate')}
+                {t('project.newProject.startFromTemplate')}
               </button>
               <button
                 className="w-full flex items-center px-6 py-[7px] rounded-lg text-[13px] font-medium leading-[18px] text-[#676f83] cursor-pointer hover:bg-[#f5f6f7] hover:text-[#1e1e2d] transition-all duration-200 ease-in-out"
@@ -379,7 +379,7 @@ const Project: React.FC = () => {
                 type="button"
               >
                 <ExportOutlined className="text-[#676f83] shrink-0 mr-2 w-4 h-4" />
-                {t('engine.project.newProject.importFromDSL')}
+                {t('project.newProject.importFromDSL')}
               </button>
             </Card>
           )}

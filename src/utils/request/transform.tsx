@@ -25,7 +25,18 @@ import { t } from 'i18next';
 // 标记是否正在刷新token
 let isRefreshing = false;
 // 存储等待的请求
-const refreshSubscribers: ((token: string) => void)[] = [];
+let refreshSubscribers: ((token: string) => void)[] = [];
+
+function onTokenRefreshed(newToken: string) {
+  for (const callback of refreshSubscribers) {
+    callback(newToken);
+  }
+  refreshSubscribers = [];
+}
+
+function addSubscriber(callback: (token: string) => void) {
+  refreshSubscribers.push(callback);
+}
 
 export interface CreateAxiosOptions extends AxiosRequestConfig {
   authenticationScheme?: string;
@@ -112,7 +123,7 @@ export const transform: AxiosTransform = {
     // 错误的时候返回
     const { data } = res;
     if (!data) {
-      throw new Error(t('common.noData'));
+      throw new Error(t('common.errorMsg.noData'));
     }
     const { code, data: rtn, message: msg } = data;
     // 系统默认200状态码为正常成功请求，可在枚举中配置自己的
@@ -127,14 +138,14 @@ export const transform: AxiosTransform = {
     }
     if (options.errorMessageMode === 'modal') {
       antdUtils.modal?.error({
-        title: `${t('common.serverException')},${t('common.statusCode')}(${code})`,
+        title: `${t('common.errorMsg.serverException')},${t('common.errorMsg.statusCode')}(${code})`,
         content: msg,
-        okText: t('common.button.confirm'),
+        okText: t('common.operation.confirm'),
       });
     } else if (options.errorMessageMode === 'message') {
       antdUtils.message?.error(msg);
     }
-    throw new Error(msg || t('common.requestFailed'));
+    throw new Error(msg || t('common.errorMsg.requestFailed'));
   },
 
   // 请求之前处理config
@@ -241,15 +252,15 @@ export const transform: AxiosTransform = {
     const code = (error as AxiosError).status;
     let errMessage = '';
     if (code === HttpCodeEnum.RC502) {
-      errMessage = t('common.requestFailed');
+      errMessage = t('common.errorMsg.requestFailed');
     } else if (code === HttpCodeEnum.RC500) {
-      errMessage = `${t('common.serverException')},${t('common.retry')}`;
+      errMessage = `${t('common.errorMsg.serverException')},${t('common.errorMsg.retry')}`;
     }
     if (errMessage) {
       antdUtils.modal?.error({
-        title: `${t('common.serverException')},${t('common.statusCode')}(${code})`,
+        title: `${t('common.errorMsg.serverException')},${t('common.errorMsg.statusCode')}(${code})`,
         content: errMessage,
-        okText: t('common.button.confirm'),
+        okText: t('common.operation.confirm'),
       });
     }
     return Promise.reject(error);
@@ -259,7 +270,7 @@ export const transform: AxiosTransform = {
    * 响应拦截器处理
    * @param res
    */
-  responseInterceptors: (res: AxiosResponse) => {
+  responseInterceptors: async (res: AxiosResponse) => {
     const userStore = useUserStore.getState();
     const config = res.config;
     const result = res.data;
@@ -276,7 +287,7 @@ export const transform: AxiosTransform = {
           userStore.logout();
           window.location.href = '/login';
         },
-        okText: t('common.button.confirm'),
+        okText: t('common.operation.confirm'),
       });
       return Promise.reject(t('login.loginValid'));
     }
@@ -291,27 +302,21 @@ export const transform: AxiosTransform = {
         isRefreshing = true;
         try {
           // 调用刷新token的接口
-          return Promise.resolve(
-            commonService
-              .refreshToken(userStore.refreshToken)
-              .then((newToken: string) => {
-                if (!newToken) {
-                  throw new Error('refresh token failed');
-                }
-                // 更新token到store
-                userStore.setToken(newToken);
-
-                // 执行等待的请求
-                for (const subscriber of refreshSubscribers) {
-                  subscriber(newToken);
-                }
-                // 重新发起原始请求(这里需要注意一点的是，内部的url可能是有前缀的，所以需要把前缀去掉)
-                if (config.url?.startsWith('/api')) {
-                  config.url = config.url.slice(4);
-                }
-                return HttpRequest.request({ ...config }, { token: newToken });
-              }),
+          const newToken = await commonService.refreshToken(
+            userStore.refreshToken,
           );
+          if (!newToken) {
+            throw new Error('refresh token failed');
+          }
+          // 更新token到store
+          userStore.setToken(newToken);
+          // 执行等待的请求
+          onTokenRefreshed(newToken);
+          // 重新发起原始请求(这里需要注意一点的是，内部的url可能是有前缀的，所以需要把前缀去掉)
+          if (config.url?.startsWith('/api')) {
+            config.url = config.url.slice(4);
+          }
+          return HttpRequest.request({ ...config }, { token: newToken });
         } catch (refreshError) {
           // 刷新 token 失败，跳转登录页
           antdUtils.modal?.confirm({
@@ -321,7 +326,7 @@ export const transform: AxiosTransform = {
               userStore.logout();
               window.location.href = '/login';
             },
-            okText: t('common.button.confirm'),
+            okText: t('common.operation.confirm'),
           });
           return Promise.reject(refreshError);
         } finally {
@@ -329,9 +334,15 @@ export const transform: AxiosTransform = {
         }
       } else {
         // 正在刷新token，将请求加入队列
-        return new Promise((resolve) => {
-          refreshSubscribers.push((token: string) => {
-            resolve(HttpRequest.post({ ...config }, { token: token }));
+        return new Promise((resolve, reject) => {
+          addSubscriber((token: string) => {
+            // 重新发起原始请求
+            if (config.url?.startsWith('/api')) {
+              config.url = config.url.slice(4);
+            }
+            HttpRequest.request({ ...config }, { token: token })
+              .then(resolve)
+              .catch(reject);
           });
         });
       }
@@ -358,18 +369,18 @@ export const transform: AxiosTransform = {
         </>
       );
     } else if (code === 'ECONNABORTED' && message.indexOf('timeout') !== -1) {
-      errMessage = t('common.requestTimeout');
+      errMessage = t('common.errorMsg.requestTimeout');
     } else if (err?.includes('Network Error')) {
-      errMessage = t('common.networkException');
+      errMessage = t('common.errorMsg.networkException');
     } else if (responseCode && responseMessage) {
       errMessage = responseMessage;
     }
 
     if (errMessage) {
       antdUtils.modal?.error({
-        title: `${t('common.serverException')}（${t('common.statusCode')}：${responseCode || code}）`,
+        title: `${t('common.errorMsg.serverException')}（${t('common.errorMsg.statusCode')}：${responseCode || code}）`,
         content: errMessage,
-        okText: t('common.button.confirm'),
+        okText: t('common.opeartion.confirm'),
       });
       return Promise.reject(error);
     }

@@ -36,12 +36,12 @@ const UserDropdown: React.FC = memo(() => {
   const items: MenuProps['items'] = [
     {
       key: 'doc',
-      label: t('header.userDropdown.doc'),
+      label: t('layout.header.userDropdown.doc'),
       icon: <FileMarkdownOutlined />,
     },
     {
       key: '1',
-      label: t('header.userDropdown.profile'),
+      label: t('layout.header.userDropdown.profile'),
       icon: <UserOutlined />,
       disabled: false,
       onClick: () => {
@@ -50,7 +50,7 @@ const UserDropdown: React.FC = memo(() => {
     },
     {
       key: 'help',
-      label: t('header.userDropdown.support'),
+      label: t('layout.header.userDropdown.support'),
       icon: <QuestionCircleFilled />,
       popupStyle: {
         width: 220,
@@ -59,7 +59,7 @@ const UserDropdown: React.FC = memo(() => {
       children: [
         {
           key: 'help1',
-          label: t('header.userDropdown.feedback'),
+          label: t('layout.header.userDropdown.feedback'),
           icon: <QuestionCircleFilled />,
           onClick: () => {
             // 跳转到问题反馈
@@ -67,7 +67,7 @@ const UserDropdown: React.FC = memo(() => {
         },
         {
           key: 'help2',
-          label: t('header.userDropdown.question'),
+          label: t('layout.header.userDropdown.question'),
           icon: <QuestionCircleFilled />,
           onClick: () => {
             // 跳转到常见问题
@@ -80,7 +80,7 @@ const UserDropdown: React.FC = memo(() => {
     },
     {
       key: '3',
-      label: t('header.userDropdown.refresh'),
+      label: t('layout.header.userDropdown.refresh'),
       icon: <SyncOutlined />,
       onClick: () => {
         // 后端的缓存信息（相当于把缓存数据刷新）
@@ -91,7 +91,7 @@ const UserDropdown: React.FC = memo(() => {
     },
     {
       key: 'lock',
-      label: t('header.lock'),
+      label: t('layout.header.lock'),
       icon: <LockOutlined />,
       onClick: () => {
         updatePreferences('widget', 'lockScreenStatus', true);
@@ -102,13 +102,13 @@ const UserDropdown: React.FC = memo(() => {
     },
     {
       key: '4',
-      label: t('header.userDropdown.logout'),
+      label: t('layout.header.userDropdown.logout'),
       icon: <LogoutOutlined />,
       disabled: false,
       danger: true,
       onClick: () => {
         modal.confirm({
-          title: t('header.userDropdown.logout'),
+          title: t('layout.header.userDropdown.logout'),
           icon: <ExclamationCircleOutlined />,
           content: t('login.confirmLogout'),
           onOk: () => {

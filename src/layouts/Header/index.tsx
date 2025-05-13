@@ -60,7 +60,7 @@ const Header: React.FC = memo(() => {
         >
           <Input
             variant="filled"
-            placeholder={t('common.input.search')}
+            placeholder={t('common.operation.search')}
             suffix={
               <SearchOutlined style={{ cursor: 'pointer', fontSize: '18px' }} />
             }
@@ -72,7 +72,7 @@ const Header: React.FC = memo(() => {
               onClick={routeGitHub}
             />
           </Tooltip>
-          <Tooltip placement="bottom" title={t('header.lock')}>
+          <Tooltip placement="bottom" title={t('layout.header.lock')}>
             <LockOutlined
               style={{ cursor: 'pointer', fontSize: '18px' }}
               onClick={() => {
@@ -92,7 +92,7 @@ const Header: React.FC = memo(() => {
               <BellOutlined style={{ cursor: 'pointer', fontSize: '18px' }} />
             </Badge>
           </Dropdown>
-          <Tooltip placement="bottomRight" title={t('header.setting')}>
+          <Tooltip placement="bottomRight" title={t('layout.header.setting')}>
             <SettingOutlined
               style={{ cursor: 'pointer', fontSize: '18px' }}
               onClick={() => setOpenSetting(true)}

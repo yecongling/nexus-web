@@ -19,6 +19,7 @@ const translation = {
     copy: 'copy',
     paste: 'paste',
     cut: 'cut',
+    search: 'search',
   },
   errorMsg: {
     requestFailed: 'request failed',
@@ -30,6 +31,6 @@ const translation = {
     reason: 'reason',
     requestTimeout: 'request timeout, please try again later',
   },
-  placeholder: {},
+  placeholder: "please input content to search",
 };
 export default translation;
