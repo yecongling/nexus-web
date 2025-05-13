@@ -17,3 +17,4 @@ const translation = {
     'The current user authentication credentials have expired or are invalid, please log in again',
   confirmLogout: 'Are you sure you want to log out?',
 };
+export default translation;
