@@ -1,0 +1,19 @@
+const translation = {
+  header: {
+    setting: '系统设置',
+    lock: '锁屏',
+    logout: '退出登录',
+    fullScreen: '全屏',
+    language: '语言',
+    userDropdown: {
+      doc: '文档',
+      profile: '个人中心',
+      support: '支持',
+      feedback: '反馈',
+      question: '问题',
+      refresh: '刷新缓存',
+      logout: '退出登录',
+    },
+  },
+};
+export default translation;

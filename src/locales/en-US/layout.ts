@@ -4,6 +4,7 @@ const translation = {
     lock: 'Lock',
     logout: 'quit',
     fullScreen: 'Full Screen',
+    language: 'Language',
     userDropdown: {
       doc: 'Docs',
       profile: 'Profile',
