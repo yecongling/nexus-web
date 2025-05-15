@@ -42,7 +42,7 @@ const LeftMenu: React.FC = memo(() => {
   const { menus } = useMenuStore();
   const { pathname } = useLocation();
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   // 定义一些状态变量
   const [menuList, setMenuList] = useState<MenuItem[]>([]);
   const [loading, setLoading] = useState(false);
@@ -149,7 +149,7 @@ const LeftMenu: React.FC = memo(() => {
     const menu = deepLoopFloat(menus, []);
     setMenuList(menu);
     setLoading(false);
-  }, [menus]);
+  }, [menus, t, i18n.language]);
 
   return (
     <Layout.Sider
