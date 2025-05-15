@@ -6,6 +6,7 @@ import type { RouteItem } from '@/types/route';
 import { getIcon } from '@/utils/utils';
 import { useMenuStore, usePreferencesStore } from '@/stores/store';
 import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 
 /**
  * 面包屑
@@ -21,6 +22,7 @@ const BreadcrumbNav: React.FC = () => {
   // 从全局状态中获取配置是否开启面包屑、图标
   const { preferences } = usePreferencesStore();
   const { breadcrumb } = preferences;
+  const { t, i18n } = useTranslation();
   useEffect(() => {
     // 将menu里面的内容和path进行对照获取
     const breadItems = patchBreadcrumb(
@@ -32,7 +34,7 @@ const BreadcrumbNav: React.FC = () => {
       setItems(breadItems);
     }
     // 设置面包屑内容
-  }, [location.pathname, menus, breadcrumb]);
+  }, [location.pathname, menus, breadcrumb, t, i18n.language]);
 
   // 组件的DOM内容
   return (
@@ -72,7 +74,9 @@ function patchBreadcrumb(
         pth.title = (
           <>
             {joinIcon && item.meta?.icon && getIcon(item.meta.icon)}
-            <span style={{ padding: '0 4px' }}>{t(item.meta?.title as string)}</span>
+            <span style={{ padding: '0 4px' }}>
+              {t(item.meta?.title as string)}
+            </span>
           </>
         );
         pth.key = item.path;
