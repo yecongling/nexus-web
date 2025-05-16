@@ -1,5 +1,5 @@
 import DragModal from '@/components/modal/DragModal';
-import type { ProjectModel } from '@/services/integrated/project/types';
+import type { App } from '@/services/integrated/apps/types';
 import { ApartmentOutlined, ArrowRightOutlined } from '@ant-design/icons';
 import { Button, Input, Select, Space, type InputRef } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
@@ -10,7 +10,7 @@ import clsx from 'clsx';
  * 添加项目弹窗
  * @returns
  */
-const ProjectInfoModal: React.FC<ProjectInfoModalProps> = memo(
+const AppInfoModal: React.FC<AppInfoModalProps> = memo(
   ({ open, onOk, onCancel, onCreateFromTemplate }) => {
     const inputRef = useRef<InputRef>(null);
     // 项目类型
@@ -278,12 +278,12 @@ const ProjectInfoModal: React.FC<ProjectInfoModalProps> = memo(
     );
   },
 );
-export default ProjectInfoModal;
+export default AppInfoModal;
 
 /**
  * 项目弹窗属性
  */
-export interface ProjectInfoModalProps {
+export interface AppInfoModalProps {
   /**
    * 窗口是否打开
    */
@@ -292,7 +292,7 @@ export interface ProjectInfoModalProps {
    * 窗口确认按钮点击回调
    * @returns
    */
-  onOk: (project: Partial<ProjectModel>) => void;
+  onOk: (app: Partial<App>) => void;
   /**
    * 窗口取消按钮点击回调
    * @returns

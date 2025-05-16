@@ -8,7 +8,7 @@ import TemplateTypeDropdown from './components/TemplateTypeDropdown';
  * 模版中心
  * @returns
  */
-const ProjectTemplates: React.FC<ProjectTemplateModelProps> = memo(
+const AppTemplates: React.FC<AppsTemplateModelProps> = memo(
   ({ open, onClose, onCreateFromBlank }) => {
     /**
      * 模版中心头部检索
@@ -49,7 +49,7 @@ const ProjectTemplates: React.FC<ProjectTemplateModelProps> = memo(
     );
   },
 );
-export default ProjectTemplates;
+export default AppTemplates;
 
 /**
  * 模版中心头部
@@ -87,7 +87,7 @@ interface TemplateHeadersProps {
 /**
  * 模版中心弹窗参数
  */
-export interface ProjectTemplateModelProps {
+export interface AppsTemplateModelProps {
   open: boolean;
   onClose: () => void;
   // 从空白项目创建

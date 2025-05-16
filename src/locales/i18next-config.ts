@@ -12,7 +12,7 @@ const loadLangResources = (lang: string) => ({
     layout: require(`./${lang}/layout`).default,
     menu: require(`./${lang}/menu`).default,
     login: require(`./${lang}/login`).default,
-    project: require(`./${lang}/project`).default,
+    apps: require(`./${lang}/apps`).default,
   },
 });
 

@@ -1,4 +1,4 @@
-export interface ProjectModalState {
+export interface AppModalState {
   // 打开新增项目弹窗
   openAddModal: boolean;
   // 打开模板项目弹窗

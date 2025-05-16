@@ -10,7 +10,7 @@ const menu = {
   },
   integration: {
     management: 'Integration',
-    project: 'Project',
+    apps: 'Apps',
     endpoint: 'Endpoint',
     endpointConfig: 'EndpointConfig',
   },

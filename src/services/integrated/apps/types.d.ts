@@ -1,7 +1,7 @@
 /**
  * 项目
  */
-export interface ProjectModel {
+export interface App {
   // 项目id
   id: string;
   // 项目名称
@@ -26,12 +26,23 @@ export interface ProjectModel {
   createBy?: string;
   // 更新人
   updateBy?: string;
+  // 标签
+  tags: Tag[];
+}
+
+/**
+ * 标签
+ */
+export type Tag = {
+  id: string
+  name: string
+  type: string
 }
 
 /**
  * 项目查询参数
  */
-export interface ProjectSearchParams {
+export interface AppSearchParams {
   // 项目名称
   name?: string;
   // 项目类型

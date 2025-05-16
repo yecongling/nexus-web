@@ -10,7 +10,7 @@ import {
   Space,
 } from 'antd';
 import { useEffect, useReducer, useRef, useState } from 'react';
-import './project.scss';
+import './apps.scss';
 import {
   ApartmentOutlined,
   ApiOutlined,
@@ -22,29 +22,24 @@ import {
   SolutionOutlined,
   TagOutlined,
 } from '@ant-design/icons';
-import ProjectCard from './ProjectCard';
-import ProjectCreate from './ProjectCreate';
-import type {
-  ProjectModel,
-  ProjectSearchParams,
-} from '@/services/integrated/project/types';
+import type { App, AppSearchParams } from '@/services/integrated/apps/types';
 import { usePreferencesStore } from '@/stores/store';
 import { usePermission } from '@/hooks/usePermission';
-import { projectService } from '@/services/integrated/project/projectApi';
+import { appsService } from '@/services/integrated/apps/appsApi';
 import { useQuery } from '@tanstack/react-query';
 import ImportDsl from './ImportDsl';
 import React from 'react';
-import type { ProjectModalState } from './types';
+import type { AppModalState } from './types';
 import { isEqual } from 'lodash-es';
 import { useTranslation } from 'react-i18next';
+import AppCreate from './AppCreate';
+import AppCard from './AppCard';
 const { Search } = Input;
 // 模版中心
-const ProjectTemplate = React.lazy(() => import('./ProjectTemplates'));
+const AppTemplates = React.lazy(() => import('./AppTemplates'));
 
 // 提取关闭弹窗的逻辑
-const closeAllModals = (
-  dispatch: React.Dispatch<Partial<ProjectModalState>>,
-) => {
+const closeAllModals = (dispatch: React.Dispatch<Partial<AppModalState>>) => {
   dispatch({
     openAddModal: false,
     openTemplateModal: false,
@@ -53,16 +48,16 @@ const closeAllModals = (
 };
 
 /**
- * 项目设计
+ * 应用设计
  */
-const Project: React.FC = () => {
+const Apps: React.FC = () => {
   const { preferences } = usePreferencesStore();
   const { t } = useTranslation();
   const { theme } = preferences;
 
   // 新增弹窗、模版弹窗、导入弹窗
   const [state, dispatch] = useReducer(
-    (prev: ProjectModalState, action: Partial<ProjectModalState>) => ({
+    (prev: AppModalState, action: Partial<AppModalState>) => ({
       ...prev,
       ...action,
     }),
@@ -79,46 +74,46 @@ const Project: React.FC = () => {
   // 搜索框聚焦
   const searchRef = useRef<InputRef>(null);
   // 是否有新增权限
-  const hasAddPermission = usePermission(['engine:project:add']);
+  const hasAddPermission = usePermission(['engine:apps:add']);
 
   // 分段控制器选项
   const segmentedOptions: SegmentedProps<number>['options'] = [
     {
-      label: t('project.segment.all'),
+      label: t('apps.segment.all'),
       value: 0,
       icon: <AppstoreOutlined />,
     },
     {
-      label: t('project.segment.integrated'),
+      label: t('apps.segment.integrated'),
       value: 1,
       icon: <ApartmentOutlined />,
     },
     {
-      label: t('project.segment.interface'),
+      label: t('apps.segment.interface'),
       value: 2,
       icon: <ApiOutlined />,
     },
     {
-      label: t('project.segment.tripartite'),
+      label: t('apps.segment.tripartite'),
       value: 3,
       icon: <SolutionOutlined />,
     },
   ];
 
-  // 编辑的项目数据
-  const [project, setProject] = useState<ProjectModel>();
+  // 编辑的应用数据
+  const [app, setApp] = useState<App>();
 
   // 查询参数（包含分页参数）
-  const [searchParams, setSearchParams] = useState<ProjectSearchParams>({
+  const [searchParams, setSearchParams] = useState<AppSearchParams>({
     type: 0,
     pageNum: 1,
     pageSize: 20,
   });
 
-  // 查询项目数据
+  // 查询应用数据
   const { data: result, refetch } = useQuery({
-    queryKey: ['integrated_project', searchParams],
-    queryFn: () => projectService.getProjectList(searchParams),
+    queryKey: ['integrated_app', searchParams],
+    queryFn: () => appsService.getApps(searchParams),
   });
 
   // 处理搜索
@@ -156,7 +151,7 @@ const Project: React.FC = () => {
   };
 
   /**
-   * 我的项目切换
+   * 我的应用切换
    * @param value 值
    */
   const onCreatedChange = (value: boolean) => {
@@ -186,9 +181,9 @@ const Project: React.FC = () => {
   };
 
   /**
-   * 新增项目
+   * 新增应用
    */
-  const addProject = () => {
+  const addApp = () => {
     dispatch({
       openAddModal: true,
     });
@@ -224,7 +219,7 @@ const Project: React.FC = () => {
   };
 
   /**
-   * 从模版创建项目
+   * 从模版创建应用
    */
   const onCreateFromTemplate = () => {
     dispatch({
@@ -235,7 +230,7 @@ const Project: React.FC = () => {
   };
 
   /**
-   * 从空白创建项目
+   * 从空白创建应用
    */
   const onCreateFromBlank = () => {
     dispatch({
@@ -253,28 +248,13 @@ const Project: React.FC = () => {
   };
 
   /**
-   * 编辑项目
-   * @param projectId 项目ID
+   * 新增（编辑）应用确认
    */
-  const editProject = (projectId: string) => {
-    // 根据ID从列表中获取项目具体信息
-    const project = (result?.data || []).find(
-      (item: ProjectModel) => item.id === projectId,
-    );
-    setProject(project);
-    dispatch({
-      openAddModal: true,
-    });
-  };
-
-  /**
-   * 新增（编辑）项目确认
-   */
-  const onModalOk = (project: Partial<ProjectModel>) => {
-    // 首先确定是新增还是修改(有没有项目ID)
-    if (project.id) {
+  const onModalOk = (app: Partial<App>) => {
+    // 首先确定是新增还是修改(有没有应用ID)
+    if (app.id) {
       // 修改
-      projectService.updateProject(project).then((success: boolean) => {
+      appsService.updateApp(app).then((success: boolean) => {
         if (success) {
           refetch();
           dispatch({
@@ -284,7 +264,7 @@ const Project: React.FC = () => {
       });
     } else {
       // 新增
-      projectService.addProject(project).then((success: boolean) => {
+      appsService.addApp(app).then((success: boolean) => {
         if (success) {
           refetch();
           dispatch({
@@ -296,7 +276,7 @@ const Project: React.FC = () => {
   };
 
   /**
-   * 新增项目取消
+   * 新增应用取消
    */
   const onModalCancel = () => {
     dispatch({
@@ -308,7 +288,7 @@ const Project: React.FC = () => {
     <>
       <div className="flex flex-col h-full pt-2 pr-4 pl-4 bg-[#f5f6f7]">
         <div className="mb-[8px] text-[18px] font-bold">
-          {t('project.list')}
+          {t('apps.list')}
         </div>
         {/* 卡片列表和筛选框 */}
         <div className="mb-[8px]">
@@ -332,13 +312,13 @@ const Project: React.FC = () => {
             <div>
               {/* 区分我创建的、标签页 */}
               <Checkbox onChange={(e) => onCreatedChange(e.target.checked)}>
-                {t('project.createBy')}
+                {t('apps.createBy')}
               </Checkbox>
               <Dropdown popupRender={renderDropDown} trigger={['click']}>
                 <Button color="default" variant="filled">
                   <Space>
                     <TagOutlined />
-                    {t('project.allTags')}
+                    {t('apps.allTags')}
                     <DownOutlined />
                   </Space>
                 </Button>
@@ -346,7 +326,7 @@ const Project: React.FC = () => {
             </div>
           </div>
         </div>
-        {/* 项目列表 */}
+        {/* 应用列表 */}
         <div className="flex-1 overflow-x-hidden overflow-y-auto grid content-start grid-cols-1 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5 2k:grid-cols-6 gap-4 pt-2 grow relative">
           {/* 数据查询中 */}
           {hasAddPermission && (
@@ -355,15 +335,15 @@ const Project: React.FC = () => {
               classNames={{ body: 'grow p-2! rounded-t-xl' }}
             >
               <div className="px-6 pt-2 pb-1 text-xs font-medium leading-[18px] text-[#676f83]">
-                {t('project.newProject.createApp')}
+                {t('apps.newApp.createApp')}
               </div>
               <button
                 className="w-full flex items-center mb-1 px-6 py-[7px] rounded-lg text-[13px] font-medium leading-[18px] text-[#676f83] cursor-pointer hover:bg-[#f5f6f7] hover:text-[#1e1e2d] transition-all duration-200 ease-in-out"
-                onClick={addProject}
+                onClick={addApp}
                 type="button"
               >
                 <PlusOutlined className="text-[#676f83] shrink-0 mr-2 w-4 h-4" />
-                {t('project.newProject.startFromBlank')}
+                {t('apps.newApp.startFromBlank')}
               </button>
               <button
                 className="w-full flex items-center px-6 py-[7px] rounded-lg text-[13px] font-medium leading-[18px] text-[#676f83] cursor-pointer hover:bg-[#f5f6f7] hover:text-[#1e1e2d] transition-all duration-200 ease-in-out"
@@ -371,7 +351,7 @@ const Project: React.FC = () => {
                 type="button"
               >
                 <FileAddFilled className="text-[#676f83] shrink-0 mr-2 w-4 h-4" />
-                {t('project.newProject.startFromTemplate')}
+                {t('apps.newApp.startFromTemplate')}
               </button>
               <button
                 className="w-full flex items-center px-6 py-[7px] rounded-lg text-[13px] font-medium leading-[18px] text-[#676f83] cursor-pointer hover:bg-[#f5f6f7] hover:text-[#1e1e2d] transition-all duration-200 ease-in-out"
@@ -379,25 +359,25 @@ const Project: React.FC = () => {
                 type="button"
               >
                 <ExportOutlined className="text-[#676f83] shrink-0 mr-2 w-4 h-4" />
-                {t('project.newProject.importFromDSL')}
+                {t('apps.newApp.importFromDSL')}
               </button>
             </Card>
           )}
-          {/* 项目列表 */}
-          {(result || []).map((item: ProjectModel) => (
-            <ProjectCard key={item.id} project={item} onRefresh={refetch} />
+          {/* 应用列表 */}
+          {(result || []).map((item: App) => (
+            <AppCard key={item.id} app={item} onRefresh={refetch} />
           ))}
         </div>
       </div>
       {/* 新增弹窗 */}
-      <ProjectCreate
+      <AppCreate
         open={state.openAddModal}
         onOk={onModalOk}
         onCancel={onModalCancel}
         onCreateFromTemplate={onCreateFromTemplate}
       />
       {/* 模版中心 */}
-      <ProjectTemplate
+      <AppTemplates
         open={state.openTemplateModal}
         onClose={closeTemplate}
         onCreateFromBlank={onCreateFromBlank}
@@ -407,4 +387,4 @@ const Project: React.FC = () => {
     </>
   );
 };
-export default Project;
+export default Apps;

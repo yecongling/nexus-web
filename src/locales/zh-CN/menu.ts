@@ -10,7 +10,7 @@ const menu = {
   },
   integration: {
     management: '集成管理',
-    project: '项目管理',
+    apps: '应用中心',
     endpoint: '端点维护',
     endpointConfig: '端点配置管理',
   },

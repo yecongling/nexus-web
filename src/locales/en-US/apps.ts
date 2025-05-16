@@ -5,10 +5,10 @@ const translation = {
     interface: 'interface',
     tripartite: 'tripartite',
   },
-  list: 'Project List',
+  list: 'App List',
   createBy: 'Create by me',
   allTags: 'All Tags',
-  newProject: {
+  newApp: {
     createApp: 'Create App',
     startFromBlank: 'Create from Blank',
     startFromTemplate: 'Create from Template',
