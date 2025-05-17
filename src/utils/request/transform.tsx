@@ -316,7 +316,9 @@ export const transform: AxiosTransform = {
           if (config.url?.startsWith('/api')) {
             config.url = config.url.slice(4);
           }
-          return HttpRequest.request({ ...config }, { token: newToken });
+          const response = await HttpRequest.request({ ...config }, { token: newToken });
+          debugger
+          return response;
         } catch (refreshError) {
           // 刷新 token 失败，跳转登录页
           antdUtils.modal?.confirm({
