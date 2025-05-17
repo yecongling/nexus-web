@@ -14,5 +14,6 @@ const translation = {
     startFromTemplate: 'Create from Template',
     importFromDSL: 'Import from DSL',
   },
+  editApp: 'edit app',
 };
 export default translation;

@@ -1,14 +1,11 @@
 import {
   EditOutlined,
-  NodeIndexOutlined,
   EllipsisOutlined,
   CopyOutlined,
   DeleteOutlined,
   ExportOutlined,
-  FileOutlined,
-  MoreOutlined,
 } from '@ant-design/icons';
-import { Card, Button, Dropdown, type MenuProps } from 'antd';
+import { Divider } from 'antd';
 import './apps.scss';
 import { memo, useCallback, useState } from 'react';
 import { useNavigate } from 'react-router';
@@ -17,9 +14,11 @@ import clsx from 'clsx';
 import { usePermission } from '@/hooks/usePermission';
 import CustomPopover, { type HtmlContentProps } from '@/components/popover';
 import DuplicateAppModal from './DuplicateAppModal';
+import { useTranslation } from 'react-i18next';
+import EditAppModal from './components/edit-app-modal';
 
 /**
- * 项目组件
+ * 应用
  * @returns
  */
 const AppCard: React.FC<AppCardProps> = memo(({ app, onRefresh }) => {
@@ -33,9 +32,10 @@ const AppCard: React.FC<AppCardProps> = memo(({ app, onRefresh }) => {
   const [tags, setTags] = useState<Tag[]>(app.tags || []);
   // 是否有编辑权限
   const hasEditorPermission = usePermission(['engine.app.edit']);
+  const { t } = useTranslation();
 
   /**
-   * 项目流程设计
+   * 应用流程设计
    */
   const redirectWorkflow = () => {
     // 跳转到流程编排界面
@@ -43,28 +43,33 @@ const AppCard: React.FC<AppCardProps> = memo(({ app, onRefresh }) => {
   };
 
   /**
-   * 确认删除项目
+   * 确认删除应用
    */
   const onConfirmDelete = useCallback(() => {}, [app.id]);
 
   /**
-   * 编辑项目
+   * 编辑应用
    */
   const onEdit = useCallback(() => {}, [app.id]);
 
   /**
-   * 复制项目(有一个复制弹窗)
+   * 复制应用(有一个复制弹窗)
    */
   const onCopy = async () => {};
 
   /**
-   * 导出项目
+   * 导出应用
    */
   const onExport = async () => {};
 
   /**
-   * 切换项目
-   * @param type 项目类型
+   * 导出检测
+   */
+  const exportCheck = async () => {};
+
+  /**
+   * 切换应用
+   * @param type 应用类型
    */
   const onSwitch = (type?: number) => {};
 
@@ -73,7 +78,107 @@ const AppCard: React.FC<AppCardProps> = memo(({ app, onRefresh }) => {
    * @param props
    */
   const Operations = (props: HtmlContentProps): React.ReactNode => {
-    return <>编辑</>;
+    const onMouseLeave = async () => {
+      props.onClose?.();
+    };
+
+    // 点击设置
+    const onClickSetting = async (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.stopPropagation();
+      props.onClick?.();
+      e.preventDefault();
+      setShowEditModal(true);
+    };
+
+    // 点击复制
+    const onClickDuplicate = async (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.stopPropagation();
+      props.onClick?.();
+      e.preventDefault();
+      setShowDuplicateModal(true);
+    };
+
+    // 点击导出
+    const onClickExport = async (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.stopPropagation();
+      props.onClick?.();
+      e.preventDefault();
+      exportCheck();
+    };
+
+    // 点击切换
+    const onClickSwitch = async (e: React.MouseEvent<HTMLDivElement>) => {
+      e.stopPropagation();
+      props.onClick?.();
+      e.preventDefault();
+      setShowSwitchModal(true);
+    };
+
+    // 点击删除
+    const onClickDelete = async (e: React.MouseEvent<HTMLDivElement>) => {
+      e.stopPropagation();
+      props.onClick?.();
+      e.preventDefault();
+      setShowConfirmDelete(true);
+    };
+    return (
+      <div className="relative w-full py-1" onMouseLeave={onMouseLeave}>
+        <button
+          type="button"
+          className="mx-1 flex h-8 w-[calc(100% - 8px)] cursor-pointer items-center gap-2 rounded-lg px-3 py-[6px] hover:bg-gray-300"
+          onClick={onClickSetting}
+        >
+          <span className="text-[13px] text-zinc-500">
+            <EditOutlined className="w-4 h-4" />
+            {t('app.editApp')}
+          </span>
+        </button>
+        <Divider className="!my-1" />
+        <button
+          type="button"
+          className="mx-1 flex h-8 w-[calc(100%_-_8px)] cursor-pointer items-center gap-2 rounded-lg px-3 py-[6px] hover:bg-gray-300"
+          onClick={onClickDuplicate}
+        >
+          <span className="text-[13px] text-zinc-500">
+            <CopyOutlined className="w-4 h-4" />
+            {t('app.duplicate')}
+          </span>
+        </button>
+        <button
+          type="button"
+          className="mx-1 flex h-8 w-[calc(100%_-_8px)] cursor-pointer items-center gap-2 rounded-lg px-3 py-[6px] hover:bg-gray-300"
+          onClick={onClickExport}
+        >
+          <span className="text-[13px] text-zinc-500">
+            <ExportOutlined className="w-4 h-4" />
+            {t('app.export')}
+          </span>
+        </button>
+        {app.type === 1 && (
+          <>
+            <Divider className="!my-1" />
+            <div
+              className="mx-1 flex h-9 cursor-pointer items-center rounded-lg px-3 py-2 hover:bg-gray-300"
+              onClick={onClickSwitch}
+            >
+              <span className="text-sm leading-5 text-zinc-500">
+                {t('app.switch')}
+              </span>
+            </div>
+          </>
+        )}
+        <Divider className="!my-1" />
+        <div
+          className="group mx-1 flex h-8 w-[calc(100%_-_8px)] cursor-pointer items-center gap-2 rounded-lg px-3 py-[6px] hover:bg-state-destructive-hover"
+          onClick={onClickDelete}
+        >
+          <span className="text-[13px] text-zinc-500 group-hover:text-red-500">
+            <DeleteOutlined className="w-4 h-4" />
+            {t('common.operation.delete')}
+          </span>
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -82,7 +187,7 @@ const AppCard: React.FC<AppCardProps> = memo(({ app, onRefresh }) => {
         <div className="flex h-[66px] shrink-0 grow-0 items-center gap-3 px-[14px] pb-3 pt-[14px]">
           {/* icon */}
           <div className="relative shrink-0">icon</div>
-          {/* 项目名称 */}
+          {/* 应用名称 */}
           <div className="w-0 grow py-[1px]">
             <div className="flex items-center text-sm font-semibold leading-5 text-[#354052]">
               <div className="truncate" title="工作流测试">
@@ -130,7 +235,7 @@ const AppCard: React.FC<AppCardProps> = memo(({ app, onRefresh }) => {
                 {/* 这里是下拉选择编辑 */}
                 <CustomPopover
                   htmlContent={<Operations />}
-                  position="bottomRight"
+                  position="br"
                   trigger="click"
                   btnElement={
                     <div className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-md">
@@ -155,9 +260,11 @@ const AppCard: React.FC<AppCardProps> = memo(({ app, onRefresh }) => {
         </div>
       </div>
       {/* 编辑框 */}
-      {showEditModal && <div>编辑弹窗</div>}
+      {showEditModal && <EditAppModal open={showEditModal} />}
       {/* 复制框 */}
       {showDuplicateModal && <DuplicateAppModal />}
+      {/* 切换应用类型弹窗 */}
+      {showSwitchModal && <div>切换应用类型弹窗</div>}
       {/* 确认删除弹窗 */}
       {showConfirmDelete && <div>确认删除弹窗</div>}
     </>
@@ -166,16 +273,16 @@ const AppCard: React.FC<AppCardProps> = memo(({ app, onRefresh }) => {
 export default AppCard;
 
 /**
- * 项目组件属性
+ * 应用组件属性
  */
 export interface AppCardProps {
   /**
-   * 项目数据
+   * 应用数据
    */
   app: App;
 
   /**
-   * 刷新项目列表
+   * 刷新应用列表
    * @returns
    */
   onRefresh?: () => void;

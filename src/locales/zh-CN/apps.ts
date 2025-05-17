@@ -14,5 +14,6 @@ const translation = {
     startFromTemplate: '从应用模板创建',
     importFromDSL: '导入 DSL',
   },
+  editApp: '编辑应用',
 };
 export default translation;

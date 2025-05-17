@@ -51,19 +51,7 @@ type CustomPopoverProps = {
   htmlContent?: React.ReactNode;
   popupClassName?: string;
   trigger?: 'click' | 'hover';
-  position?:
-    | 'bottom'
-    | 'bottomRight'
-    | 'bottomLeft'
-    | 'top'
-    | 'topRight'
-    | 'topLeft'
-    | 'left'
-    | 'leftTop'
-    | 'leftBottom'
-    | 'right'
-    | 'rightTop'
-    | 'rightBottom';
+  position?: 'bottom' | 'br' | 'bl';
   btnElement?: string | React.ReactNode;
   btnClassName?: string | ((open: boolean) => string);
   manualClose?: boolean;

@@ -66,7 +66,6 @@ export default defineConfig({
         'rc-cp': /node_modules[\\/]rc-/,
       },
     },
-    buildCache: true,
     // 移除console.[method]语句
     removeConsole: true,
     // 开启包文件分析
