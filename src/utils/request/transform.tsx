@@ -316,8 +316,11 @@ export const transform: AxiosTransform = {
           if (config.url?.startsWith('/api')) {
             config.url = config.url.slice(4);
           }
-          const response = await HttpRequest.request({ ...config }, { token: newToken });
-          debugger
+          const response = await HttpRequest.request(
+            { ...config },
+            { token: newToken, isReturnNativeResponse: true },
+          );
+          debugger;
           return response;
         } catch (refreshError) {
           // 刷新 token 失败，跳转登录页
