@@ -26,6 +26,7 @@ export interface App {
   createBy?: string;
   // 更新人
   updateBy?: string;
+  icon: string;
   // 标签
   tags: Tag[];
 }

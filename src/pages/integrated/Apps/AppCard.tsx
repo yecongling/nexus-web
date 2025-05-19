@@ -51,7 +51,7 @@ const AppCard: React.FC<AppCardProps> = memo(({ app, onRefresh }) => {
   /**
    * 编辑应用
    */
-  const onEdit = useCallback(() => {}, [app.id]);
+  const onEdit = useCallback(async () => {}, [app.id]);
 
   /**
    * 复制应用(有一个复制弹窗)
@@ -262,7 +262,19 @@ const AppCard: React.FC<AppCardProps> = memo(({ app, onRefresh }) => {
         </div>
       </div>
       {/* 编辑框 */}
-      {showEditModal && <EditAppModal open={showEditModal} />}
+      {showEditModal && (
+        <EditAppModal
+          open={showEditModal}
+          appName={app.name}
+          appIcon={app.icon}
+          appMode={app.type}
+          appDescription={app.remark || ''}
+          onCancel={() => {
+            setShowEditModal(false);
+          }}
+          onConfirm={onEdit}
+        />
+      )}
       {/* 复制框 */}
       {showDuplicateModal && <DuplicateAppModal />}
       {/* 切换应用类型弹窗 */}
