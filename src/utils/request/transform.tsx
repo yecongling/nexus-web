@@ -320,7 +320,6 @@ export const transform: AxiosTransform = {
             { ...config },
             { token: newToken, isReturnNativeResponse: true },
           );
-          debugger;
           return response;
         } catch (refreshError) {
           // 刷新 token 失败，跳转登录页
@@ -345,7 +344,10 @@ export const transform: AxiosTransform = {
             if (config.url?.startsWith('/api')) {
               config.url = config.url.slice(4);
             }
-            HttpRequest.request({ ...config }, { token: token })
+            HttpRequest.request(
+              { ...config },
+              { token: token, isReturnNativeResponse: true },
+            )
               .then(resolve)
               .catch(reject);
           });
