@@ -4,6 +4,7 @@ import {
   CopyOutlined,
   DeleteOutlined,
   ExportOutlined,
+  SwitcherOutlined,
 } from '@ant-design/icons';
 import { Divider } from 'antd';
 import './apps.scss';
@@ -125,55 +126,56 @@ const AppCard: React.FC<AppCardProps> = memo(({ app, onRefresh }) => {
       <div className="relative w-full py-1" onMouseLeave={onMouseLeave}>
         <button
           type="button"
-          className="mx-1 flex h-8 w-[calc(100% - 8px)] cursor-pointer items-center gap-2 rounded-lg px-3 py-[6px] hover:bg-gray-300"
+          className="mx-1 flex h-8 w-[calc(100%_-_8px)] cursor-pointer items-center gap-2 rounded-lg px-3 py-[6px] hover:bg-[#c8ceda33]"
           onClick={onClickSetting}
         >
           <span className="text-[13px] text-zinc-500">
-            <EditOutlined className="w-4 h-4" />
-            {t('app.editApp')}
+            <EditOutlined className="w-4 h-4 mr-2" />
+            {t('apps.editApp')}
           </span>
         </button>
         <Divider className="!my-1" />
         <button
           type="button"
-          className="mx-1 flex h-8 w-[calc(100%_-_8px)] cursor-pointer items-center gap-2 rounded-lg px-3 py-[6px] hover:bg-gray-300"
+          className="mx-1 flex h-8 w-[calc(100%_-_8px)] cursor-pointer items-center gap-2 rounded-lg px-3 py-[6px] hover:bg-[#c8ceda33]"
           onClick={onClickDuplicate}
         >
           <span className="text-[13px] text-zinc-500">
-            <CopyOutlined className="w-4 h-4" />
-            {t('app.duplicate')}
+            <CopyOutlined className="w-4 h-4  mr-2" />
+            {t('apps.duplicate')}
           </span>
         </button>
         <button
           type="button"
-          className="mx-1 flex h-8 w-[calc(100%_-_8px)] cursor-pointer items-center gap-2 rounded-lg px-3 py-[6px] hover:bg-gray-300"
+          className="mx-1 flex h-8 w-[calc(100%_-_8px)] cursor-pointer items-center gap-2 rounded-lg px-3 py-[6px] hover:bg-[#c8ceda33]"
           onClick={onClickExport}
         >
           <span className="text-[13px] text-zinc-500">
-            <ExportOutlined className="w-4 h-4" />
-            {t('app.export')}
+            <ExportOutlined className="w-4 h-4  mr-2" />
+            {t('apps.export')}
           </span>
         </button>
         {app.type === 1 && (
           <>
             <Divider className="!my-1" />
             <div
-              className="mx-1 flex h-9 cursor-pointer items-center rounded-lg px-3 py-2 hover:bg-gray-300"
+              className="mx-1 flex h-9 cursor-pointer items-center rounded-lg px-3 py-2 hover:bg-[#c8ceda33]"
               onClick={onClickSwitch}
             >
               <span className="text-sm leading-5 text-zinc-500">
-                {t('app.switch')}
+                <SwitcherOutlined className="w-4 h-4 mr-2" />
+                {t('apps.switch')}
               </span>
             </div>
           </>
         )}
         <Divider className="!my-1" />
         <div
-          className="group mx-1 flex h-8 w-[calc(100%_-_8px)] cursor-pointer items-center gap-2 rounded-lg px-3 py-[6px] hover:bg-state-destructive-hover"
+          className="group mx-1 flex h-8 w-[calc(100%_-_8px)] cursor-pointer items-center gap-2 rounded-lg px-3 py-[6px] hover:bg-[#fef3f2]"
           onClick={onClickDelete}
         >
           <span className="text-[13px] text-zinc-500 group-hover:text-red-500">
-            <DeleteOutlined className="w-4 h-4" />
+            <DeleteOutlined className="w-4 h-4 mr-2" />
             {t('common.operation.delete')}
           </span>
         </div>

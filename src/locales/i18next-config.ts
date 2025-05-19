@@ -1,6 +1,7 @@
 import i18n from 'i18next';
 import { LanguagesSupported } from './language';
 import { initReactI18next } from 'react-i18next';
+import { usePreferencesStore } from '@/stores/store';
 
 /**
  * 加载语言资源
@@ -26,9 +27,13 @@ export const resources = LanguagesSupported.reduce<Resource>((acc, lang) => {
   return acc;
 }, {});
 
+const { preferences } = usePreferencesStore.getState();
+const { app } = preferences;
+const { locale } = app;
+
 i18n.use(initReactI18next).init({
-  lng: 'en-US',
-  fallbackLng: 'en-US',
+  lng: locale,
+  fallbackLng: locale,
   resources,
   interpolation: {
     escapeValue: false,

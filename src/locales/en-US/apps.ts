@@ -15,5 +15,8 @@ const translation = {
     importFromDSL: 'Import from DSL',
   },
   editApp: 'edit app',
+  duplicate: 'Duplicate',
+  export: 'Export DSL',
+  switch: 'Switch to Integrated App',
 };
 export default translation;

@@ -15,5 +15,8 @@ const translation = {
     importFromDSL: '导入 DSL',
   },
   editApp: '编辑应用',
+  duplicate: '复制',
+  export: '导出 DSL',
+  switch: '切换为集成项目',
 };
 export default translation;
