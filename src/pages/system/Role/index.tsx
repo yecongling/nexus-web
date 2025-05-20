@@ -94,6 +94,47 @@ const Role: React.FC = () => {
     },
   });
 
+  // 添加角色mutation
+  const addRoleMutation = useMutation({
+    mutationFn: (roleData: Record<string, any>) =>
+      roleService.addRole(roleData),
+    onSuccess() {
+      message.success('添加成功!');
+      dispatch({
+        openEditModal: false,
+        currentRow: null,
+        action: 'ok',
+      });
+      refetch();
+    },
+    onError(error) {
+      modal.error({
+        title: '添加角色失败',
+        content: `原因：${error}`,
+      });
+    },
+  });
+
+  // 编辑角色mutation
+  const editRoleMutation = useMutation({
+    mutationFn: (roleData: Record<string, any>) =>
+      roleService.editRole(roleData),
+    onSuccess() {
+      message.success('编辑成功!');
+      dispatch({
+        openEditModal: false,
+        currentRow: null,
+        action: 'ok',
+      });
+    },
+    onError(error) {
+      modal.error({
+        title: '编辑角色失败',
+        content: `原因：${error}`,
+      });
+    },
+  });
+
   /**
    * 多行选中的配置
    */
@@ -160,25 +201,14 @@ const Role: React.FC = () => {
    * @param roleData 角色数据
    */
   const onEditOk = async (roleData: Record<string, any>) => {
-    try {
-      if (state.currentRow == null) {
-        // 新增数据
-        await roleService.addRole(roleData);
-      } else {
-        // 编辑数据
-        await roleService.editRole(roleData);
-      }
-      // 操作成功，关闭弹窗，刷新数据
-      dispatch({
-        openEditModal: false,
-        currentRow: null,
-        action: 'ok',
-      });
-      refetch();
-    } catch (error) {
-      modal.error({
-        title: '操作失败',
-        content: `原因：${error}`,
+    if (state.currentRow == null) {
+      // 新增数据
+      addRoleMutation.mutate(roleData);
+    } else {
+      // 编辑数据
+      editRoleMutation.mutate({
+        ...roleData,
+        id: state.currentRow.id,
       });
     }
   };

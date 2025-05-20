@@ -6,8 +6,8 @@ import {
   FolderFilled,
   FolderOpenFilled,
 } from '@ant-design/icons';
-import { useQuery } from '@tanstack/react-query';
-import { Button, Drawer, Space, Tree, type TreeProps } from 'antd';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { Button, Drawer, Space, Tree, type TreeProps, App } from 'antd';
 import { memo, useCallback, useEffect, useState } from 'react';
 
 /**
@@ -22,7 +22,7 @@ const RoleMenuDrawer: React.FC<RoleMenuDrawerProps> = memo(
     const [checked, setChecked] = useState<string[]>([]);
     // 展开的节点
     const [expandedKeys, setExpandedKeys] = useState<string[]>([]);
-
+    const { message, modal } = App.useApp();
     // 使用useQuery获取数据
     const {
       data: resp,
@@ -33,6 +33,22 @@ const RoleMenuDrawer: React.FC<RoleMenuDrawerProps> = memo(
       queryKey: ['sys_role_assign_menu', roleId],
       queryFn: () => roleService.getRoleMenu(roleId),
       enabled: open,
+    });
+
+    // 分配角色菜单
+    const assignRoleMenuMutation = useMutation({
+      mutationFn: (params: any) =>
+        roleService.assignRoleMenu(params.roleId, params.menuIds),
+      onSuccess: () => {
+        message.success('分配角色菜单成功');
+        onOk();
+      },
+      onError: (error: any) => {
+        modal.error({
+          title: '分配角色菜单失败',
+          content: error.message,
+        });
+      },
     });
 
     useEffect(() => {
@@ -67,13 +83,12 @@ const RoleMenuDrawer: React.FC<RoleMenuDrawerProps> = memo(
 
     /**
      * 点击确定的时候的操作
-     * @param e
      */
-    const handleOk = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const handleOk = () => {
       // 保存分配的菜单数据
-      roleService.assignRoleMenu(roleId, checked).then(() => {
-        // 关闭弹窗
-        onOk(e);
+      assignRoleMenuMutation.mutate({
+        roleId: roleId,
+        menuIds: checked,
       });
     };
 
@@ -150,7 +165,7 @@ export type RoleMenuDrawerProps = {
   // 角色id（通过角色id查询角色已经分配的菜单）
   roleId: string;
   // 点击确定的回调
-  onOk: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  onOk: () => void;
   // 点击取消的回调
   onCancel: (e: any) => void;
 };

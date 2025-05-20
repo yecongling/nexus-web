@@ -22,7 +22,7 @@ interface UserPasswordModalProps {
  */
 const UserPasswordModal: React.FC<UserPasswordModalProps> = memo(
   ({ open, onClose, userInfo, onOk }) => {
-    const { message } = App.useApp();
+    const { modal, message } = App.useApp();
     const [form] = Form.useForm();
 
     useEffect(() => {
@@ -68,7 +68,10 @@ const UserPasswordModal: React.FC<UserPasswordModalProps> = memo(
         onOk();
       },
       onError: (error) => {
-        message.error(error.message);
+        modal.error({
+          title: '更新用户密码失败',
+          content: error.message,
+        });
       },
     });
 

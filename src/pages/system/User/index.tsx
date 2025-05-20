@@ -74,7 +74,10 @@ const User: React.FC = () => {
       refetch();
     },
     onError: (error) => {
-      message.error(`删除失败, 原因：${error.message}`);
+      modal.error({
+        title: '删除失败',
+        content: error.message,
+      });
     },
   });
 
@@ -147,21 +150,57 @@ const User: React.FC = () => {
       refetch();
     },
     onError: (error) => {
-      message.error(`状态更新失败,${error.message}`);
+      modal.error({
+        title: '状态更新失败',
+        content: error.message,
+      });
+    },
+  });
+
+  // 更新用户mutation
+  const updateUserMutation = useMutation({
+    mutationFn: (values: Partial<UserModel>) =>
+      userService.updateUser({ id: state.currentRow.id, ...values }),
+    onSuccess: () => {
+      message.success('更新成功');
+      dispatch({
+        openEditModal: false,
+      });
+      refetch();
+    },
+    onError: (error) => {
+      modal.error({
+        title: '更新失败',
+        content: error.message,
+      });
+    },
+  });
+
+  // 新增用户mutation
+  const createUserMutation = useMutation({
+    mutationFn: (values: Partial<UserModel>) => userService.createUser(values),
+    onSuccess: () => {
+      message.success('新增成功');
+      dispatch({
+        openEditModal: false,
+      });
+      refetch();
+    },
+    onError: (error) => {
+      modal.error({
+        title: '新增失败',
+        content: error.message,
+      });
     },
   });
 
   // 处理表单提交
-  const handleModalOk = async (values: Partial<UserModel>) => {
+  const handleModalOk = (values: Partial<UserModel>) => {
     if (state.currentRow?.id) {
-      await userService.updateUser({ id: state.currentRow.id, ...values });
+      updateUserMutation.mutate(values);
     } else {
-      await userService.createUser(values);
+      createUserMutation.mutate(values);
     }
-    dispatch({
-      openEditModal: false,
-    });
-    refetch();
   };
 
   // 关闭密码编辑弹窗

@@ -18,10 +18,11 @@ import {
   Space,
   Table,
   type TableProps,
+  App,
 } from 'antd';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { UserSearchParams } from '@/services/system/role/type';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { isEqual } from 'lodash-es';
 
 /**
@@ -33,6 +34,7 @@ const AddUser: React.FC<AddUserProps> = ({ open, onOk, onCancel, roleId }) => {
   // 当前选中的行数据
   const [selRows, setSelectedRows] = useState<any[]>([]);
   const ref = useRef<InputRef>(null);
+  const { message, modal } = App.useApp();
 
   // 查询参数（包含分页参数）
   const [searchParams, setSearchParams] = useState<UserSearchParams>({
@@ -45,6 +47,26 @@ const AddUser: React.FC<AddUserProps> = ({ open, onOk, onCancel, roleId }) => {
     queryKey: ['sys_role_user_not_in_role', [roleId, searchParams]],
     queryFn: () => roleService.getUserNotInRoleByPage(roleId, searchParams),
     enabled: open,
+  });
+
+  /**
+   * 分配用户
+   */
+  const assignUserMutation = useMutation({
+    mutationFn: (params: any) =>
+      roleService.assignRoleUser(params.roleId, params.userIds, params.type),
+    onSuccess: () => {
+      message.success('分配用户成功');
+      onOk(selRows.length);
+      // 清空选择项
+      setSelectedRows([]);
+    },
+    onError: (error: any) => {
+      modal.error({
+        title: '分配用户失败',
+        content: error.message,
+      });
+    },
   });
 
   useEffect(() => {
@@ -148,10 +170,10 @@ const AddUser: React.FC<AddUserProps> = ({ open, onOk, onCancel, roleId }) => {
     }
     const userIds = selRows.map((item: any) => item.id);
     // 分配用户
-    roleService.assignRoleUser(roleId, userIds, 'add').then(() => {
-      onOk(selRows.length);
-      // 清空选择项
-      setSelectedRows([]);
+    assignUserMutation.mutate({
+      roleId: roleId,
+      userIds: userIds,
+      type: 'add',
     });
   };
 

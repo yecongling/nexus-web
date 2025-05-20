@@ -30,7 +30,7 @@ import { memo, useRef, useState } from 'react';
 import AddUser from './AddUserModal';
 import { roleService } from '@/services/system/role/roleApi';
 import type { UserSearchParams } from '@/services/system/role/type';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { isEqual } from 'lodash-es';
 
 /**
@@ -39,7 +39,7 @@ import { isEqual } from 'lodash-es';
  */
 const RoleUserDrawer: React.FC<RoleUserDrawerProps> = memo(
   ({ open, roleId, onCancel }) => {
-    const { modal } = App.useApp();
+    const { modal, message } = App.useApp();
     // 添加用户弹窗的打开关闭
     const [openAddUser, setOpenAddUser] = useState<boolean>(false);
     // 检索表单
@@ -60,6 +60,25 @@ const RoleUserDrawer: React.FC<RoleUserDrawerProps> = memo(
       queryKey: ['sys_role_users_drawer', [roleId, searchParams]],
       queryFn: () => roleService.getRoleUser(roleId, searchParams),
       enabled: open,
+    });
+
+    // 删除用户的mutation
+    const deleteRoleUserMutation = useMutation({
+      mutationFn: (userIds: string[]) =>
+        roleService.assignRoleUser(roleId, userIds, 'remove'),
+      onSuccess: () => {
+        message.success('删除用户成功');
+        // 刷新表格数据
+        refetch();
+        // 清空选择项
+        setSelectedRows([]);
+      },
+      onError: (error: any) => {
+        modal.error({
+          title: '删除用户失败',
+          content: error.message,
+        });
+      },
     });
 
     /**
@@ -190,12 +209,7 @@ const RoleUserDrawer: React.FC<RoleUserDrawerProps> = memo(
      * @param id 用户ID
      */
     const deleteRoleUser = (id: string) => {
-      roleService.assignRoleUser(roleId, [id], 'remove').then(() => {
-        // 刷新表格数据
-        refetch();
-        // 清空选择项
-        setSelectedRows([]);
-      });
+      deleteRoleUserMutation.mutate([id]);
     };
 
     /**
@@ -212,12 +226,7 @@ const RoleUserDrawer: React.FC<RoleUserDrawerProps> = memo(
           // 调用删除接口，删除成功后刷新页面数据
           const ids = selRows.map((item: any) => item.id);
           id && ids.push(id);
-          roleService.assignRoleUser(roleId, ids, 'remove').then(() => {
-            // 刷新表格数据
-            refetch();
-            // 清空选择项
-            setSelectedRows([]);
-          });
+          deleteRoleUserMutation.mutate(ids);
         },
       });
     };
