@@ -8,6 +8,7 @@ import {
   Dropdown,
   Button,
   Space,
+  App as AntdApp,
 } from 'antd';
 import { useEffect, useReducer, useRef, useState } from 'react';
 import './apps.scss';
@@ -26,7 +27,7 @@ import type { App, AppSearchParams } from '@/services/integrated/apps/types';
 import { usePreferencesStore } from '@/stores/store';
 import { usePermission } from '@/hooks/usePermission';
 import { appsService } from '@/services/integrated/apps/appsApi';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import ImportDsl from './ImportDsl';
 import React from 'react';
 import type { AppModalState } from './types';
@@ -53,7 +54,9 @@ const closeAllModals = (dispatch: React.Dispatch<Partial<AppModalState>>) => {
 const Apps: React.FC = () => {
   const { preferences } = usePreferencesStore();
   const { t } = useTranslation();
+  const queryClient = useQueryClient();
   const { theme } = preferences;
+  const { modal } = AntdApp.useApp();
 
   // 新增弹窗、模版弹窗、导入弹窗
   const [state, dispatch] = useReducer(
@@ -114,6 +117,22 @@ const Apps: React.FC = () => {
   const { data: result, refetch } = useQuery({
     queryKey: ['integrated_app', searchParams],
     queryFn: () => appsService.getApps(searchParams),
+  });
+
+  // 处理应用新增
+  const addAppMutation = useMutation({
+    mutationFn: (app: Partial<App>) => appsService.addApp(app),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['integrated_app', searchParams],
+      });
+    },
+    onError: (error) => {
+      modal.error({
+        title: t('apps.addApp.error.title'),
+        content: t('apps.addApp.error.content', { error: error.message }),
+      });
+    },
   });
 
   // 处理搜索
@@ -251,28 +270,7 @@ const Apps: React.FC = () => {
    * 新增（编辑）应用确认
    */
   const onModalOk = (app: Partial<App>) => {
-    // 首先确定是新增还是修改(有没有应用ID)
-    if (app.id) {
-      // 修改
-      appsService.updateApp(app).then((success: boolean) => {
-        if (success) {
-          refetch();
-          dispatch({
-            openAddModal: false,
-          });
-        }
-      });
-    } else {
-      // 新增
-      appsService.addApp(app).then((success: boolean) => {
-        if (success) {
-          refetch();
-          dispatch({
-            openAddModal: false,
-          });
-        }
-      });
-    }
+    addAppMutation.mutate(app);
   };
 
   /**
@@ -287,9 +285,7 @@ const Apps: React.FC = () => {
   return (
     <>
       <div className="flex flex-col h-full pt-2 pr-4 pl-4 bg-[#f5f6f7]">
-        <div className="mb-[8px] text-[18px] font-bold">
-          {t('apps.list')}
-        </div>
+        <div className="mb-[8px] text-[18px] font-bold">{t('apps.list')}</div>
         {/* 卡片列表和筛选框 */}
         <div className="mb-[8px]">
           <div className="w-[600px] my-4 mx-auto">

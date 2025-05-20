@@ -13,6 +13,7 @@ if (container) {
       queries: {
         retry: false, // 默认所有的useQuery请求都不重试，内部如果有需要重试的，需要手动设置retry: true
         refetchOnWindowFocus: false, // 窗口聚焦时不重新获取数据，不然浏览器切换tab时会重新获取数据
+        gcTime: 1000 * 60 * 60 * 12, // 12小时后自动垃圾回收，防止内存泄漏
       },
     },
   });

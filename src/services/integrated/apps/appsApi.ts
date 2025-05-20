@@ -18,6 +18,11 @@ const AppsApi: Record<string, string> = {
    * 更新项目
    */
   updateApp: '/engine/apps/updateApp',
+
+  /**
+   * 删除项目
+   */
+  deleteApp: '/engine/apps/deleteApp',
 };
 
 /**
@@ -37,6 +42,11 @@ export interface IAppsService {
    * 更新项目
    */
   updateApp(app: Partial<App>): Promise<boolean>;
+
+  /**
+   * 删除项目
+   */
+  deleteApp(appId: string): Promise<boolean>;
 }
 
 /**
@@ -75,6 +85,17 @@ export const appsService: IAppsService = {
     const response = await HttpRequest.post({
       url: AppsApi.updateApp,
       data: app,
+    });
+    return response;
+  },
+
+  /**
+   * 删除项目
+   */
+  async deleteApp(appId: string): Promise<boolean> {
+    const response = await HttpRequest.delete({
+      url: AppsApi.deleteApp,
+      data: { appId },
     });
     return response;
   },

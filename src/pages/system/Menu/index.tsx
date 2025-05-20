@@ -15,7 +15,7 @@ import MenuInfoModal from './MenuInfoModal';
 import './menu.scss';
 import useParentSize from '@/hooks/useParentSize';
 import { addIcon } from '@/utils/utils';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import SearchBar from './SearchBar';
 import ActionButtons from './ActionButtons';
 import DataTable from './DataTable';
@@ -25,7 +25,8 @@ import { isEqual } from 'lodash-es';
  * 系统菜单维护
  */
 const Menu: React.FC = () => {
-  const { modal } = App.useApp();
+  const { modal, message } = App.useApp();
+  const queryClient = useQueryClient();
   // 合并的状态
   const [state, dispatch] = useReducer(
     (prev: any, action: any) => ({ ...prev, ...action }),
@@ -46,6 +47,68 @@ const Menu: React.FC = () => {
     // 依赖searchParams, 当searchParams变化时，会重新执行queryFn
     queryKey: ['sys_menu', searchParams],
     queryFn: menuService.getAllMenus,
+  });
+
+  // 新增菜单mutation
+  const addMenuMutation = useMutation({
+    mutationFn: menuService.addMenu,
+    onSuccess: () => {
+      message.success('新增菜单成功');
+      queryClient.invalidateQueries({ queryKey: ['sys_menu', searchParams] });
+      closeEditModal();
+    },
+    onError: (error) => {
+      modal.error({
+        title: '新增菜单失败',
+        content: `原因：${error.message}`,
+      });
+    },
+  });
+
+  // 修改单个菜单mutation
+  const updateMenuMutation = useMutation({
+    mutationFn: menuService.updateMenu,
+    onSuccess: () => {
+      message.success('修改菜单成功');
+      queryClient.invalidateQueries({ queryKey: ['sys_menu', searchParams] });
+      closeEditModal();
+    },
+    onError: (error) => {
+      modal.error({
+        title: '修改菜单失败',
+        content: `原因：${error.message}`,
+      });
+    },
+  });
+
+  // 删除菜单mutation
+  const deleteMenuMutation = useMutation({
+    mutationFn: menuService.deleteMenu,
+    onSuccess: () => {
+      message.success('删除菜单成功');
+      queryClient.invalidateQueries({ queryKey: ['sys_menu', searchParams] });
+    },
+    onError: (error) => {
+      modal.error({
+        title: '删除菜单失败',
+        content: `原因：${error.message}`,
+      });
+    },
+  });
+
+  // 批量删除菜单mutation
+  const batchDeleteMenuMutation = useMutation({
+    mutationFn: menuService.deleteMenuBatch,
+    onSuccess: () => {
+      message.success('批量删除菜单成功');
+      queryClient.invalidateQueries({ queryKey: ['sys_menu', searchParams] });
+    },
+    onError: (error) => {
+      modal.error({
+        title: '批量删除菜单失败',
+        content: `原因：${error.message}`,
+      });
+    },
   });
 
   // 定义表格列
@@ -200,11 +263,9 @@ const Menu: React.FC = () => {
       content: '确定批量删除菜单吗？数据删除后将无法恢复！',
       onOk() {
         // 调用删除接口，删除成功后刷新页面数据
-        menuService
-          .deleteMenuBatch(state.selRows.map((item: any) => item.id))
-          .then(() => {
-            refetch();
-          });
+        batchDeleteMenuMutation.mutate(
+          state.selRows.map((item: any) => item.id),
+        );
       },
     });
   };
@@ -222,9 +283,7 @@ const Menu: React.FC = () => {
   // 修改后的删除方法
   const delMenu = (id: string) => {
     confirmDelete('确定删除菜单吗？数据删除后将无法恢复！', () => {
-      menuService.deleteMenu(id).then(() => {
-        refetch();
-      });
+      deleteMenuMutation.mutate(id);
     });
   };
 
@@ -252,23 +311,12 @@ const Menu: React.FC = () => {
    * @param menuData 编辑的菜单数据
    */
   const onEditOk = async (menuData: Record<string, any>) => {
-    // 请求后台进行数据保存
-    try {
-      if (state.currentRow == null) {
-        // 新增数据
-        await menuService.addMenu(menuData);
-      } else {
-        // 编辑数据
-        await menuService.updateMenu(menuData);
-      }
-      // 操作成功，关闭弹窗，刷新数据
-      closeEditModal();
-      refetch();
-    } catch (error) {
-      modal.error({
-        title: '操作失败',
-        content: `原因：${error}`,
-      });
+    if (state.currentRow == null) {
+      // 新增数据
+      addMenuMutation.mutate(menuData);
+    } else {
+      // 编辑数据
+      updateMenuMutation.mutate(menuData);
     }
   };
 

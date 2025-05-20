@@ -6,7 +6,7 @@ import {
   ExportOutlined,
   SwitcherOutlined,
 } from '@ant-design/icons';
-import { Divider } from 'antd';
+import { Divider, App as AntdApp } from 'antd';
 import './apps.scss';
 import { memo, useCallback, useState } from 'react';
 import { useNavigate } from 'react-router';
@@ -17,6 +17,9 @@ import CustomPopover, { type HtmlContentProps } from '@/components/popover';
 import DuplicateAppModal from './DuplicateAppModal';
 import { useTranslation } from 'react-i18next';
 import EditAppModal from './components/edit-app-modal';
+import { appsService } from '@/services/integrated/apps/appsApi';
+import { useQueryClient, useMutation } from '@tanstack/react-query';
+import modal from 'antd/es/modal';
 
 /**
  * 应用
@@ -25,6 +28,7 @@ import EditAppModal from './components/edit-app-modal';
 const AppCard: React.FC<AppCardProps> = memo(({ app, onRefresh }) => {
   const { id, name, type, remark = '' } = app;
   const navigate = useNavigate();
+  const { message } = AntdApp.useApp();
   const [showEditModal, setShowEditModal] = useState(false);
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   // 复制弹窗
@@ -35,6 +39,8 @@ const AppCard: React.FC<AppCardProps> = memo(({ app, onRefresh }) => {
   const hasEditorPermission = usePermission(['engine.app.edit']);
   const { t } = useTranslation();
 
+  const queryClient = useQueryClient();
+
   /**
    * 应用流程设计
    */
@@ -43,15 +49,51 @@ const AppCard: React.FC<AppCardProps> = memo(({ app, onRefresh }) => {
     navigate(`/app/${id}/workflow`);
   };
 
+  // 处理应用修改
+  const updateAppMutation = useMutation({
+    mutationFn: (app: Partial<App>) => appsService.updateApp(app),
+    onSuccess: () => {
+      message.success(t('apps.updateApp.success'));
+      onRefresh?.();
+      // 关闭编辑弹窗
+      setShowEditModal(false);
+    },
+    onError: (error) => {
+      modal.error({
+        title: t('apps.updateApp.error.title'),
+        content: t('apps.updateApp.error.content', { error: error.message }),
+      });
+    },
+  });
+
+  // 处理应用删除
+  const deleteAppMutation = useMutation({
+    mutationFn: (id: string) => appsService.deleteApp(id),
+    onSuccess: () => {
+      message.success(t('apps.deleteApp.success'));
+      onRefresh?.();
+    },
+    onError: (error) => {
+      modal.error({
+        title: t('apps.deleteApp.error.title'),
+        content: t('apps.deleteApp.error.content', { error: error.message }),
+      });
+    },
+  });
+
   /**
    * 确认删除应用
    */
-  const onConfirmDelete = useCallback(() => {}, [app.id]);
+  const onConfirmDelete = useCallback(() => {
+    deleteAppMutation.mutate(id);
+  }, [app.id, onRefresh]);
 
   /**
    * 编辑应用
    */
-  const onEdit = useCallback(async () => {}, [app.id]);
+  const onEdit = useCallback(async () => {
+    updateAppMutation.mutate(app);
+  }, [app.id]);
 
   /**
    * 复制应用(有一个复制弹窗)

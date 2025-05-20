@@ -387,7 +387,7 @@ export const transform: AxiosTransform = {
       antdUtils.modal?.error({
         title: `${t('common.errorMsg.serverException')}（${t('common.errorMsg.statusCode')}：${responseCode || code}）`,
         content: errMessage,
-        okText: t('common.opeartion.confirm'),
+        okText: t('common.operation.confirm'),
       });
       return Promise.reject(error);
     }
