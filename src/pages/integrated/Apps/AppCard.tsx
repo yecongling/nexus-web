@@ -11,7 +11,7 @@ import './apps.scss';
 import { memo, useCallback, useState } from 'react';
 import { useNavigate } from 'react-router';
 import type { App, Tag } from '@/services/integrated/apps/types';
-import clsx from 'clsx';
+import clsx from '@/utils/classnames';
 import { usePermission } from '@/hooks/usePermission';
 import CustomPopover, { type HtmlContentProps } from '@/components/popover';
 import DuplicateAppModal from './DuplicateAppModal';
