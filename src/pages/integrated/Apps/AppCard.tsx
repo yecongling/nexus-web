@@ -307,10 +307,10 @@ const AppCard: React.FC<AppCardProps> = memo(({ app, onRefresh }) => {
       {showEditModal && (
         <EditAppModal
           open={showEditModal}
-          appName={app.name}
+          appName={name}
           appIcon={app.icon}
-          appMode={app.type}
-          appDescription={app.remark || ''}
+          appMode={type}
+          appDescription={remark || ''}
           onCancel={() => {
             setShowEditModal(false);
           }}
