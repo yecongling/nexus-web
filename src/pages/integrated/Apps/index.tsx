@@ -81,22 +81,22 @@ const Apps: React.FC = () => {
   // 分段控制器选项
   const segmentedOptions: SegmentedProps<number>['options'] = [
     {
-      label: t('apps.segment.all'),
+      label: t('app.segment.all'),
       value: 0,
       icon: <AppstoreOutlined />,
     },
     {
-      label: t('apps.segment.integrated'),
+      label: t('app.segment.integrated'),
       value: 1,
       icon: <ApartmentOutlined />,
     },
     {
-      label: t('apps.segment.interface'),
+      label: t('app.segment.interface'),
       value: 2,
       icon: <ApiOutlined />,
     },
     {
-      label: t('apps.segment.tripartite'),
+      label: t('app.segment.tripartite'),
       value: 3,
       icon: <SolutionOutlined />,
     },
@@ -128,8 +128,8 @@ const Apps: React.FC = () => {
     },
     onError: (error) => {
       modal.error({
-        title: t('apps.addApp.error.title'),
-        content: t('apps.addApp.error.content', { error: error.message }),
+        title: t('app.addApp.error.title'),
+        content: t('app.addApp.error.content', { error: error.message }),
       });
     },
   });
@@ -284,7 +284,7 @@ const Apps: React.FC = () => {
   return (
     <>
       <div className="flex flex-col h-full pt-2 pr-4 pl-4 bg-[#f5f6f7]">
-        <div className="mb-[8px] text-[18px] font-bold">{t('apps.list')}</div>
+        <div className="mb-[8px] text-[18px] font-bold">{t('app.list')}</div>
         {/* 卡片列表和筛选框 */}
         <div className="mb-[8px]">
           <div className="w-[600px] my-4 mx-auto">
@@ -307,13 +307,13 @@ const Apps: React.FC = () => {
             <div>
               {/* 区分我创建的、标签页 */}
               <Checkbox onChange={(e) => onCreatedChange(e.target.checked)}>
-                {t('apps.createBy')}
+                {t('app.createBy')}
               </Checkbox>
               <Dropdown popupRender={renderDropDown} trigger={['click']}>
                 <Button color="default" variant="filled">
                   <Space>
                     <TagOutlined />
-                    {t('apps.allTags')}
+                    {t('app.allTags')}
                     <DownOutlined />
                   </Space>
                 </Button>
@@ -330,7 +330,7 @@ const Apps: React.FC = () => {
               classNames={{ body: 'grow p-2! rounded-t-xl' }}
             >
               <div className="px-6 pt-2 pb-1 text-xs font-medium leading-[18px] text-[#676f83]">
-                {t('apps.newApp.createApp')}
+                {t('app.newApp.createApp')}
               </div>
               <button
                 className="w-full flex items-center mb-1 px-6 py-[7px] rounded-lg text-[13px] font-medium leading-[18px] text-[#676f83] cursor-pointer hover:bg-[#f5f6f7] hover:text-[#1e1e2d] transition-all duration-200 ease-in-out"
@@ -338,7 +338,7 @@ const Apps: React.FC = () => {
                 type="button"
               >
                 <PlusOutlined className="text-[#676f83] shrink-0 mr-2 w-4 h-4" />
-                {t('apps.newApp.startFromBlank')}
+                {t('app.newApp.startFromBlank')}
               </button>
               <button
                 className="w-full flex items-center px-6 py-[7px] rounded-lg text-[13px] font-medium leading-[18px] text-[#676f83] cursor-pointer hover:bg-[#f5f6f7] hover:text-[#1e1e2d] transition-all duration-200 ease-in-out"
@@ -346,7 +346,7 @@ const Apps: React.FC = () => {
                 type="button"
               >
                 <FileAddFilled className="text-[#676f83] shrink-0 mr-2 w-4 h-4" />
-                {t('apps.newApp.startFromTemplate')}
+                {t('app.newApp.startFromTemplate')}
               </button>
               <button
                 className="w-full flex items-center px-6 py-[7px] rounded-lg text-[13px] font-medium leading-[18px] text-[#676f83] cursor-pointer hover:bg-[#f5f6f7] hover:text-[#1e1e2d] transition-all duration-200 ease-in-out"
@@ -354,7 +354,7 @@ const Apps: React.FC = () => {
                 type="button"
               >
                 <ExportOutlined className="text-[#676f83] shrink-0 mr-2 w-4 h-4" />
-                {t('apps.newApp.importFromDSL')}
+                {t('app.newApp.importFromDSL')}
               </button>
             </Card>
           )}

@@ -13,6 +13,7 @@ const translation = {
       question: '问题',
       refresh: '刷新缓存',
       logout: '退出登录',
+      about: '关于',
     },
   },
 };

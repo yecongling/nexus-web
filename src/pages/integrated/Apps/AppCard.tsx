@@ -56,15 +56,15 @@ const AppCard: React.FC<AppCardProps> = memo(({ app, onRefresh }) => {
   const updateAppMutation = useMutation({
     mutationFn: (app: Partial<App>) => appsService.updateApp(app),
     onSuccess: () => {
-      message.success(t('apps.updateApp.success'));
+      message.success(t('app.updateApp.success'));
       onRefresh?.();
       // 关闭编辑弹窗
       setShowEditModal(false);
     },
     onError: (error) => {
       modal.error({
-        title: t('apps.updateApp.error.title'),
-        content: t('apps.updateApp.error.content', { error: error.message }),
+        title: t('app.updateApp.error.title'),
+        content: t('app.updateApp.error.content', { error: error.message }),
       });
     },
   });
@@ -73,13 +73,13 @@ const AppCard: React.FC<AppCardProps> = memo(({ app, onRefresh }) => {
   const deleteAppMutation = useMutation({
     mutationFn: (id: string) => appsService.deleteApp(id),
     onSuccess: () => {
-      message.success(t('apps.deleteApp.success'));
+      message.success(t('app.deleteApp.success'));
       onRefresh?.();
     },
     onError: (error) => {
       modal.error({
-        title: t('apps.deleteApp.error.title'),
-        content: t('apps.deleteApp.error.content', { error: error.message }),
+        title: t('app.deleteApp.error.title'),
+        content: t('app.deleteApp.error.content', { error: error.message }),
       });
     },
   });
@@ -90,7 +90,7 @@ const AppCard: React.FC<AppCardProps> = memo(({ app, onRefresh }) => {
   const copyAppMutation = useMutation({
     mutationFn: (app: Partial<App>) => appsService.copyApp(app),
     onSuccess: () => {
-      message.success(t('apps.copyApp.success'));
+      message.success(t('app.copyApp.success'));
       // 刷新列表
       onRefresh?.();
       // 关闭复制弹窗
@@ -99,8 +99,8 @@ const AppCard: React.FC<AppCardProps> = memo(({ app, onRefresh }) => {
     },
     onError: (error) => {
       modal.error({
-        title: t('apps.copyApp.error.title'),
-        content: t('apps.copyApp.error.content', { error: error.message }),
+        title: t('app.copyApp.error.title'),
+        content: t('app.copyApp.error.content', { error: error.message }),
       });
     },
   });
@@ -202,6 +202,7 @@ const AppCard: React.FC<AppCardProps> = memo(({ app, onRefresh }) => {
       modal.confirm({
         title: t('app.deleteAppConfirmTitle'),
         content: t('app.deleteAppConfirmContent'),
+        width: 480,
         onOk: onConfirmDelete,
       });
     };
@@ -214,7 +215,7 @@ const AppCard: React.FC<AppCardProps> = memo(({ app, onRefresh }) => {
         >
           <span className="text-[13px] text-zinc-500">
             <EditOutlined className="w-4 h-4 mr-2" />
-            {t('apps.editApp')}
+            {t('app.editApp')}
           </span>
         </button>
         <Divider className="!my-1" />
@@ -225,7 +226,7 @@ const AppCard: React.FC<AppCardProps> = memo(({ app, onRefresh }) => {
         >
           <span className="text-[13px] text-zinc-500">
             <CopyOutlined className="w-4 h-4  mr-2" />
-            {t('apps.duplicate')}
+            {t('app.duplicate')}
           </span>
         </button>
         <button
@@ -235,7 +236,7 @@ const AppCard: React.FC<AppCardProps> = memo(({ app, onRefresh }) => {
         >
           <span className="text-[13px] text-zinc-500">
             <ExportOutlined className="w-4 h-4  mr-2" />
-            {t('apps.export')}
+            {t('app.export')}
           </span>
         </button>
         {app.type === 1 && (
@@ -247,7 +248,7 @@ const AppCard: React.FC<AppCardProps> = memo(({ app, onRefresh }) => {
             >
               <span className="text-sm leading-5 text-zinc-500">
                 <SwitcherOutlined className="w-4 h-4 mr-2" />
-                {t('apps.switch')}
+                {t('app.switch')}
               </span>
             </div>
           </>

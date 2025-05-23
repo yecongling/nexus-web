@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router';
 import {
   ExclamationCircleOutlined,
   FileMarkdownOutlined,
+  InfoCircleOutlined,
   LockOutlined,
   LogoutOutlined,
   QuestionCircleFilled,
@@ -77,6 +78,14 @@ const UserDropdown: React.FC = memo(() => {
     },
     {
       type: 'divider',
+    },
+    {
+      key: 'about',
+      label: t('layout.header.userDropdown.about'),
+      icon: <InfoCircleOutlined />,
+      onClick: () => {
+        // 跳转到关于
+      },
     },
     {
       key: '3',

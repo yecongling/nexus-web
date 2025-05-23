@@ -18,5 +18,8 @@ const translation = {
   duplicate: 'Duplicate',
   export: 'Export DSL',
   switch: 'Switch to Integrated App',
+  deleteAppConfirmTitle: 'Delete this app?',
+  deleteAppConfirmContent:
+    'Deleting the app is irreversible. Users will no longer be able to access your app, and all prompt configurations and logs will be permanently deleted.',
 };
 export default translation;

@@ -13,6 +13,7 @@ const translation = {
       question: 'Question',
       refresh: 'Refresh Cache',
       logout: 'Log out',
+      about: 'About',
     },
   },
 };
