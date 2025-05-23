@@ -1,5 +1,5 @@
 import DragModal from '@/components/modal/DragModal';
-import type { App } from '@/services/integrated/apps/types';
+import type { App } from '@/services/integrated/apps/app';
 import { ApartmentOutlined, ArrowRightOutlined } from '@ant-design/icons';
 import { Button, Input, Select, Space, type InputRef } from 'antd';
 import TextArea from 'antd/es/input/TextArea';

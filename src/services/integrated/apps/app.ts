@@ -26,10 +26,29 @@ export interface App {
   createBy?: string;
   // 更新人
   updateBy?: string;
-  icon: string;
   // 标签
   tags: Tag[];
+
+  /**
+   * Icon
+   */
+  icon_type: AppIconType | null;
+  icon: string;
+  icon_background: string | null;
+  icon_url: string | null;
 }
+
+export type AppIconType = 'image' | 'emoji'
+
+export interface AppModalState {
+  // 打开新增项目弹窗
+  openAddModal: boolean;
+  // 打开模板项目弹窗
+  openTemplateModal: boolean;
+  // 打开上传项目弹窗
+  openImportModal: boolean;
+}
+
 
 /**
  * 标签

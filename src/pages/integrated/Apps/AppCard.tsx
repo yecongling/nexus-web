@@ -10,16 +10,19 @@ import { Divider, App as AntdApp } from 'antd';
 import './apps.scss';
 import { memo, useCallback, useState } from 'react';
 import { useNavigate } from 'react-router';
-import type { App, Tag } from '@/services/integrated/apps/types';
+import type { App, Tag } from '@/services/integrated/apps/app';
 import clsx from '@/utils/classnames';
 import { usePermission } from '@/hooks/usePermission';
 import CustomPopover, { type HtmlContentProps } from '@/components/popover';
-import DuplicateAppModal from './DuplicateAppModal';
+import DuplicateAppModal, {
+  type DuplicateAppModalProps,
+} from './duplicate-modal';
 import { useTranslation } from 'react-i18next';
-import EditAppModal from './components/edit-app-modal';
+import EditAppModal from './edit-app-modal';
 import { appsService } from '@/services/integrated/apps/appsApi';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
-import modal from 'antd/es/modal';
+import TagSelector from '@/components/base/tag-management/selector';
+import SwitchAppModal from './swith-app-modal';
 
 /**
  * 应用
@@ -28,9 +31,8 @@ import modal from 'antd/es/modal';
 const AppCard: React.FC<AppCardProps> = memo(({ app, onRefresh }) => {
   const { id, name, type, remark = '' } = app;
   const navigate = useNavigate();
-  const { message } = AntdApp.useApp();
+  const { message, modal } = AntdApp.useApp();
   const [showEditModal, setShowEditModal] = useState(false);
-  const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   // 复制弹窗
   const [showDuplicateModal, setShowDuplicateModal] = useState(false);
   const [showSwitchModal, setShowSwitchModal] = useState<boolean>(false);
@@ -44,9 +46,10 @@ const AppCard: React.FC<AppCardProps> = memo(({ app, onRefresh }) => {
   /**
    * 应用流程设计
    */
-  const redirectWorkflow = () => {
+  const redirectWorkflow = (e: React.MouseEvent) => {
+    e.preventDefault();
     // 跳转到流程编排界面
-    navigate(`/app/${id}/workflow`);
+    navigate(`/integrated/app/${id}/workflow`);
   };
 
   // 处理应用修改
@@ -82,6 +85,27 @@ const AppCard: React.FC<AppCardProps> = memo(({ app, onRefresh }) => {
   });
 
   /**
+   * 复制应用
+   */
+  const copyAppMutation = useMutation({
+    mutationFn: (app: Partial<App>) => appsService.copyApp(app),
+    onSuccess: () => {
+      message.success(t('apps.copyApp.success'));
+      // 刷新列表
+      onRefresh?.();
+      // 关闭复制弹窗
+      setShowDuplicateModal(false);
+      // 考虑是否跳转到应用编排页面
+    },
+    onError: (error) => {
+      modal.error({
+        title: t('apps.copyApp.error.title'),
+        content: t('apps.copyApp.error.content', { error: error.message }),
+      });
+    },
+  });
+
+  /**
    * 确认删除应用
    */
   const onConfirmDelete = useCallback(() => {
@@ -98,7 +122,19 @@ const AppCard: React.FC<AppCardProps> = memo(({ app, onRefresh }) => {
   /**
    * 复制应用(有一个复制弹窗)
    */
-  const onCopy = async () => {};
+  const onCopy: DuplicateAppModalProps['onConfirm'] = async ({
+    name,
+    icon_type,
+    icon,
+    icon_background,
+  }) => {
+    copyAppMutation.mutate({
+      name,
+      icon_type,
+      icon,
+      icon_background,
+    });
+  };
 
   /**
    * 导出应用
@@ -162,7 +198,12 @@ const AppCard: React.FC<AppCardProps> = memo(({ app, onRefresh }) => {
       e.stopPropagation();
       props.onClick?.();
       e.preventDefault();
-      setShowConfirmDelete(true);
+      // 询问是否删除
+      modal.confirm({
+        title: t('app.deleteAppConfirmTitle'),
+        content: t('app.deleteAppConfirmContent'),
+        onOk: onConfirmDelete,
+      });
     };
     return (
       <div className="relative w-full py-1" onMouseLeave={onMouseLeave}>
@@ -227,7 +268,10 @@ const AppCard: React.FC<AppCardProps> = memo(({ app, onRefresh }) => {
 
   return (
     <>
-      <div className="group relative col-span-1 inline-flex h-[160px] cursor-pointer bg-[#fcfcfd] border-[#fff] flex-col rounded-xl border-[1px] border-solid shadow-sm transition-all duration-200 ease-in-out hover:shadow-lg">
+      <div
+        onClick={(e) => redirectWorkflow(e)}
+        className="group relative col-span-1 inline-flex h-[160px] cursor-pointer bg-[#fcfcfd] border-[#fff] flex-col rounded-xl border-[1px] border-solid shadow-sm transition-all duration-200 ease-in-out hover:shadow-lg"
+      >
         <div className="flex h-[66px] shrink-0 grow-0 items-center gap-3 px-[14px] pb-3 pt-[14px]">
           {/* icon */}
           <div className="relative shrink-0">icon</div>
@@ -271,7 +315,7 @@ const AppCard: React.FC<AppCardProps> = memo(({ app, onRefresh }) => {
                   )}
                 >
                   {/* 标签过滤器 */}
-                  标签过滤器
+                  <TagSelector />
                 </div>
               </div>
               <div className="mx-1 !hidden h-[14px] w-[1px] shrink-0 group-hover:!flex" />
@@ -318,11 +362,22 @@ const AppCard: React.FC<AppCardProps> = memo(({ app, onRefresh }) => {
         />
       )}
       {/* 复制框 */}
-      {showDuplicateModal && <DuplicateAppModal />}
+      {showDuplicateModal && (
+        <DuplicateAppModal
+          appName={name}
+          icon_type={app.icon_type}
+          icon={app.icon}
+          icon_url={app.icon_url}
+          icon_background={app.icon_background}
+          show={showDuplicateModal}
+          onCancel={() => {
+            setShowDuplicateModal(false);
+          }}
+          onConfirm={onCopy}
+        />
+      )}
       {/* 切换应用类型弹窗 */}
-      {showSwitchModal && <div>切换应用类型弹窗</div>}
-      {/* 确认删除弹窗 */}
-      {showConfirmDelete && <div>确认删除弹窗</div>}
+      {showSwitchModal && <SwitchAppModal />}
     </>
   );
 });

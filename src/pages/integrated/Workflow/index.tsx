@@ -49,8 +49,7 @@ const Workflow: React.FC = () => {
     <div className="w-full flex flex-auto">
       {/* 左边可收缩部分 */}
       <div className="w-[300px] h-full border-r-[1px] border-solid border-[#ddd] fixed z-20 hidden">
-        左边列表，可收缩
-        流程ID: {appId}
+        左边列表，可收缩 应用ID: {appId}
       </div>
       {/* 右边设计部分 */}
       <div className="w-full h-full">

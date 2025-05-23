@@ -23,21 +23,22 @@ import {
   SolutionOutlined,
   TagOutlined,
 } from '@ant-design/icons';
-import type { App, AppSearchParams } from '@/services/integrated/apps/types';
-import { usePreferencesStore } from '@/stores/store';
+import type { App, AppSearchParams } from '@/services/integrated/apps/app';
 import { usePermission } from '@/hooks/usePermission';
 import { appsService } from '@/services/integrated/apps/appsApi';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import ImportDsl from './ImportDsl';
+import ImportDsl from './create-from-dsl-modal';
 import React from 'react';
-import type { AppModalState } from './types';
+import type { AppModalState } from '@/services/integrated/apps/app';
 import { isEqual } from 'lodash-es';
 import { useTranslation } from 'react-i18next';
-import AppCreate from './AppCreate';
+import AppCreate from './create-app-modal';
 import AppCard from './AppCard';
 const { Search } = Input;
 // 模版中心
-const AppTemplates = React.lazy(() => import('./AppTemplates'));
+const AppTemplates = React.lazy(
+  () => import('./create-app-template/index.tsx'),
+);
 
 // 提取关闭弹窗的逻辑
 const closeAllModals = (dispatch: React.Dispatch<Partial<AppModalState>>) => {
@@ -52,10 +53,8 @@ const closeAllModals = (dispatch: React.Dispatch<Partial<AppModalState>>) => {
  * 应用设计
  */
 const Apps: React.FC = () => {
-  const { preferences } = usePreferencesStore();
   const { t } = useTranslation();
   const queryClient = useQueryClient();
-  const { theme } = preferences;
   const { modal } = AntdApp.useApp();
 
   // 新增弹窗、模版弹窗、导入弹窗

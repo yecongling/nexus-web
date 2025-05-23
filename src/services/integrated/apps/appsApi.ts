@@ -1,5 +1,5 @@
 import { HttpRequest } from '@/utils/request';
-import type { App, AppSearchParams } from './types';
+import type { App, AppSearchParams } from './app';
 
 /**
  * 项目相关接口
@@ -23,6 +23,11 @@ const AppsApi: Record<string, string> = {
    * 删除项目
    */
   deleteApp: '/engine/apps/deleteApp',
+
+  /**
+   * 复制应用
+   */
+  copyApp: '/engine/apps/copyApp',
 };
 
 /**
@@ -47,6 +52,11 @@ export interface IAppsService {
    * 删除项目
    */
   deleteApp(appId: string): Promise<boolean>;
+
+  /**
+   * 复制应用
+   */
+  copyApp(app: Partial<App>): Promise<boolean>;
 }
 
 /**
@@ -96,6 +106,17 @@ export const appsService: IAppsService = {
     const response = await HttpRequest.delete({
       url: AppsApi.deleteApp,
       data: { appId },
+    });
+    return response;
+  },
+
+  /**
+   * 复制应用
+   */
+  async copyApp(app: Partial<App>): Promise<boolean> {
+    const response = await HttpRequest.post({
+      url: AppsApi.copyApp,
+      data: app,
     });
     return response;
   },

@@ -2,7 +2,7 @@ import DragModal from '@/components/modal/DragModal';
 import { Input } from 'antd';
 import type React from 'react';
 import { memo } from 'react';
-import TemplateTypeDropdown from './components/TemplateTypeDropdown';
+import TemplateTypeDropdown from '../components/TemplateTypeDropdown';
 
 /**
  * 模版中心
@@ -37,11 +37,9 @@ const AppTemplates: React.FC<AppsTemplateModelProps> = memo(
         }
         onCancel={onClose}
       >
-        <div className='relative flex h-full overflow-y-auto'>
-          <div className='h-full w-[200px] p-4'>
-            左边分类
-          </div>
-          <div className='h-full flex-1 shrink-0 grow overflow-auto border-l p-6 pt-2 border-[#1018280a]'>
+        <div className="relative flex h-full overflow-y-auto">
+          <div className="h-full w-[200px] p-4">左边分类</div>
+          <div className="h-full flex-1 shrink-0 grow overflow-auto border-l p-6 pt-2 border-[#1018280a]">
             右边模板
           </div>
         </div>
