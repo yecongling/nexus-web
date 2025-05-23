@@ -13,6 +13,7 @@ import {
 
 import '@xyflow/react/dist/style.css';
 import { useRef, useCallback, useEffect } from 'react';
+import { Button } from 'antd';
 
 const initialNodes = [
   { id: '1', position: { x: 0, y: 0 }, data: { label: '1' } },
@@ -45,28 +46,41 @@ const Workflow: React.FC = () => {
     }
   }, []);
 
+  const redirectApps = () => {
+    navigate('/integrated/apps');
+  };
+
   return (
-    <div className="w-full flex flex-auto">
-      {/* 左边可收缩部分 */}
-      <div className="w-[300px] h-full border-r-[1px] border-solid border-[#ddd] fixed z-20 hidden">
-        左边列表，可收缩 应用ID: {appId}
+    <div className="w-full flex flex-col h-full">
+      <div className="flex justify-center align-middle">
+        <div>
+          <Button type="text" onClick={redirectApps}>
+            应用中心
+          </Button>
+        </div>
       </div>
-      {/* 右边设计部分 */}
-      <div className="w-full h-full">
-        {/* 画布 */}
-        <div className="w-full h-full" ref={refContainer}>
-          <ReactFlow
-            nodes={nodes}
-            edges={edges}
-            onNodesChange={onNodesChange}
-            onEdgesChange={onEdgesChange}
-            onConnect={onConnect}
-            fitView
-          >
-            <Controls />
-            <MiniMap />
-            <Background variant={BackgroundVariant.Dots} gap={12} size={1} />
-          </ReactFlow>
+      <div className="w-full flex flex-auto">
+        {/* 左边可收缩部分 */}
+        <div className="w-[300px] h-full border-r-[1px] border-solid border-[#ddd] fixed z-20 hidden">
+          左边列表，可收缩 应用ID: {appId}
+        </div>
+        {/* 右边设计部分 */}
+        <div className="w-full h-full">
+          {/* 画布 */}
+          <div className="w-full h-full" ref={refContainer}>
+            <ReactFlow
+              nodes={nodes}
+              edges={edges}
+              onNodesChange={onNodesChange}
+              onEdgesChange={onEdgesChange}
+              onConnect={onConnect}
+              fitView
+            >
+              <Controls />
+              <MiniMap />
+              <Background variant={BackgroundVariant.Dots} gap={12} size={1} />
+            </ReactFlow>
+          </div>
         </div>
       </div>
     </div>
