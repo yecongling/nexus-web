@@ -39,7 +39,7 @@ export default defineConfig({
     template: './index.html',
   },
   // 配置路径别名
-  source: {
+  resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
     },
