@@ -1,5 +1,6 @@
 import { useNavigate, useParams } from 'react-router';
 import './workflow.module.scss';
+import WorkflowEditor from '@/components/workflow';
 
 import { useRef } from 'react';
 import { Button } from 'antd';
@@ -39,7 +40,7 @@ const Workflow: React.FC = () => {
         <div className="w-full h-full">
           {/* 画布 */}
           <div className="w-full h-full" ref={refContainer}>
-            画布
+            <WorkflowEditor id={appId} />
           </div>
         </div>
       </div>

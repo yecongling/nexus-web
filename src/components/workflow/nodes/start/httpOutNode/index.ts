@@ -1,10 +1,11 @@
+import { formMeta } from './form-meta';
 import type { FlowNodeRegistry } from '@/types/workflow/node';
 import { WorkflowNodeType } from '../../constants';
 
 /**
  * http输入的节点
  */
-export const HttpNodeRegistry: FlowNodeRegistry = {
+export const HttpOutNodeRegistry: FlowNodeRegistry = {
   type: WorkflowNodeType.HttpInput,
 
   meta: {
@@ -17,11 +18,13 @@ export const HttpNodeRegistry: FlowNodeRegistry = {
       },
     ],
     size: {
-        width: 300,
-        height: 220
+      width: 300,
+      height: 220,
     },
-    info: {
-
+    info: {},
+    formMeta,
+    canAdd() {
+      return true;
     },
   },
 };

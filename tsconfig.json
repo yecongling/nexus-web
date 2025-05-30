@@ -19,7 +19,7 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "baseUrl": "./", // 项目根目录
+    "baseUrl": ".", // 项目根目录
     "paths": {
       "@/*": [
         "src/*"
