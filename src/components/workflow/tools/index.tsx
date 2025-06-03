@@ -1,4 +1,4 @@
-import { useClientContext } from '@flowgram.ai/free-layout-editor';
+import { useClientContext, useRefresh } from '@flowgram.ai/free-layout-editor';
 import AutoLayout from './auto-layout';
 import FitView from './fit-view';
 import SwitchLine from './switch-line';
@@ -8,6 +8,8 @@ import MinimapSwitch from './minimap-switch';
 import MiniMap from './minimap';
 import { Readonly } from './readonly';
 import { Comment } from './comment';
+import { Button, Divider } from 'antd';
+import { UndoOutlined } from '@ant-design/icons';
 
 /**
  * 流程编排工具组件
@@ -19,7 +21,25 @@ const WorkflowTools: React.FC = () => {
   const [canRedo, setCanRedo] = useState(false);
   const [minimapVisible, setMinimapVisible] = useState(true);
 
-  useEffect(() => {}, [history]);
+  useEffect(() => {
+    const disposable = history.undoRedoService.onChange(() => {
+      setCanUndo(history.canUndo);
+      setCanRedo(history.canRedo);
+    });
+    return () => {
+      disposable.dispose();
+    };
+  }, [history]);
+
+  // 刷新钩子
+  const refresh = useRefresh();
+
+  useEffect(() => {
+    const disposable = playground.config.onReadonlyOrDisabledChange(() =>
+      refresh(),
+    );
+    return () => disposable.dispose();
+  }, [playground]);
 
   return (
     <div className="absolute bottom-4 flex justify-start min-w-[360px] pointer-none gap-2 z-99">
@@ -41,8 +61,29 @@ const WorkflowTools: React.FC = () => {
         <MiniMap visible={minimapVisible} />
         {/* 切换只读模式 */}
         <Readonly />
+        {/* 撤销 */}
+        <Button
+          type="text"
+          icon={<UndoOutlined />}
+          disabled={!canUndo || playground.config.readonly}
+          onClick={() => {
+            history.undo();
+          }}
+        />
+        {/* 重做 */}
+        <Button
+          type="text"
+          icon={<UndoOutlined />}
+          disabled={!canRedo || playground.config.readonly}
+          onClick={() => {
+            history.redo();
+          }}
+        />
+        {/* 分界线 */}
+        <Divider type="vertical" className="h-4 m-0.5" />
         {/* 添加注释组件 */}
         <Comment />
+        {/* 添加节点 */}
       </div>
     </div>
   );
