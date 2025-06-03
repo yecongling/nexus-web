@@ -5,7 +5,7 @@
 export const GroupNodeRender = () => {
   return (
     <div>
-      <div>节点渲染</div>
+      <div>节点分组</div>
     </div>
   );
 };

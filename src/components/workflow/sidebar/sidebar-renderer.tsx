@@ -12,7 +12,7 @@ import { Drawer } from 'antd';
 import { useCallback, useContext, useEffect, useMemo } from 'react';
 
 /**
- * 侧边栏渲染器
+ * 侧边栏渲染器(渲染每个选中节点的配置面板)
  * @returns
  */
 const SidebarRenderer: React.FC = () => {

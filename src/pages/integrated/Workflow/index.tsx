@@ -2,7 +2,6 @@ import { useNavigate, useParams } from 'react-router';
 import './workflow.module.scss';
 import WorkflowEditor from '@/components/workflow';
 
-import { useRef } from 'react';
 import { Button } from 'antd';
 
 /**
@@ -12,11 +11,8 @@ import { Button } from 'antd';
 const Workflow: React.FC = () => {
   // 获取路由参数（应用ID）
   const { appId } = useParams();
-
   // 路由跳转
   const navigate = useNavigate();
-  // 逻辑流程图对象
-  const refContainer = useRef(null);
 
   const redirectApps = () => {
     navigate('/integrated/apps');
@@ -39,7 +35,7 @@ const Workflow: React.FC = () => {
         {/* 右边设计部分 */}
         <div className="w-full h-full">
           {/* 画布 */}
-          <div className="w-full h-full" ref={refContainer}>
+          <div className="w-full h-full">
             <WorkflowEditor id={appId} />
           </div>
         </div>

@@ -15,6 +15,10 @@ import WorkflowTools from './tools';
 const Workflow: React.FC<WorkflowProps> = (props) => {
   // 定义流程编辑器属性
   const editorProps = useEditorProps(initData, nodeRegistries);
+  // 根据应用ID查询流程数据
+  if (props.id) {
+    // TODO: 根据应用ID查询流程数据
+  }
 
   return (
     <div className="workflow-feature-overview">
