@@ -23,8 +23,8 @@ const WorkflowTools: React.FC = () => {
 
   useEffect(() => {
     const disposable = history.undoRedoService.onChange(() => {
-      setCanUndo(history.canUndo);
-      setCanRedo(history.canRedo);
+      setCanUndo(history.canUndo());
+      setCanRedo(history.canRedo());
     });
     return () => {
       disposable.dispose();

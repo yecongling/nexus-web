@@ -6,8 +6,10 @@ import {
   FreeLayoutEditorProvider,
 } from '@flowgram.ai/free-layout-editor';
 import { SidebarProvider } from './sidebar/sidebar-provider';
+import '@flowgram.ai/free-layout-editor/index.css';
 import SidebarRenderer from './sidebar/sidebar-renderer';
 import WorkflowTools from './tools';
+import './workflow.scss';
 
 /**
  * 流程编排组件
