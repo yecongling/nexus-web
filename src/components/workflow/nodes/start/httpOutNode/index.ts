@@ -6,7 +6,7 @@ import { WorkflowNodeType } from '../../constants';
  * http输入的节点
  */
 export const HttpOutNodeRegistry: FlowNodeRegistry = {
-  type: WorkflowNodeType.HttpInput,
+  type: WorkflowNodeType.HTTP,
 
   meta: {
     isStart: true,

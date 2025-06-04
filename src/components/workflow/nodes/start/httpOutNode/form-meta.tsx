@@ -9,12 +9,12 @@ import {
  * http 输出节点
  * @returns
  */
-export const HttpOutNode = (props: FormRenderProps<FlowNodeJSON>) => {
-  return <>http输出节点</>;
+export const HttpNode = (props: FormRenderProps<FlowNodeJSON>) => {
+  return <div className='bg-amber-300 text-blue-500'>http输出节点</div>;
 };
 
 export const formMeta: FormMeta<FlowNodeJSON> = {
-  render: HttpOutNode,
+  render: HttpNode,
   validateTrigger: ValidateTrigger.onChange,
   validate: {
     title: ({ value }: { value: string }) =>
