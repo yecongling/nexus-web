@@ -10,6 +10,7 @@ import {
  * @returns
  */
 export const HttpNode = (props: FormRenderProps<FlowNodeJSON>) => {
+  console.log(props);
   return <div className='bg-amber-300 text-blue-500'>http输出节点</div>;
 };
 

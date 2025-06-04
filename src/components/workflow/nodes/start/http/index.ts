@@ -5,7 +5,7 @@ import { WorkflowNodeType } from '../../constants';
 /**
  * http输入的节点
  */
-export const HttpOutNodeRegistry: FlowNodeRegistry = {
+export const HttpNodeRegistry: FlowNodeRegistry = {
   type: WorkflowNodeType.HTTP,
 
   meta: {
@@ -24,7 +24,7 @@ export const HttpOutNodeRegistry: FlowNodeRegistry = {
     info: {},
     formMeta,
     canAdd() {
-      return true;
+      return false;
     },
   },
 };

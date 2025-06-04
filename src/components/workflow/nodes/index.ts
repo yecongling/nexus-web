@@ -1,7 +1,7 @@
 import type { FlowNodeRegistry } from '@/types/workflow/node';
-import { HttpOutNodeRegistry } from './start/httpOutNode';
+import { HttpNodeRegistry } from './start/http';
 
 /**
  * 节点注册列表
  */
-export const nodeRegistries: FlowNodeRegistry[] = [HttpOutNodeRegistry];
+export const nodeRegistries: FlowNodeRegistry[] = [HttpNodeRegistry];

@@ -1,4 +1,4 @@
-import { CommentRender } from '@/components/workflow/comment';
+import { CommentRender } from '@/components/workflow/nodes/comment';
 import { LineAddButton } from '@/components/workflow/line-add-button';
 import { WorkflowNodeType } from '@/components/workflow/nodes/constants';
 import { createSyncVariablePlugin } from '@/components/workflow/plugins';
@@ -19,6 +19,7 @@ import { debounce } from 'lodash-es';
 import { useMemo } from 'react';
 import { NodePanel } from '@/components/workflow/node-panel';
 import { GroupNodeRender } from '@/components/workflow/group/node-render';
+import BaseNode from '@/components/workflow/nodes/base-node';
 
 /**
  * 定义流程编辑器画布属性
@@ -47,7 +48,9 @@ export function useEditorProps(
           meta: {
             defaultExpanded: true,
           },
-          formMeta: {},
+          formMeta: {
+            render: () => <div>默认节点</div>,
+          },
         };
       },
 
@@ -80,7 +83,6 @@ export function useEditorProps(
         selected: '#37d0ff',
         error: 'red',
       },
-
       /**
        * 判断是否连线（）
        * 1. 不允许连线到自身
@@ -128,6 +130,9 @@ export function useEditorProps(
        * 集成的支持的物料节点
        */
       materials: {
+        // 渲染节点(所有的节点渲染都会从这里开始)
+        renderDefaultNode: BaseNode,
+        // 注册特定的渲染组件
         renderNodes: {
           [WorkflowNodeType.Comment]: CommentRender,
         },

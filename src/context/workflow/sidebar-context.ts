@@ -8,10 +8,10 @@ import type { NodeRenderReturnType } from '@flowgram.ai/free-layout-editor';
 export const SidebarContext = React.createContext<{
   visible: boolean;
   nodeRender?: NodeRenderReturnType;
-  setNodeRender: (node: NodeRenderReturnType | undefined) => void;
+  setNodeId: (node: string | undefined) => void;
 }>({
   visible: false,
-  setNodeRender: () => {},
+  setNodeId: () => {},
 });
 
 export const IsSidebarContext = React.createContext<boolean>(false);
