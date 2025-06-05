@@ -1,6 +1,6 @@
 import { useEditorProps } from '@/hooks/workflow/use-editor-props';
 import { nodeRegistries } from './nodes';
-import { initData } from './init-data';
+import { initialData } from './init-data';
 import {
   EditorRenderer,
   FreeLayoutEditorProvider,
@@ -16,7 +16,7 @@ import './workflow.scss';
  */
 const Workflow: React.FC<WorkflowProps> = (props) => {
   // 定义流程编辑器属性
-  const editorProps = useEditorProps(initData, nodeRegistries);
+  const editorProps = useEditorProps(initialData, nodeRegistries);
   // 根据应用ID查询流程数据
   if (props.id) {
     // TODO: 根据应用ID查询流程数据

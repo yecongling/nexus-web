@@ -1,4 +1,4 @@
-import { formMeta } from './form-meta';
+import { formMeta } from './http';
 import type { FlowNodeRegistry } from '@/types/workflow/node';
 import { WorkflowNodeType } from '../../constants';
 
@@ -19,7 +19,7 @@ export const HttpNodeRegistry: FlowNodeRegistry = {
     ],
     size: {
       width: 300,
-      height: 220,
+      height: 120,
     },
   },
   info: {

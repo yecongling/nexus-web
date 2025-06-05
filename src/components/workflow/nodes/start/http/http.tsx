@@ -1,3 +1,4 @@
+import { useIsSidebar } from '@/hooks/workflow/use-is-sidebar';
 import type { FlowNodeJSON } from '@/types/workflow/node';
 import {
   useNodeRender,
@@ -15,6 +16,14 @@ export const HttpNode = (props: FormRenderProps<FlowNodeJSON>) => {
   const nodeRender = useNodeRender();
   const { node } = nodeRender;
   const nodeMeta = node.getNodeMeta();
+  const isSidebar = useIsSidebar();
+  if (isSidebar) {
+    return (
+      <div>
+        http节点的具体配置界面
+      </div>
+    );
+  }
   return (
     <div
       style={{ width: nodeMeta.size.width, height: nodeMeta.size.height }}
@@ -32,4 +41,5 @@ export const formMeta: FormMeta<FlowNodeJSON> = {
     title: ({ value }: { value: string }) =>
       value ? undefined : 'Title is required',
   },
+  
 };
