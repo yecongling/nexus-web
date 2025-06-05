@@ -1,4 +1,3 @@
-import { NodeRenderContext } from '@/context/workflow/node-render-context';
 import {
   IsSidebarContext,
   SidebarContext,
@@ -10,20 +9,23 @@ import {
 } from '@flowgram.ai/free-layout-editor';
 import { Drawer } from 'antd';
 import { useCallback, useContext, useEffect, useMemo } from 'react';
+import { SidebarNodeRenderer } from './sidebar-node-renderer';
 
 /**
  * 侧边栏渲染器(渲染每个选中节点的配置面板)
  * @returns
  */
 const SidebarRenderer: React.FC = () => {
-  const { nodeRender, setNodeRender } = useContext(SidebarContext);
-  const { selection, playground } = useClientContext();
+  const { nodeId, setNodeId } = useContext(SidebarContext);
+  const { selection, playground, document } = useClientContext();
+
+  const node = nodeId ? document.getNode(nodeId) : undefined;
 
   /**
    * 取消渲染
    */
   const handleCancel = useCallback(() => {
-    setNodeRender(undefined);
+    setNodeId(undefined);
   }, []);
 
   /**
@@ -47,7 +49,7 @@ const SidebarRenderer: React.FC = () => {
         handleCancel();
       } else if (
         selection.selection.length === 1 &&
-        selection.selection[0] !== nodeRender?.node
+        selection.selection[0] !== node
       ) {
         handleCancel();
       }
@@ -61,40 +63,37 @@ const SidebarRenderer: React.FC = () => {
    * 监听节点销毁
    */
   useEffect(() => {
-    if (nodeRender) {
-      const toDispose = nodeRender.node.onDispose(() => {
-        console.log('监听到节点销毁', nodeRender);
-        setNodeRender(undefined);
+    if (node) {
+      const toDispose = node.onDispose(() => {
+        console.log('监听到节点销毁', node);
+        setNodeId(undefined);
       });
       return () => {
         toDispose.dispose();
       };
     }
-  }, [nodeRender]);
+  }, [node]);
 
   /**
    * 节点渲染
    */
   const visible = useMemo(() => {
-    if (!nodeRender) {
+    if (!node) {
       return false;
     }
-    const { disableSideBar = false } =
-      nodeRender.node.getNodeMeta<FlowNodeMeta>();
+    const { disableSideBar = false } = node.getNodeMeta<FlowNodeMeta>();
     return !disableSideBar;
-  }, [nodeRender]);
+  }, [node]);
 
+  if (playground.config.readonly) {
+    return null;
+  }
   /**
    * 内容
    */
-  const content = nodeRender ? (
-    <PlaygroundEntityContext.Provider
-      key={nodeRender.node.id}
-      value={nodeRender.node}
-    >
-      <NodeRenderContext.Provider value={nodeRender}>
-        {nodeRender.form?.render()}
-      </NodeRenderContext.Provider>
+  const content = node ? (
+    <PlaygroundEntityContext.Provider key={node.id} value={node}>
+      <SidebarNodeRenderer node={node} />
     </PlaygroundEntityContext.Provider>
   ) : null;
 

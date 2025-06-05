@@ -7,7 +7,7 @@ import { RunningService } from '@/components/workflow/services/running-service';
 import { shortcuts } from '@/components/workflow/shortcuts/shortcuts';
 import { onDragLineEnd } from '@/components/workflow/utils/on-drag-line-end';
 import type { FlowDocumentJSON, FlowNodeRegistry } from '@/types/workflow/node';
-import type { FreeLayoutProps } from '@flowgram.ai/free-layout-editor';
+import { Field, type FreeLayoutProps } from '@flowgram.ai/free-layout-editor';
 import { createFreeLinesPlugin } from '@flowgram.ai/free-lines-plugin';
 import { createMinimapPlugin } from '@flowgram.ai/minimap-plugin';
 import { createFreeSnapPlugin } from '@flowgram.ai/free-snap-plugin';
@@ -49,7 +49,20 @@ export function useEditorProps(
             defaultExpanded: true,
           },
           formMeta: {
-            render: () => <div>默认节点</div>,
+            render: () => (
+              <>
+                <Field<string> name="title">
+                  {({ field }) => (
+                    <div className="demo-free-node-title">{field.value}</div>
+                  )}
+                </Field>
+                <div className="demo-free-node-content">
+                  <Field<string> name="content">
+                    <input />
+                  </Field>
+                </div>
+              </>
+            ),
           },
         };
       },

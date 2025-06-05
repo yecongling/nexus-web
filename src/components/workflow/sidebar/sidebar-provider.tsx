@@ -1,5 +1,4 @@
 import { SidebarContext } from '@/context/workflow/sidebar-context';
-import type { NodeRenderReturnType } from '@flowgram.ai/free-layout-editor';
 import { useState, type ReactNode } from 'react';
 
 /**
@@ -8,13 +7,9 @@ import { useState, type ReactNode } from 'react';
 export const SidebarProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }: { children: ReactNode }) => {
-  const [nodeRender, setNodeRender] = useState<
-    NodeRenderReturnType | undefined
-  >();
+  const [nodeId, setNodeId] = useState<string | undefined>();
   return (
-    <SidebarContext.Provider
-      value={{ visible: !!nodeRender, nodeRender, setNodeRender }}
-    >
+    <SidebarContext.Provider value={{ visible: !!nodeId, nodeId, setNodeId }}>
       {children}
     </SidebarContext.Provider>
   );

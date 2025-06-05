@@ -26,7 +26,7 @@ export interface NodeWrapperProps {
  * @returns 节点包裹器组件
  */
 const NodeWrapper: React.FC<NodeWrapperProps> = ({
-  isScrollToView,
+  isScrollToView = false,
   children,
 }) => {
   const nodeRender = useNodeRenderContext();
