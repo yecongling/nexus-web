@@ -21,14 +21,13 @@ const BaseNode: React.FC<{ node: FlowNodeEntity }> = ({ node }) => {
    * 只有在节点引擎开启的时候才能使用表单
    */
   const form = nodeRender.form;
-
   /**
    * 用于让 Tooltip 跟随节点缩放, 这个可以根据不同的 ui 库自己实现
    */
   const getPopupContainer = useCallback((node?: HTMLElement) => {
     return node || document.body;
   }, []);
-  
+
   return (
     <ConfigProvider
       getPopupContainer={() => getPopupContainer(node.renderData.node)}

@@ -21,10 +21,13 @@ export const HttpNodeRegistry: FlowNodeRegistry = {
       width: 300,
       height: 220,
     },
-    info: {},
-    formMeta,
-    canAdd() {
-      return false;
-    },
+  },
+  info: {
+    icon: '',
+    description: 'http输入的节点',
+  },
+  formMeta,
+  canAdd() {
+    return false;
   },
 };

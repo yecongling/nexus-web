@@ -1,5 +1,5 @@
 import { SidebarContext } from '@/context/workflow/sidebar-context';
-import { useNodeRenderContext } from '@/hooks/workflow/use-node-render-context';
+import { useNodeRenderContext } from '@/context/workflow/use-node-render-context';
 import classNames from '@/utils/classnames';
 import {
   useClientContext,

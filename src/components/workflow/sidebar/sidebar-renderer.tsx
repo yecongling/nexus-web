@@ -6,6 +6,7 @@ import type { FlowNodeMeta } from '@/types/workflow/node';
 import {
   PlaygroundEntityContext,
   useClientContext,
+  useRefresh,
 } from '@flowgram.ai/free-layout-editor';
 import { Drawer } from 'antd';
 import { useCallback, useContext, useEffect, useMemo } from 'react';
@@ -18,13 +19,14 @@ import { SidebarNodeRenderer } from './sidebar-node-renderer';
 const SidebarRenderer: React.FC = () => {
   const { nodeId, setNodeId } = useContext(SidebarContext);
   const { selection, playground, document } = useClientContext();
+  const refresh = useRefresh();
 
   const node = nodeId ? document.getNode(nodeId) : undefined;
 
   /**
-   * 取消渲染
+   * 关闭侧边栏
    */
-  const handleCancel = useCallback(() => {
+  const handleClose = useCallback(() => {
     setNodeId(undefined);
   }, []);
 
@@ -32,7 +34,14 @@ const SidebarRenderer: React.FC = () => {
    * 监听画布实例变更
    */
   useEffect(() => {
+    const disposable = playground.config.onReadonlyOrDisabledChange(() => {
+      handleClose();
+      refresh();
+    });
     console.log('监听到画布实例变更', playground);
+    return () => {
+      disposable.dispose();
+    };
   }, [playground]);
 
   /**
@@ -46,18 +55,18 @@ const SidebarRenderer: React.FC = () => {
        * If no node is selected, the sidebar is automatically closed
        */
       if (selection.selection.length === 0) {
-        handleCancel();
+        handleClose();
       } else if (
         selection.selection.length === 1 &&
         selection.selection[0] !== node
       ) {
-        handleCancel();
+        handleClose();
       }
     });
     return () => {
       toDispose.dispose();
     };
-  }, [selection, handleCancel]);
+  }, [selection, handleClose]);
 
   /**
    * 监听节点销毁
@@ -98,7 +107,7 @@ const SidebarRenderer: React.FC = () => {
   ) : null;
 
   return (
-    <Drawer mask={false} open={visible} onClose={handleCancel}>
+    <Drawer mask={false} open={visible} onClose={handleClose}>
       <IsSidebarContext.Provider value={true}>
         {content}
       </IsSidebarContext.Provider>
