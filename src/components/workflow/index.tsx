@@ -10,6 +10,8 @@ import '@flowgram.ai/free-layout-editor/index.css';
 import SidebarRenderer from './sidebar/sidebar-renderer';
 import WorkflowTools from './tools';
 import './workflow.scss';
+import { NodeModalProvider } from './node-modal/node-modal-provider';
+import NodeModal from './node-modal/node-modal';
 
 /**
  * 流程编排组件
@@ -32,6 +34,9 @@ const Workflow: React.FC<WorkflowProps> = (props) => {
           <WorkflowTools />
           <SidebarRenderer />
         </SidebarProvider>
+        <NodeModalProvider>
+          <NodeModal />
+        </NodeModalProvider>
       </FreeLayoutEditorProvider>
     </div>
   );

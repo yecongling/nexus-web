@@ -3,7 +3,7 @@ import { useContext } from 'react';
 
 /**
  * 判读是否是在渲染侧边栏
- * @returns {boolean}
+ * @returns 
  */
 export function useIsSidebar() {
   return useContext(IsSidebarContext);

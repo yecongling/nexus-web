@@ -21,6 +21,8 @@ export const HttpNodeRegistry: FlowNodeRegistry = {
       width: 300,
       height: 120,
     },
+    // 这个配置表明当前节点不会触发侧边栏的显示
+    disableSideBar: true,
   },
   info: {
     icon: '',
@@ -29,5 +31,8 @@ export const HttpNodeRegistry: FlowNodeRegistry = {
   formMeta,
   canAdd() {
     return false;
+  },
+  onDblClick(ctx, node) {
+    console.log('onDblClick', node);
   },
 };

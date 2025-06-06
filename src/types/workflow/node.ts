@@ -28,7 +28,11 @@ export interface FlowNodeJSON extends FlowNodeJsonDefault {
  * 例如节点位置，大小，其他属性
  */
 export interface FlowNodeMeta extends WorkflowNodeMeta {
+  // 是否禁用侧边栏
+  // 例如文本节点，图片节点等不需要显示侧边栏
   disableSideBar?: boolean;
+  // 是否禁用弹窗（某些节点双击的时候不需要弹窗）
+  disableModal?: boolean;
 }
 
 /**
@@ -47,6 +51,9 @@ export interface FlowNodeRegistry extends FlowNodeRegistryDefault {
   canAdd?: (ctx: FreeLayoutPluginContext) => boolean;
   canDelete?: (ctx: FreeLayoutPluginContext, from: FlowNodeEntity) => boolean;
   onAdd?: (ctx: FreeLayoutPluginContext) => FlowNodeJSON;
+  // 节点双击事件
+  // 用于打开节点的配置面板等
+  onDblClick?: (ctx: FreeLayoutPluginContext, node: FlowNodeEntity) => void;
 }
 
 /**

@@ -1,3 +1,4 @@
+import { useIsModal } from '@/hooks/workflow/use-is-modal';
 import { useIsSidebar } from '@/hooks/workflow/use-is-sidebar';
 import type { FlowNodeJSON } from '@/types/workflow/node';
 import {
@@ -12,17 +13,17 @@ import {
  * @returns
  */
 export const HttpNode = (props: FormRenderProps<FlowNodeJSON>) => {
-  console.log(props);
   const nodeRender = useNodeRender();
   const { node } = nodeRender;
   const nodeMeta = node.getNodeMeta();
   const isSidebar = useIsSidebar();
+  const isNodeModal = useIsModal();
+
+  if (isNodeModal) {
+    return <div>http节点的弹窗配置界面</div>;
+  }
   if (isSidebar) {
-    return (
-      <div>
-        http节点的具体配置界面
-      </div>
-    );
+    return <div>http节点的具体配置界面</div>;
   }
   return (
     <div
@@ -41,5 +42,4 @@ export const formMeta: FormMeta<FlowNodeJSON> = {
     title: ({ value }: { value: string }) =>
       value ? undefined : 'Title is required',
   },
-  
 };

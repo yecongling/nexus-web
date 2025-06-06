@@ -3,11 +3,13 @@ import { useNodeRenderContext } from '@/context/workflow/use-node-render-context
 import classNames from '@/utils/classnames';
 import {
   useClientContext,
+  useNodeRender,
   WorkflowPortRender,
 } from '@flowgram.ai/free-layout-editor';
 import { useContext, useState } from 'react';
 import { scrollToView } from './util';
 import './node-wrapper.scss';
+import { NodeModalContext } from '@/context/workflow/node-modal-context';
 
 /**
  * 节点包裹器属性
@@ -29,12 +31,18 @@ const NodeWrapper: React.FC<NodeWrapperProps> = ({
   isScrollToView = false,
   children,
 }) => {
-  const nodeRender = useNodeRenderContext();
+  // 获取当前渲染的节点
+  const nodeRenderCtx = useNodeRenderContext();
+  const nodeRender = useNodeRender();
   const { selected, startDrag, ports, selectNode, nodeRef, onFocus, onBlur } =
-    nodeRender;
+    nodeRenderCtx;
   const [isDragging, setIsDragging] = useState(false);
   const sidebar = useContext(SidebarContext);
-  const form = nodeRender.form;
+  // 弹窗
+  const nodeModal = useContext(NodeModalContext);
+  const form = nodeRenderCtx.form;
+  // 获取节点注册器（内部可能配置自己的事件）
+  const registry = nodeRender.node.getNodeRegistry();
   const ctx = useClientContext();
 
   const portsRender = ports.map((port) => (
@@ -66,6 +74,19 @@ const NodeWrapper: React.FC<NodeWrapperProps> = ({
         onMouseUp={() => setIsDragging(false)}
         onFocus={onFocus}
         onBlur={onBlur}
+        // onDoubleClick={() => registry.onDblClick?.(ctx, nodeRender.node)}
+        onDoubleClick={(e) => {
+          selectNode(e);
+          // 触发节点配置的双击事件
+          registry.onDblClick?.(ctx, nodeRender.node);
+          if (!isDragging) {
+            nodeModal.setNodeId(nodeRender.node.id);
+            // 可选：将 isScrollToView 设为 true，可以让节点选中后滚动到画布中间
+            if (isScrollToView) {
+              scrollToView(ctx, nodeRender.node);
+            }
+          }
+        }}
         data-node-selected={String(selected)}
         style={{
           outline: form?.state.invalid ? '1px solid red' : 'none',
