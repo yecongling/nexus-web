@@ -28,15 +28,15 @@ const Workflow: React.FC<WorkflowProps> = (props) => {
     <div className="workflow-feature-overview">
       <FreeLayoutEditorProvider {...editorProps}>
         <SidebarProvider>
-          <div className="workflow-container">
-            <EditorRenderer className="workflow-editor" />
-          </div>
-          <WorkflowTools />
-          <SidebarRenderer />
+          <NodeModalProvider>
+            <div className="workflow-container">
+              <EditorRenderer className="workflow-editor" />
+            </div>
+            <WorkflowTools />
+            <SidebarRenderer />
+            <NodeModal />
+          </NodeModalProvider>
         </SidebarProvider>
-        <NodeModalProvider>
-          <NodeModal />
-        </NodeModalProvider>
       </FreeLayoutEditorProvider>
     </div>
   );
