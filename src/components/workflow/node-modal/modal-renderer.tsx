@@ -16,7 +16,7 @@ import { NodeModalRenderer } from './node-modal-renderer';
  * 用于渲染各个组件需要的弹窗操作（通过双击触发的）
  * @returns
  */
-const NodeModal: React.FC = () => {
+const ModalRenderer: React.FC = () => {
   const { nodeId, setNodeId } = useContext(NodeModalContext);
   const refresh = useRefresh();
   const { playground, document } = useClientContext();
@@ -97,4 +97,4 @@ const NodeModal: React.FC = () => {
     </DragModal>
   );
 };
-export default NodeModal;
+export default ModalRenderer;

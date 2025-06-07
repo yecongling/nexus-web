@@ -11,7 +11,7 @@ import SidebarRenderer from './sidebar/sidebar-renderer';
 import WorkflowTools from './tools';
 import './workflow.scss';
 import { NodeModalProvider } from './node-modal/node-modal-provider';
-import NodeModal from './node-modal/node-modal';
+import ModalRenderer from './node-modal/modal-renderer';
 
 /**
  * 流程编排组件
@@ -33,8 +33,10 @@ const Workflow: React.FC<WorkflowProps> = (props) => {
               <EditorRenderer className="workflow-editor" />
             </div>
             <WorkflowTools />
+            {/* 侧边栏 */}
             <SidebarRenderer />
-            <NodeModal />
+            {/* 弹窗 */}
+            <ModalRenderer />
           </NodeModalProvider>
         </SidebarProvider>
       </FreeLayoutEditorProvider>

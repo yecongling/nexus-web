@@ -51,21 +51,22 @@ export default defineConfig({
   },
   // 构建产物相关配置
   output: {},
+
   // 构建优化相关
   performance: {
     chunkSplit: {
       strategy: 'split-by-experience',
-      // 下面的部分单独分包
-      forceSplitting: {
-        axios: /node_modules[\\/]axios/,
-        react: /node_modules[\\/]react/,
-        antd: /node_modules[\\/]antd/,
-        lodash: /node_modules[\\/]lodash/,
-        echarts: /node_modules[\\/]echarts/,
-        zrender: /node_modules[\\/]zrender/,
-        antdIcons: /node_modules[\\/]@ant-design\/icons/,
-        'rc-cp': /node_modules[\\/]rc-/,
-      },
+      // 下面的部分单独分包(这里暂时不分包-原因是：后续的测试中发现不配置下面的选项页面加载反而更快)
+      // forceSplitting: {
+      //   axios: /node_modules[\\/]axios/,
+      //   react: /node_modules[\\/]react/,
+      //   antd: /node_modules[\\/]antd/,
+      //   'lodash-es': /node_modules[\\/]lodash-es/,
+      //   echarts: /node_modules[\\/]echarts/,
+      //   zrender: /node_modules[\\/]zrender/,
+      //   antdIcons: /node_modules[\\/]@ant-design\/icons/,
+      //   'rc-cp': /node_modules[\\/]rc-/,
+      // },
     },
     // 移除console.[method]语句
     removeConsole: true,

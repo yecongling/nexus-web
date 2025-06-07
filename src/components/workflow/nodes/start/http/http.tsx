@@ -18,13 +18,15 @@ export const HttpNode = (props: FormRenderProps<FlowNodeJSON>) => {
   const nodeMeta = node.getNodeMeta();
   const isSidebar = useIsSidebar();
   const isNodeModal = useIsModal();
-
+  // 弹窗里面渲染的东西
   if (isNodeModal) {
     return <div>http节点的弹窗配置界面</div>;
   }
+  // 侧边栏里面渲染的东西
   if (isSidebar) {
     return <div>http节点的具体配置界面</div>;
   }
+  // 画布上节点渲染的内容
   return (
     <div
       style={{ width: nodeMeta.size.width, height: nodeMeta.size.height }}

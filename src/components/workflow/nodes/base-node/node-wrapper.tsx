@@ -1,6 +1,5 @@
 import { SidebarContext } from '@/context/workflow/sidebar-context';
 import { useNodeRenderContext } from '@/context/workflow/use-node-render-context';
-import classNames from '@/utils/classnames';
 import {
   useClientContext,
   useNodeRender,
@@ -10,6 +9,7 @@ import { useContext, useState } from 'react';
 import { scrollToView } from './util';
 import './node-wrapper.scss';
 import { NodeModalContext } from '@/context/workflow/node-modal-context';
+import { usePreferencesStore } from '@/stores/store';
 
 /**
  * 节点包裹器属性
@@ -31,6 +31,9 @@ const NodeWrapper: React.FC<NodeWrapperProps> = ({
   isScrollToView = false,
   children,
 }) => {
+  // 获取主题配置
+  const { preferences } = usePreferencesStore();
+  const { theme } = preferences;
   // 获取当前渲染的节点
   const nodeRenderCtx = useNodeRenderContext();
   const nodeRender = useNodeRender();
@@ -52,9 +55,7 @@ const NodeWrapper: React.FC<NodeWrapperProps> = ({
   return (
     <>
       <div
-        className={classNames('node-wrapper', {
-          selected: selected,
-        })}
+        className="node-wrapper"
         ref={nodeRef}
         draggable
         onDragStart={(e) => {
@@ -90,6 +91,7 @@ const NodeWrapper: React.FC<NodeWrapperProps> = ({
         data-node-selected={String(selected)}
         style={{
           outline: form?.state.invalid ? '1px solid red' : 'none',
+          border: selected ? `2px solid ${theme.colorPrimary}` : 'none',
         }}
       >
         {children}

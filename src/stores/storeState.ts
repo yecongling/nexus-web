@@ -173,7 +173,7 @@ interface TabbarPreferences {
 /**
  * 主题配置
  */
-interface ThemePreferences {
+export interface ThemePreferences {
   /** 内置主题名 */
   builtinType: BuiltinThemeType;
   /** 错误色 */

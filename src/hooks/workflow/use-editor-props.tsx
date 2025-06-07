@@ -7,7 +7,10 @@ import { RunningService } from '@/components/workflow/services/running-service';
 import { shortcuts } from '@/components/workflow/shortcuts/shortcuts';
 import { onDragLineEnd } from '@/components/workflow/utils/on-drag-line-end';
 import type { FlowDocumentJSON, FlowNodeRegistry } from '@/types/workflow/node';
-import type { FreeLayoutProps } from '@flowgram.ai/free-layout-editor';
+import {
+  useRefresh,
+  type FreeLayoutProps,
+} from '@flowgram.ai/free-layout-editor';
 import { createFreeLinesPlugin } from '@flowgram.ai/free-lines-plugin';
 import { createMinimapPlugin } from '@flowgram.ai/minimap-plugin';
 import { createFreeSnapPlugin } from '@flowgram.ai/free-snap-plugin';
