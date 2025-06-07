@@ -1,4 +1,9 @@
-import { useClientContext, useRefresh } from '@flowgram.ai/free-layout-editor';
+import {
+  InteractiveType,
+  useClientContext,
+  usePlaygroundTools,
+  useRefresh,
+} from '@flowgram.ai/free-layout-editor';
 import AutoLayout from './auto-layout';
 import FitView from './fit-view';
 import SwitchLine from './switch-line';
@@ -20,6 +25,7 @@ const WorkflowTools: React.FC = () => {
   const [canUndo, setCanUndo] = useState(false);
   const [canRedo, setCanRedo] = useState(false);
   const [minimapVisible, setMinimapVisible] = useState(true);
+  const tools = usePlaygroundTools();
 
   useEffect(() => {
     const disposable = history.undoRedoService.onChange(() => {
@@ -40,6 +46,11 @@ const WorkflowTools: React.FC = () => {
     );
     return () => disposable.dispose();
   }, [playground]);
+
+  // 默认设置鼠标交互
+  useEffect(() => {
+    tools.setInteractiveType(InteractiveType.MOUSE);
+  }, []);
 
   return (
     <div className="absolute bottom-4 flex justify-start min-w-[360px] pointer-none gap-2 z-99">
