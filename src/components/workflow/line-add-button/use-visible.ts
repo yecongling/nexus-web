@@ -1,13 +1,27 @@
-import type { WorkflowLineEntity } from "@flowgram.ai/free-layout-editor"
+import {
+  usePlayground,
+  type WorkflowLineEntity,
+} from '@flowgram.ai/free-layout-editor';
 
 /**
  * 判断连线中间内容是否可见
- * @param params 
+ * @param params
  */
 export const useVisible = (params: {
-    line: WorkflowLineEntity,
-    selected?: boolean;
-    hovered?: boolean;
+  line: WorkflowLineEntity;
+  selected?: boolean;
+  hovered?: boolean;
 }): boolean => {
-
-}   
+  const playground = usePlayground();
+  const { line, selected = false, hovered } = params;
+  if (line.disposed) {
+    return false;
+  }
+  if (playground.config.readonly) {
+    return false;
+  }
+  if (!selected && !hovered) {
+    return false;
+  }
+  return true;
+};
