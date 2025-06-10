@@ -3,6 +3,8 @@
     "lib": ["DOM", "ES2020"],
     "jsx": "preserve",
     "target": "ES2020",
+    "experimentalDecorators": true,
+    "strictPropertyInitialization":false,
     "noEmit": true,
     "skipLibCheck": true,
     "allowJs": true,

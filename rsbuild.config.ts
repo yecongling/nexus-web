@@ -51,6 +51,12 @@ export default defineConfig({
   },
   // 构建产物相关配置
   output: {},
+  source: {
+    // 配置装饰器语法用于支持@injectable()和@inject装饰器
+    decorators: {
+      version: 'legacy',
+    },
+  },
 
   // 构建优化相关
   performance: {

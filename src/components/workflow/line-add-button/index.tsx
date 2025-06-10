@@ -1,5 +1,7 @@
 import type { LineRenderProps } from '@flowgram.ai/free-lines-plugin';
-import { Button } from 'antd';
+import { useVisible } from './use-visible';
+import { IconPlusCircle } from './button';
+import { useCallback } from 'react';
 
 /**
  * 连线上的+号按钮（一般用于在线条中间添加过程）
@@ -7,9 +9,20 @@ import { Button } from 'antd';
  * @returns
  */
 export const LineAddButton: React.FC<LineRenderProps> = (props) => {
+  const { line, selected, hovered, color } = props;
+  const visible = useVisible({ line, selected, hovered });
+
+  /**
+   * 连接线上的图标点击
+   */
+  const onClick = useCallback(() => {}, []);
+
+  if (!visible) {
+    return <></>;
+  }
   return (
-    <div>
-      <Button type="primary">新增</Button>
+    <div data-line-id={line.id} onClick={onClick}>
+      <IconPlusCircle />
     </div>
   );
 };

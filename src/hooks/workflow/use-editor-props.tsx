@@ -7,7 +7,10 @@ import { RunningService } from '@/components/workflow/services/running-service';
 import { shortcuts } from '@/components/workflow/shortcuts/shortcuts';
 import { onDragLineEnd } from '@/components/workflow/utils/on-drag-line-end';
 import type { FlowDocumentJSON, FlowNodeRegistry } from '@/types/workflow/node';
-import type { FreeLayoutProps } from '@flowgram.ai/free-layout-editor';
+import {
+  WorkflowNodeLinesData,
+  type FreeLayoutProps,
+} from '@flowgram.ai/free-layout-editor';
 import { createFreeLinesPlugin } from '@flowgram.ai/free-lines-plugin';
 import { createMinimapPlugin } from '@flowgram.ai/minimap-plugin';
 import { createFreeSnapPlugin } from '@flowgram.ai/free-snap-plugin';
@@ -21,6 +24,7 @@ import { NodePanel } from '@/components/workflow/node-panel';
 import { GroupNodeRender } from '@/components/workflow/group/node-render';
 import BaseNode from '@/components/workflow/nodes/base-node';
 import { defaultFormMeta } from '@/components/workflow/nodes/default-form-meta';
+import { createContextMenuPlugin } from '@/components/workflow/plugins/context-menu-plugin/context-menu-plugin';
 
 /**
  * 定义流程编辑器画布属性
@@ -96,7 +100,10 @@ export function useEditorProps(
         if (fromPort.node === toPort.node) {
           return false;
         }
-        return true;
+        // 线条环检测，不允许连接到前面的节点
+        return !fromPort.node
+          .getData(WorkflowNodeLinesData)
+          .allInputNodes.includes(toPort.node);
       },
 
       /**
@@ -272,6 +279,11 @@ export function useEditorProps(
         createFreeGroupPlugin({
           groupNodeRender: GroupNodeRender,
         }),
+
+        /**
+         * 右键菜单插件
+         */
+        createContextMenuPlugin({}),
       ],
     }),
     [],
