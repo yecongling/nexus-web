@@ -125,6 +125,10 @@ const Apps: React.FC = () => {
       queryClient.invalidateQueries({
         queryKey: ['integrated_app', searchParams],
       });
+      // 关闭弹窗
+      dispatch({
+        openAddModal: false
+      })
     },
     onError: (error) => {
       modal.error({

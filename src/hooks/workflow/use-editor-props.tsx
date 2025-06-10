@@ -38,6 +38,14 @@ export function useEditorProps(
     () => ({
       // 支持背景
       background: true,
+
+      /**
+       * 画布相关配置
+       */
+      playground: {
+        autoResize: true,
+      },
+
       // 只读模式
       readonly: false,
 
@@ -79,12 +87,12 @@ export function useEditorProps(
        * 线条样式配置
        */
       lineColor: {
-        hidden: 'transparent',
-        default: '#4d53e8',
-        drawing: '#5DD6E3',
-        hovered: '#37d0ff',
-        selected: '#37d0ff',
-        error: 'red',
+        hidden: 'var(--g-workflow-line-color-hidden,transparent)',
+        default: 'var(--g-workflow-line-color-default,#4d53e8)',
+        drawing: 'var(--g-workflow-line-color-drawing, #5DD6E3)',
+        hovered: 'var(--g-workflow-line-color-hover,#37d0ff)',
+        selected: 'var(--g-workflow-line-color-selected,#37d0ff)',
+        error: 'var(--g-workflow-line-color-error,red)',
       },
       /**
        * 判断是否连线（）
@@ -200,7 +208,7 @@ export function useEditorProps(
       },
 
       /**
-       * /**
+       *
        * 画布所有 layer 第一次渲染完成后触发
        */
       onAllLayersRendered(ctx) {

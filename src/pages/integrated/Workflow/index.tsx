@@ -3,12 +3,17 @@ import './workflow.module.scss';
 import WorkflowEditor from '@/components/workflow';
 
 import { Button } from 'antd';
+import { usePreferencesStore } from '@/stores/store';
+import { useEffect } from 'react';
 
 /**
  * 流程编排
  * @returns
  */
 const Workflow: React.FC = () => {
+  // 获取数据的钩子函数
+  const { preferences } = usePreferencesStore();
+  const { theme } = preferences;
   // 获取路由参数（应用ID）
   const { appId } = useParams();
   // 路由跳转
@@ -17,6 +22,14 @@ const Workflow: React.FC = () => {
   const redirectApps = () => {
     navigate('/integrated/apps');
   };
+
+  useEffect(() => {
+    // 监听主题变化
+    document.documentElement.style.setProperty(
+      '--g-workflow-line-color-default',
+      theme.colorPrimary,
+    );
+  }, [theme.colorPrimary]);
 
   return (
     <div className="w-full flex flex-col h-full">
