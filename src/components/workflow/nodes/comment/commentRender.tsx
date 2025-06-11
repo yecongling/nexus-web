@@ -1,4 +1,5 @@
 import type { WorkflowNodeEntity } from '@flowgram.ai/free-layout-editor';
+import './index.scss';
 
 /**
  * 注释组件
@@ -8,7 +9,7 @@ export const CommentRender: React.FC<{ node: WorkflowNodeEntity }> = (
   props,
 ) => {
   const { node } = props;
-  
+
 
   return <div className="workflow-comment">注释组件</div>;
 };
