@@ -7,7 +7,7 @@ import { FlowMinimapService, MinimapRender } from '@flowgram.ai/minimap-plugin';
  * @returns
  */
 const MiniMap: React.FC<MiniMapProps> = ({ visible }) => {
-  if (visible) {
+  if (!visible) {
     return <></>;
   }
   const minimapService = useService(FlowMinimapService);

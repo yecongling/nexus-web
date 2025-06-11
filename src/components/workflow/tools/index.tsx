@@ -54,7 +54,7 @@ const WorkflowTools: React.FC = () => {
 
   return (
     <div className="absolute bottom-4 flex justify-start min-w-[360px] pointer-none gap-2 z-99">
-      <div className="flex items-center bg-[#fff] rounded-[10px]">
+      <div className="flex items-center bg-[#fff] rounded-[6px] p-1">
         {/* 自动布局 */}
         <AutoLayout />
         {/* 切换线条样式 */}

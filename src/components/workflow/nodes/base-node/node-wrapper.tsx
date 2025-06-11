@@ -48,8 +48,9 @@ const NodeWrapper: React.FC<NodeWrapperProps> = ({
   const registry = nodeRender.node.getNodeRegistry();
   const ctx = useClientContext();
 
+  // 节点端口渲染(端口样式-后续版本支持)
   const portsRender = ports.map((port) => (
-    <WorkflowPortRender key={port.id} entity={port} />
+    <WorkflowPortRender key={port.id} entity={port}/>
   ));
 
   return (

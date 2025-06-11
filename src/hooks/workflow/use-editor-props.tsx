@@ -1,4 +1,4 @@
-import { CommentRender } from '@/components/workflow/nodes/comment';
+import { CommentRender } from '@/components/workflow/nodes/comment/commentRender';
 import { LineAddButton } from '@/components/workflow/line-add-button';
 import { WorkflowNodeType } from '@/components/workflow/nodes/constants';
 import { createSyncVariablePlugin } from '@/components/workflow/plugins';
@@ -178,7 +178,7 @@ export function useEditorProps(
        */
       onContentChange: debounce((ctx, event) => {
         console.log('Auto Save', event, ctx.document.toJSON());
-      }, 1000),
+      }, 5000),
 
       /**
        * 判断线条是否展示流动效果
