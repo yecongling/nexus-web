@@ -1,4 +1,4 @@
-import { CommentRender } from '@/components/workflow/nodes/comment/commentRender';
+import { CommentRender } from '@/components/workflow/nodes/comment/components/commentRender';
 import { LineAddButton } from '@/components/workflow/line-add-button';
 import { WorkflowNodeType } from '@/components/workflow/nodes/constants';
 import { createSyncVariablePlugin } from '@/components/workflow/plugins';
