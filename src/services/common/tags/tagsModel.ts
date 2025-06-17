@@ -1,6 +1,8 @@
-// 标签模型
-export interface TagsModel {
-  id: number;
+/**
+ * 标签
+ */
+export type Tag = {
+  id: string;
   name: string;
-  type: number;
-}
+  type: string;
+};

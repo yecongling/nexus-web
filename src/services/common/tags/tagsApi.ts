@@ -1,5 +1,5 @@
 import { HttpRequest } from '@/utils/request';
-import type { TagsModel } from './tagsModel';
+import type { Tag } from './tagsModel';
 
 /**
  * 标签相关接口
@@ -25,17 +25,18 @@ const TagsApi: Record<string, string> = {
 export interface ITagsService {
   /**
    * 获取标签列表
+   * @param type 标签类型
    */
-  getTagsList(name?: string): Promise<TagsModel[]>;
+  getTagsList(type: string): Promise<Tag[]>;
 
   /**
    * 新增标签
    */
-  addTags(tags: Partial<TagsModel>): Promise<boolean>;
+  addTags(tags: Partial<Tag>): Promise<boolean>;
   /**
    * 更新标签
    */
-  updateTags(tags: Partial<TagsModel>): Promise<boolean>;
+  updateTags(tags: Partial<Tag>): Promise<boolean>;
 }
 
 /**
@@ -45,11 +46,11 @@ export const tagsService: ITagsService = {
   /**
    * 获取标签列表
    */
-  async getTagsList(name?: string): Promise<TagsModel[]> {
+  async getTagsList(type?: string): Promise<Tag[]> {
     const response = await HttpRequest.get(
       {
         url: TagsApi.getTagsList,
-        params: { name },
+        params: { type },
       },
       {
         successMessageMode: 'none',
@@ -61,7 +62,7 @@ export const tagsService: ITagsService = {
   /**
    * 新增标签
    */
-  async addTags(tags: Partial<TagsModel>): Promise<boolean> {
+  async addTags(tags: Partial<Tag>): Promise<boolean> {
     const response = await HttpRequest.post({
       url: TagsApi.addTags,
       data: tags,
@@ -71,7 +72,7 @@ export const tagsService: ITagsService = {
   /**
    * 更新标签
    */
-  async updateTags(tags: Partial<TagsModel>): Promise<boolean> {
+  async updateTags(tags: Partial<Tag>): Promise<boolean> {
     const response = await HttpRequest.post({
       url: TagsApi.updateTags,
       data: tags,

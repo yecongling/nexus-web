@@ -1,3 +1,5 @@
+import type { Tag } from '@/services/common/tags/tagsModel';
+
 /**
  * 项目
  */
@@ -38,7 +40,7 @@ export interface App {
   icon_url: string | null;
 }
 
-export type AppIconType = 'image' | 'emoji'
+export type AppIconType = 'image' | 'emoji';
 
 export interface AppModalState {
   // 打开新增项目弹窗
@@ -47,16 +49,6 @@ export interface AppModalState {
   openTemplateModal: boolean;
   // 打开上传项目弹窗
   openImportModal: boolean;
-}
-
-
-/**
- * 标签
- */
-export type Tag = {
-  id: string
-  name: string
-  type: string
 }
 
 /**
@@ -73,4 +65,6 @@ export interface AppSearchParams {
   pageSize: number;
   // 是否是我创建的
   isMine?: boolean;
+  // 标签
+  tags?: string[];
 }

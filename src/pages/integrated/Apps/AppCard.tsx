@@ -10,7 +10,7 @@ import { Divider, App as AntdApp } from 'antd';
 import './apps.scss';
 import { memo, useCallback, useState } from 'react';
 import { useNavigate } from 'react-router';
-import type { App, Tag } from '@/services/integrated/apps/app';
+import type { App } from '@/services/integrated/apps/app';
 import clsx from '@/utils/classnames';
 import { usePermission } from '@/hooks/usePermission';
 import CustomPopover, { type HtmlContentProps } from '@/components/popover';
@@ -23,6 +23,7 @@ import { appsService } from '@/services/integrated/apps/appsApi';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 import TagSelector from '@/components/base/tag-management/selector';
 import SwitchAppModal from './swith-app-modal';
+import type { Tag } from '@/services/common/tags/tagsModel';
 
 /**
  * 应用
@@ -41,8 +42,12 @@ const AppCard: React.FC<AppCardProps> = memo(({ app, onRefresh }) => {
   const hasEditorPermission = usePermission(['engine.app.edit']);
   const { t } = useTranslation();
 
+  // 这个会在应用卡片编辑了标签后，去更新右上角的全部标签列表数据
   const queryClient = useQueryClient();
-
+  // 这里是编辑了标签后调用
+  // queryClient.invalidateQueries({
+  //   queryKey: ['integrated_apps_tagsFilter'],
+  // });
   /**
    * 应用流程设计
    */

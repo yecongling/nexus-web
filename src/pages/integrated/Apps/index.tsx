@@ -5,9 +5,6 @@ import {
   Input,
   type InputRef,
   Checkbox,
-  Dropdown,
-  Button,
-  Space,
   App as AntdApp,
 } from 'antd';
 import { useEffect, useReducer, useRef, useState } from 'react';
@@ -16,12 +13,10 @@ import {
   ApartmentOutlined,
   ApiOutlined,
   AppstoreOutlined,
-  DownOutlined,
   ExportOutlined,
   FileAddFilled,
   PlusOutlined,
   SolutionOutlined,
-  TagOutlined,
 } from '@ant-design/icons';
 import type { App, AppSearchParams } from '@/services/integrated/apps/app';
 import { usePermission } from '@/hooks/usePermission';
@@ -34,6 +29,8 @@ import { isEqual } from 'lodash-es';
 import { useTranslation } from 'react-i18next';
 import AppCreate from './create-app-modal';
 import AppCard from './AppCard';
+import { useDebounceFn } from 'ahooks';
+import TagFilter from '@/components/base/tag-management/TagFilter.tsx';
 const { Search } = Input;
 // 模版中心
 const AppTemplates = React.lazy(
@@ -102,8 +99,8 @@ const Apps: React.FC = () => {
     },
   ];
 
-  // 编辑的应用数据
-  const [app, setApp] = useState<App>();
+  // 选中的标签
+  const [tagFilterValue, setTagFilterValue] = useState<string[]>([]);
 
   // 查询参数（包含分页参数）
   const [searchParams, setSearchParams] = useState<AppSearchParams>({
@@ -127,8 +124,8 @@ const Apps: React.FC = () => {
       });
       // 关闭弹窗
       dispatch({
-        openAddModal: false
-      })
+        openAddModal: false,
+      });
     },
     onError: (error) => {
       modal.error({
@@ -184,22 +181,23 @@ const Apps: React.FC = () => {
   };
 
   /**
+   * 处理标签过滤器更新
+   */
+  const { run: handleTagsUpdate } = useDebounceFn(
+    () => {
+      // 更新页面应用的检索
+      setSearchParams((prev) => ({ ...prev, tags: tagFilterValue }));
+    },
+    { wait: 500 },
+  );
+
+  /**
    * 标签切换
    * @param value 标签值
    */
-  const onTagsChange = (value: string[]) => {};
-
-  /**
-   * 渲染标签
-   * @returns 渲染下拉框
-   */
-
-  const renderDropDown = () => {
-    return (
-      <Card>
-        <div className="flex flex-col gap-4">更多标签</div>
-      </Card>
-    );
+  const handleTagsChange = (value: string[]) => {
+    setTagFilterValue(value);
+    handleTagsUpdate();
   };
 
   /**
@@ -312,15 +310,12 @@ const Apps: React.FC = () => {
               <Checkbox onChange={(e) => onCreatedChange(e.target.checked)}>
                 {t('app.createBy')}
               </Checkbox>
-              <Dropdown popupRender={renderDropDown} trigger={['click']}>
-                <Button color="default" variant="filled">
-                  <Space>
-                    <TagOutlined />
-                    {t('app.allTags')}
-                    <DownOutlined />
-                  </Space>
-                </Button>
-              </Dropdown>
+              {/* 标签过滤 */}
+              <TagFilter
+                type="app"
+                value={tagFilterValue}
+                onChange={handleTagsChange}
+              />
             </div>
           </div>
         </div>

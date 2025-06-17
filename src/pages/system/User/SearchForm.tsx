@@ -46,7 +46,7 @@ const SearchForm: React.FC<SearchFormProps> = ({ onSearch }) => {
       }}
     >
       <Card>
-        <Form form={form} onFinish={onSearch}>
+        <Form form={form} onFinish={onSearch} initialValues={{ sex: 0 }}>
           <Row gutter={24}>
             <Col span={6}>
               <Form.Item name="username" label="用户名" colon={false}>
@@ -59,6 +59,7 @@ const SearchForm: React.FC<SearchFormProps> = ({ onSearch }) => {
                   allowClear
                   options={[
                     { value: '', label: '请选择', disabled: true },
+                    { value: 0, label: '全部' },
                     { value: 1, label: '男' },
                     { value: 2, label: '女' },
                   ]}
