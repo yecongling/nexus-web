@@ -32,5 +32,11 @@ const translation = {
     requestTimeout: 'request timeout, please try again later',
   },
   placeholder: "please input content to search",
+  // 标签相关
+  tag: {
+    addTag: 'Add Tag',
+    created: 'Created',
+    failed: 'Failed',
+  }
 };
 export default translation;

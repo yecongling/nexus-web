@@ -8,7 +8,7 @@ import {
 } from '@ant-design/icons';
 import { Divider, App as AntdApp } from 'antd';
 import './apps.scss';
-import { memo, useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import type { App } from '@/services/integrated/apps/app';
 import clsx from '@/utils/classnames';
@@ -29,7 +29,7 @@ import type { Tag } from '@/services/common/tags/tagsModel';
  * 应用
  * @returns
  */
-const AppCard: React.FC<AppCardProps> = memo(({ app, onRefresh }) => {
+const AppCard: React.FC<AppCardProps> = ({ app, onRefresh }) => {
   const { id, name, type, remark = '' } = app;
   const navigate = useNavigate();
   const { message, modal } = AntdApp.useApp();
@@ -37,7 +37,7 @@ const AppCard: React.FC<AppCardProps> = memo(({ app, onRefresh }) => {
   // 复制弹窗
   const [showDuplicateModal, setShowDuplicateModal] = useState(false);
   const [showSwitchModal, setShowSwitchModal] = useState<boolean>(false);
-  const [tags, setTags] = useState<Tag[]>(app.tags || []);
+  const [tags, setTags] = useState<Tag[]>(app.tags);
   // 是否有编辑权限
   const hasEditorPermission = usePermission(['engine.app.edit']);
   const { t } = useTranslation();
@@ -48,6 +48,11 @@ const AppCard: React.FC<AppCardProps> = memo(({ app, onRefresh }) => {
   // queryClient.invalidateQueries({
   //   queryKey: ['integrated_apps_tagsFilter'],
   // });
+
+  useEffect(() => {
+    setTags(app.tags);
+  }, [app.tags]);
+
   /**
    * 应用流程设计
    */
@@ -321,7 +326,15 @@ const AppCard: React.FC<AppCardProps> = memo(({ app, onRefresh }) => {
                   )}
                 >
                   {/* 标签过滤器 */}
-                  <TagSelector />
+                  <TagSelector
+                    position="bl"
+                    type="app"
+                    targetID={id}
+                    value={tags.map((tag) => tag.id)}
+                    selectedTags={tags}
+                    onCacheUpdate={setTags}
+                    onChange={onRefresh}
+                  />
                 </div>
               </div>
               <div className="mx-1 !hidden h-[14px] w-[1px] shrink-0 group-hover:!flex" />
@@ -386,7 +399,7 @@ const AppCard: React.FC<AppCardProps> = memo(({ app, onRefresh }) => {
       {showSwitchModal && <SwitchAppModal />}
     </>
   );
-});
+};
 export default AppCard;
 
 /**
