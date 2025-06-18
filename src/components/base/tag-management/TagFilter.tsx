@@ -1,16 +1,16 @@
-import { tagsService } from '@/services/common/tags/tagsApi';
-import type { Tag } from '@/services/common/tags/tagsModel';
+import {tagsService} from '@/services/common/tags/tagsApi';
+import type {Tag} from '@/services/common/tags/tagsModel';
 import {
   TagOutlined,
   DownOutlined,
   SearchOutlined,
   CheckOutlined,
 } from '@ant-design/icons';
-import { useQuery } from '@tanstack/react-query';
-import { useDebounceFn } from 'ahooks';
-import { Dropdown, Button, Space, Input } from 'antd';
-import { useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useQuery} from '@tanstack/react-query';
+import {useDebounceFn} from 'ahooks';
+import {Dropdown, Button, Space, Input} from 'antd';
+import {useMemo, useState} from 'react';
+import {useTranslation} from 'react-i18next';
 
 type TagFilterProps = {
   type: 'app';
@@ -21,27 +21,27 @@ type TagFilterProps = {
 /**
  * 标签过滤
  */
-const TagFilter: React.FC<TagFilterProps> = ({ type, value, onChange }) => {
+const TagFilter: React.FC<TagFilterProps> = ({type, value, onChange}) => {
   // 关键字
   const [keyword, setKeyword] = useState<string>('');
   // 输入框输入的检索关键字
   const [searchKeyword, setSearchKeyword] = useState<string>('');
-  const { t } = useTranslation();
+  const {t} = useTranslation();
 
   /**
    * 获取标签数据
    */
-  const { data } = useQuery({
+  const {data} = useQuery({
     queryKey: ['integrated_apps_tagsFilter'],
     queryFn: () => tagsService.getTagsList(type),
   });
 
   // 防抖输入
-  const { run: handleSearch } = useDebounceFn(
+  const {run: handleSearch} = useDebounceFn(
     () => {
       setSearchKeyword(keyword);
     },
-    { wait: 500 },
+    {wait: 500},
   );
 
   /**
@@ -88,10 +88,11 @@ const TagFilter: React.FC<TagFilterProps> = ({ type, value, onChange }) => {
    */
   const renderDropDown = () => {
     return (
-      <div className="relative w-[240px] rounded-lg border-[0.5] shadow-lg backdrop-blur-[5px] bg-[#fffffff2] border-[#10182814]">
+      <div
+        className="relative w-[240px] rounded-lg border-[0.5] shadow-lg backdrop-blur-[5px] bg-[#fffffff2] border-[#10182814]">
         <div className="p-2">
           <Input
-            prefix={<SearchOutlined />}
+            prefix={<SearchOutlined/>}
             allowClear
             value={keyword}
             onChange={(e) => handleKeywordsChange(e.target.value)}
@@ -112,13 +113,13 @@ const TagFilter: React.FC<TagFilterProps> = ({ type, value, onChange }) => {
                 {tag.name}
               </div>
               {value.includes(tag.id) && (
-                <CheckOutlined className="h-4 w-4 shrink-0 text-[#354052]" />
+                <CheckOutlined className="h-4 w-4 shrink-0 text-[#354052]"/>
               )}
             </div>
           ))}
           {!filteredTagList.length && (
             <div className="flex flex-col items-center gap-1 p-3">
-              <TagOutlined className="h-6 w-6 text-[#676f83]" />
+              <TagOutlined className="h-6 w-6 text-[#676f83]"/>
               <div className="text-xs leading-[14px] color-[#676f83]">
                 {t('common.tag.noTag')}
               </div>
@@ -134,9 +135,25 @@ const TagFilter: React.FC<TagFilterProps> = ({ type, value, onChange }) => {
       <Button color="default" variant="filled">
         {/* 这里显示选中的标签 */}
         <Space>
-          <TagOutlined />
-          {t('app.allTags')}
-          <DownOutlined />
+          <TagOutlined/>
+          <div className='text-[13px] font-medium leading-[18px] text-[#676f83]'>
+            {!value.length && t('common.tag.placeholder')}
+            {!!value.length && currentTag?.name}
+          </div>
+          {
+            value.length > 1 && (
+              <div className='text-xs font-medium leading-[18px] text-[#676f83]'>
+                {`+${value.length - 1}`}
+              </div>
+            )
+          }
+          {
+            !value.length && (
+              <div className='p-[1px]'>
+                <DownOutlined className='h-3.5 w-3.5 text-[#354052]'/>
+              </div>
+            )
+          }
         </Space>
       </Button>
     </Dropdown>

@@ -8,7 +8,7 @@ import {
 } from '@ant-design/icons';
 import { Divider, App as AntdApp } from 'antd';
 import './apps.scss';
-import { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import type { App } from '@/services/integrated/apps/app';
 import clsx from '@/utils/classnames';
