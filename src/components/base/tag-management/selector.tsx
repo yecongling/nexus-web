@@ -3,6 +3,7 @@ import { tagsService } from '@/services/common/tags/tagsApi';
 import type { Tag } from '@/services/common/tags/tagsModel';
 import { useTagStore } from '@/stores/useTagStore';
 import cn from '@/utils/classnames';
+import type React from 'react';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -74,7 +75,9 @@ const TagSelector: React.FC<TagSelectorProps> = ({
    */
   const trigger = () => {
     return (
-      <div>
+      <div className={cn(
+        'relative'
+      )}>
 
       </div>
     )
