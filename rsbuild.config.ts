@@ -84,7 +84,7 @@ export default defineConfig({
     port: 8000,
     proxy: {
       '/api': {
-        target: 'http://localhost:8090/fusion',
+        target: 'http://localhost:9193',
         changeOrigin: true,
         pathRewrite: (path) => path.replace(/^\/api/, ''),
       },

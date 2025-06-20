@@ -179,7 +179,7 @@ const LeftMenu: React.FC = memo(() => {
                   color: colorPrimary,
                 }}
               >
-                Flex-Fusion
+                Nexus
               </p>
             )}
           </div>
