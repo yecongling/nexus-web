@@ -5,8 +5,9 @@ import type { Tag } from '@/services/common/tags/tagsModel';
 import { useTagStore } from '@/stores/useTagStore';
 import cn from '@/utils/classnames';
 import { TagOutlined } from '@ant-design/icons';
+import { App } from 'antd';
 import type React from 'react';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 type TagSelectorProps = {
@@ -30,6 +31,29 @@ type PanelProps = {
  * 标签面板
  */
 const Panel: React.FC<PanelProps> = (props) => {
+  const { t } = useTranslation('common');
+  const { notification } = App.useApp();
+  const { type, targetID, value, selectedTags, onCacheUpdate, onChange } =
+    props;
+  const { tagList, setTagList, setShowTagManagementModal } = useTagStore();
+
+  // 选中的标签id
+  const [selectedTagIDs, setSelectedTagIDs] = useState<string[]>([]);
+  // 检索关键词
+  const [keywords, setKeywords] = useState<string>('');
+
+  // 输入框值改变
+  const handleKeywordsChange = (value: string) => {
+    setKeywords(value);
+  };
+
+  // 不存在的节点
+  const notExisted = useMemo(() => {
+    return tagList.every((tag) => tag.type === type && tag.name !== keywords);
+  }, [type, tagList, keywords]);
+
+  // 过滤已经选中的标签列表
+
   return <div>标签面板</div>;
 };
 
