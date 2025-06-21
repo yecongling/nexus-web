@@ -12,11 +12,23 @@ const TagsApi: Record<string, string> = {
   /**
    * 新增标签
    */
-  addTags: '/engine/tags/addTags',
+  addTag: '/engine/tags/addTag',
   /**
    * 更新标签
    */
-  updateTags: '/engine/tags/updateTags',
+  updateTag: '/engine/tags/updateTag',
+  /**
+   * 绑定标签
+   */
+  bindTag: '/engine/tags/bindTags',
+  /**
+   * 解绑标签
+   */
+  unbindTag: '/engine/tags/unbindTag',
+
+  /**
+   * 删除标签
+   */
 };
 
 /**
@@ -32,11 +44,25 @@ export interface ITagsService {
   /**
    * 新增标签
    */
-  addTags(tags: Partial<Tag>): Promise<boolean>;
+  addTag(tag: Partial<Tag>): Promise<Tag>;
   /**
    * 更新标签
    */
-  updateTags(tags: Partial<Tag>): Promise<boolean>;
+  updateTag(tag: Partial<Tag>): Promise<boolean>;
+
+  /**
+   * 删除标签
+   */
+  deleteTag(tagID: string): Promise<boolean>;
+
+  /**
+   * 绑定标签
+   */
+  bindTag(tagIDs: string[], targetID: string, type: string): Promise<boolean>;
+  /**
+   * 解绑标签
+   */
+  unbindTag(tagID: string, targetID: string, type: string): Promise<boolean>;
 }
 
 /**
@@ -62,20 +88,59 @@ export const tagsService: ITagsService = {
   /**
    * 新增标签
    */
-  async addTags(tags: Partial<Tag>): Promise<boolean> {
+  async addTag(tag: Partial<Tag>): Promise<Tag> {
     const response = await HttpRequest.post({
-      url: TagsApi.addTags,
-      data: tags,
+      url: TagsApi.addTag,
+      data: tag,
     });
     return response;
   },
   /**
    * 更新标签
    */
-  async updateTags(tags: Partial<Tag>): Promise<boolean> {
+  async updateTag(tag: Partial<Tag>): Promise<boolean> {
     const response = await HttpRequest.post({
-      url: TagsApi.updateTags,
-      data: tags,
+      url: TagsApi.updateTag,
+      data: tag,
+    });
+    return response;
+  },
+
+  /**
+   * 删除标签
+   */
+  async deleteTag(tagID: string): Promise<boolean> {
+    const response = await HttpRequest.post({
+      url: TagsApi.deleteTag,
+      data: { tagID },
+    });
+    return response;
+  },
+  /**
+   * 绑定标签
+   */
+  async bindTag(
+    tagIDs: string[],
+    targetID: string,
+    type: string,
+  ): Promise<boolean> {
+    const response = await HttpRequest.post({
+      url: TagsApi.bindTag,
+      data: { tagIDs, targetID, type },
+    });
+    return response;
+  },
+  /**
+   * 解绑标签
+   */
+  async unbindTag(
+    tagID: string,
+    targetID: string,
+    type: string,
+  ): Promise<boolean> {
+    const response = await HttpRequest.post({
+      url: TagsApi.unbindTag,
+      data: { tagID, targetID, type },
     });
     return response;
   },

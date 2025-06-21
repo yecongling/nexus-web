@@ -120,8 +120,8 @@ const TagFilter: React.FC<TagFilterProps> = ({type, value, onChange}) => {
           ))}
           {!filteredTagList.length && (
             <div className="flex flex-col items-center gap-1 p-3">
-              <TagOutlined className="h-6 w-6 text-[#676f83]"/>
-              <div className="text-xs leading-[14px] color-[#676f83]">
+              <TagOutlined className="h-6 w-6 !text-gray-400 text-xl"/>
+              <div className="text-xs leading-[14px] text-gray-400">
                 {t('common.tag.noTag')}
               </div>
             </div>

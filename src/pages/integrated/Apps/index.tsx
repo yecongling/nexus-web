@@ -1,74 +1,39 @@
 import {
-  Card,
   Segmented,
   type SegmentedProps,
   Input,
   type InputRef,
   Checkbox,
-  App as AntdApp,
 } from 'antd';
-import { useEffect, useReducer, useRef, useState } from 'react';
+import {useEffect, useRef, useState} from 'react';
 import './apps.scss';
 import {
   ApartmentOutlined,
   ApiOutlined,
   AppstoreOutlined,
-  ExportOutlined,
-  FileAddFilled,
-  PlusOutlined,
   SolutionOutlined,
 } from '@ant-design/icons';
-import type { App, AppSearchParams } from '@/services/integrated/apps/app';
-import { usePermission } from '@/hooks/usePermission';
-import { appsService } from '@/services/integrated/apps/appsApi';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import ImportDsl from './create-from-dsl-modal';
+import type {App, AppSearchParams} from '@/services/integrated/apps/app';
+import {usePermission} from '@/hooks/usePermission';
+import {appsService} from '@/services/integrated/apps/appsApi';
+import {useQuery} from '@tanstack/react-query';
 import React from 'react';
-import type { AppModalState } from '@/services/integrated/apps/app';
-import { isEqual } from 'lodash-es';
-import { useTranslation } from 'react-i18next';
-import AppCreate from './create-app-modal';
+import {isEqual} from 'lodash-es';
+import {useTranslation} from 'react-i18next';
 import AppCard from './AppCard';
-import { useDebounceFn } from 'ahooks';
+import {useDebounceFn} from 'ahooks';
 import TagFilter from '@/components/base/tag-management/TagFilter.tsx';
-const { Search } = Input;
-// 模版中心
-const AppTemplates = React.lazy(
-  () => import('./create-app-template/index.tsx'),
-);
+import {useTagStore} from "@/stores/useTagStore.ts";
+import TagManagementModal from "@/components/base/tag-management";
+import CreateAppCard from "@/pages/integrated/Apps/NewAppCard.tsx";
 
-// 提取关闭弹窗的逻辑
-const closeAllModals = (dispatch: React.Dispatch<Partial<AppModalState>>) => {
-  dispatch({
-    openAddModal: false,
-    openTemplateModal: false,
-    openImportModal: false,
-  });
-};
-
+const {Search} = Input;
 /**
  * 应用设计
  */
 const Apps: React.FC = () => {
-  const { t } = useTranslation();
-  const queryClient = useQueryClient();
-  const { modal } = AntdApp.useApp();
-
-  // 新增弹窗、模版弹窗、导入弹窗
-  const [state, dispatch] = useReducer(
-    (prev: AppModalState, action: Partial<AppModalState>) => ({
-      ...prev,
-      ...action,
-    }),
-    {
-      // 新增窗口的打开状态
-      openAddModal: false,
-      // 模版窗口的打开状态
-      openTemplateModal: false,
-      // 导入窗口的打开状态
-      openImportModal: false,
-    },
-  );
+  const {t} = useTranslation();
+  const {showTagManagementModal} = useTagStore();
 
   // 搜索框聚焦
   const searchRef = useRef<InputRef>(null);
@@ -80,22 +45,22 @@ const Apps: React.FC = () => {
     {
       label: t('app.segment.all'),
       value: 0,
-      icon: <AppstoreOutlined />,
+      icon: <AppstoreOutlined/>,
     },
     {
       label: t('app.segment.integrated'),
       value: 1,
-      icon: <ApartmentOutlined />,
+      icon: <ApartmentOutlined/>,
     },
     {
       label: t('app.segment.interface'),
       value: 2,
-      icon: <ApiOutlined />,
+      icon: <ApiOutlined/>,
     },
     {
       label: t('app.segment.tripartite'),
       value: 3,
-      icon: <SolutionOutlined />,
+      icon: <SolutionOutlined/>,
     },
   ];
 
@@ -110,29 +75,9 @@ const Apps: React.FC = () => {
   });
 
   // 查询应用数据
-  const { data: result, refetch } = useQuery({
+  const {data: result, refetch} = useQuery({
     queryKey: ['integrated_app', searchParams],
     queryFn: () => appsService.getApps(searchParams),
-  });
-
-  // 处理应用新增
-  const addAppMutation = useMutation({
-    mutationFn: (app: Partial<App>) => appsService.addApp(app),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ['integrated_app', searchParams],
-      });
-      // 关闭弹窗
-      dispatch({
-        openAddModal: false,
-      });
-    },
-    onError: (error) => {
-      modal.error({
-        title: t('app.addApp.error.title'),
-        content: t('app.addApp.error.content', { error: error.message }),
-      });
-    },
   });
 
   // 处理搜索
@@ -148,7 +93,7 @@ const Apps: React.FC = () => {
       refetch();
       return;
     }
-    setSearchParams((prev) => ({ ...prev, ...search }));
+    setSearchParams((prev) => ({...prev, ...search}));
   };
 
   useEffect(() => {
@@ -183,12 +128,12 @@ const Apps: React.FC = () => {
   /**
    * 处理标签过滤器更新
    */
-  const { run: handleTagsUpdate } = useDebounceFn(
+  const {run: handleTagsUpdate} = useDebounceFn(
     () => {
       // 更新页面应用的检索
-      setSearchParams((prev) => ({ ...prev, tags: tagFilterValue }));
+      setSearchParams((prev) => ({...prev, tags: tagFilterValue}));
     },
-    { wait: 500 },
+    {wait: 500},
   );
 
   /**
@@ -198,89 +143,6 @@ const Apps: React.FC = () => {
   const handleTagsChange = (value: string[]) => {
     setTagFilterValue(value);
     handleTagsUpdate();
-  };
-
-  /**
-   * 新增应用
-   */
-  const addApp = () => {
-    dispatch({
-      openAddModal: true,
-    });
-  };
-
-  /**
-   * 打开模版中心
-   */
-  const openTemplate = () => {
-    dispatch({
-      openAddModal: false,
-      openTemplateModal: true,
-      openImportModal: false,
-    });
-  };
-
-  /**
-   * 关闭模版中心
-   */
-  const closeTemplate = () => {
-    closeAllModals(dispatch);
-  };
-
-  /**
-   * 打开文件导入弹窗
-   */
-  const openImport = () => {
-    dispatch({
-      openAddModal: false,
-      openTemplateModal: false,
-      openImportModal: true,
-    });
-  };
-
-  /**
-   * 从模版创建应用
-   */
-  const onCreateFromTemplate = () => {
-    dispatch({
-      openAddModal: false,
-      openTemplateModal: true,
-      openImportModal: false,
-    });
-  };
-
-  /**
-   * 从空白创建应用
-   */
-  const onCreateFromBlank = () => {
-    dispatch({
-      openAddModal: true,
-      openTemplateModal: false,
-      openImportModal: false,
-    });
-  };
-
-  /**
-   * 关闭文件导入弹窗
-   */
-  const closeImport = () => {
-    closeAllModals(dispatch);
-  };
-
-  /**
-   * 新增（编辑）应用确认
-   */
-  const onModalOk = (app: Partial<App>) => {
-    addAppMutation.mutate(app);
-  };
-
-  /**
-   * 新增应用取消
-   */
-  const onModalCancel = () => {
-    dispatch({
-      openAddModal: false,
-    });
   };
 
   return (
@@ -320,63 +182,22 @@ const Apps: React.FC = () => {
           </div>
         </div>
         {/* 应用列表 */}
-        <div className="flex-1 overflow-x-hidden overflow-y-auto grid content-start grid-cols-1 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5 2k:grid-cols-6 gap-4 pt-2 grow relative">
+        <div
+          className="flex-1 overflow-x-hidden overflow-y-auto grid content-start grid-cols-1 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5 2k:grid-cols-6 gap-4 pt-2 grow relative">
           {/* 数据查询中 */}
           {hasAddPermission && (
-            <Card
-              className="relative col-span-1 inline-flex flex-col justify-between h-[160px] bg-components-card-bg rounded-xl"
-              classNames={{ body: 'grow p-2! rounded-t-xl' }}
-            >
-              <div className="px-6 pt-2 pb-1 text-xs font-medium leading-[18px] text-[#676f83]">
-                {t('app.newApp.createApp')}
-              </div>
-              <button
-                className="w-full flex items-center mb-1 px-6 py-[7px] rounded-lg text-[13px] font-medium leading-[18px] text-[#676f83] cursor-pointer hover:bg-[#f5f6f7] hover:text-[#1e1e2d] transition-all duration-200 ease-in-out"
-                onClick={addApp}
-                type="button"
-              >
-                <PlusOutlined className="text-[#676f83] shrink-0 mr-2 w-4 h-4" />
-                {t('app.newApp.startFromBlank')}
-              </button>
-              <button
-                className="w-full flex items-center px-6 py-[7px] rounded-lg text-[13px] font-medium leading-[18px] text-[#676f83] cursor-pointer hover:bg-[#f5f6f7] hover:text-[#1e1e2d] transition-all duration-200 ease-in-out"
-                onClick={openTemplate}
-                type="button"
-              >
-                <FileAddFilled className="text-[#676f83] shrink-0 mr-2 w-4 h-4" />
-                {t('app.newApp.startFromTemplate')}
-              </button>
-              <button
-                className="w-full flex items-center px-6 py-[7px] rounded-lg text-[13px] font-medium leading-[18px] text-[#676f83] cursor-pointer hover:bg-[#f5f6f7] hover:text-[#1e1e2d] transition-all duration-200 ease-in-out"
-                onClick={openImport}
-                type="button"
-              >
-                <ExportOutlined className="text-[#676f83] shrink-0 mr-2 w-4 h-4" />
-                {t('app.newApp.importFromDSL')}
-              </button>
-            </Card>
+            <CreateAppCard refresh={refetch}/>
           )}
           {/* 应用列表 */}
           {(result || []).map((item: App) => (
-            <AppCard key={item.id} app={item} onRefresh={refetch} />
+            <AppCard key={item.id} app={item} onRefresh={refetch}/>
           ))}
         </div>
       </div>
-      {/* 新增弹窗 */}
-      <AppCreate
-        open={state.openAddModal}
-        onOk={onModalOk}
-        onCancel={onModalCancel}
-        onCreateFromTemplate={onCreateFromTemplate}
-      />
-      {/* 模版中心 */}
-      <AppTemplates
-        open={state.openTemplateModal}
-        onClose={closeTemplate}
-        onCreateFromBlank={onCreateFromBlank}
-      />
-      {/* 导入DSL */}
-      <ImportDsl open={state.openImportModal} onClose={closeImport} />
+      {/* 显示标签管理弹窗 */}
+      {
+        <TagManagementModal type="app" show={showTagManagementModal}/>
+      }
     </>
   );
 };
