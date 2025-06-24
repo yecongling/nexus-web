@@ -2,12 +2,8 @@ import type React from 'react';
 import { useRef, useState } from 'react';
 import { Button, Checkbox, Col, Form, Image, Input, Row } from 'antd';
 import logo from '@/assets/images/icon-512.png';
-import {
-  LockOutlined,
-  SecurityScanOutlined,
-  UserOutlined,
-} from '@ant-design/icons';
-import styles from './login.module.scss';
+import { LockOutlined, SecurityScanOutlined, UserOutlined } from '@ant-design/icons';
+import styles from './login.module.css';
 import filing from '@/assets/images/filing.png';
 import { useNavigate } from 'react-router';
 import { loginService } from '@/services/login/loginApi';
@@ -92,10 +88,7 @@ const Login: React.FC = () => {
             userStore.login(values.username, accessToken, refreshToken, roleId);
             let { homePath } = data;
             // 登录成功根据角色获取菜单
-            const menu = await commonService.getMenuListByRoleId(
-              roleId,
-              accessToken,
-            );
+            const menu = await commonService.getMenuListByRoleId(roleId, accessToken);
             setMenus(menu);
             // 判断是否配置了默认跳转的首页地址
             if (!homePath) {
@@ -107,8 +100,7 @@ const Login: React.FC = () => {
                 // 没有配置默认首页地址，也没有菜单，则提示错误
                 antdUtils.notification?.error({
                   message: t('login.loginFail'),
-                  description:
-                    '没有配置默认首页地址，也没有菜单，请联系管理员！',
+                  description: '没有配置默认首页地址，也没有菜单，请联系管理员！',
                 });
                 return;
               }
@@ -162,12 +154,11 @@ const Login: React.FC = () => {
           <span
             className="ml-5 text-3xl text-[#000000]"
             style={{
-              fontFamily:
-                '微软雅黑 Bold, 微软雅黑 Regular, 微软雅黑, sans-serif',
+              fontFamily: '微软雅黑 Bold, 微软雅黑 Regular, 微软雅黑, sans-serif',
               fontWeight: 700,
             }}
           >
-            Flex Fusion
+            {t('common.app.name')}
           </span>
         </div>
       </div>
@@ -179,8 +170,7 @@ const Login: React.FC = () => {
               <p className="text-[24px] m-0 mb-2">
                 <span
                   style={{
-                    fontFamily:
-                      '微软雅黑 Bold, 微软雅黑 Regular, 微软雅黑, sans-serif',
+                    fontFamily: '微软雅黑 Bold, 微软雅黑 Regular, 微软雅黑, sans-serif',
                     fontWeight: 700,
                   }}
                 >
@@ -211,12 +201,7 @@ const Login: React.FC = () => {
                 autoComplete="off"
                 onFinish={submit}
               >
-                <Form.Item
-                  name="username"
-                  rules={[
-                    { required: true, message: t('login.enterUsername') },
-                  ]}
-                >
+                <Form.Item name="username" rules={[{ required: true, message: t('login.enterUsername') }]}>
                   <Input
                     size="large"
                     ref={inputRef}
@@ -227,12 +212,7 @@ const Login: React.FC = () => {
                     prefix={<UserOutlined />}
                   />
                 </Form.Item>
-                <Form.Item
-                  name="password"
-                  rules={[
-                    { required: true, message: t('login.enterPassword') },
-                  ]}
-                >
+                <Form.Item name="password" rules={[{ required: true, message: t('login.enterPassword') }]}>
                   <Input.Password
                     size="large"
                     allowClear
@@ -244,13 +224,7 @@ const Login: React.FC = () => {
                 <Form.Item>
                   <Row gutter={8}>
                     <Col span={18}>
-                      <Form.Item
-                        name="captcha"
-                        noStyle
-                        rules={[
-                          { required: true, message: t('login.enterCaptcha') },
-                        ]}
-                      >
+                      <Form.Item name="captcha" noStyle rules={[{ required: true, message: t('login.enterCaptcha') }]}>
                         <Input
                           size="large"
                           allowClear
@@ -260,17 +234,8 @@ const Login: React.FC = () => {
                       </Form.Item>
                     </Col>
                     <Col span={6}>
-                      <Button
-                        size="large"
-                        onClick={refreshCaptcha}
-                        className="w-full bg-[#f0f0f0] p-0.5!"
-                      >
-                        <Image
-                          src={data?.code}
-                          preview={false}
-                          width="100%"
-                          height="100%"
-                        />
+                      <Button size="large" onClick={refreshCaptcha} className="w-full bg-[#f0f0f0] p-0.5!">
+                        <Image src={data?.code} preview={false} width="100%" height="100%" />
                       </Button>
                     </Col>
                   </Row>
@@ -280,13 +245,7 @@ const Login: React.FC = () => {
                   <Checkbox>{t('login.remember')}</Checkbox>
                 </Form.Item>
                 <Form.Item>
-                  <Button
-                    loading={loading}
-                    size="large"
-                    className="w-full"
-                    type="primary"
-                    htmlType="submit"
-                  >
+                  <Button loading={loading} size="large" className="w-full" type="primary" htmlType="submit">
                     {t('login.login')}
                   </Button>
                 </Form.Item>
@@ -296,9 +255,7 @@ const Login: React.FC = () => {
         </div>
       </div>
       <div className="w-[440px] my-0 mx-auto py-[20px] px-0">
-        <p className="text-center mb-2">
-          Copyright@2025 499475142@qq.com All Rights Reserved
-        </p>
+        <p className="text-center mb-2">Copyright@2025 499475142@qq.com All Rights Reserved</p>
         <a
           target="_blank"
           rel="noreferrer"
@@ -306,9 +263,7 @@ const Login: React.FC = () => {
           className="inline-block h-[20px] leading-5 text-decoration-none"
         >
           <img src={filing} className="float-left" alt="无图片" />
-          <p className="float-left h-5 leading-5 m-[0_0_0_5px] text-[#939393]!">
-            川公网安备51012202001944
-          </p>
+          <p className="float-left h-5 leading-5 m-[0_0_0_5px] text-[#939393]!">川公网安备51012202001944</p>
         </a>
         <a
           href="https://beian.miit.gov.cn/"

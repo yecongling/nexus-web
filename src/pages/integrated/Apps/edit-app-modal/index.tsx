@@ -1,7 +1,7 @@
-import DragModal from '@/components/modal/DragModal';
+import { useKeyPress } from 'ahooks';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useKeyPress } from 'ahooks';
+import DragModal from '@/components/modal/DragModal';
 
 /**
  * 编辑APP弹窗属性

@@ -7,13 +7,7 @@ const { useToken } = theme;
 export default () => {
   const { token } = useToken();
   return (
-    <svg
-      className="custom-radio-image"
-      fill="none"
-      height="66"
-      width="104"
-      xmlns="http://www.w3.org/2000/svg"
-    >
+    <svg className="custom-radio-image" fill="none" height="66" width="104" xmlns="http://www.w3.org/2000/svg">
       <g>
         <rect
           id="svg_1"
@@ -46,26 +40,8 @@ export default () => {
           x="10.08168"
           y="3.50832"
         />
-        <rect
-          id="svg_10"
-          fill="#b2b2b2"
-          height="4.4"
-          rx="1"
-          stroke="null"
-          width="3.925"
-          x="80.75054"
-          y="2.89362"
-        />
-        <rect
-          id="svg_11"
-          fill="#b2b2b2"
-          height="4.4"
-          rx="1"
-          stroke="null"
-          width="3.925"
-          x="87.58249"
-          y="2.89362"
-        />
+        <rect id="svg_10" fill="#b2b2b2" height="4.4" rx="1" stroke="null" width="3.925" x="80.75054" y="2.89362" />
+        <rect id="svg_11" fill="#b2b2b2" height="4.4" rx="1" stroke="null" width="3.925" x="87.58249" y="2.89362" />
         <path
           id="svg_12"
           d="m98.19822,2.872c0,-0.54338 0.45662,-1 1,-1l1.925,0c0.54338,0 1,0.45662 1,1l0,2.4c0,0.54338 -0.45662,1 -1,1l-1.925,0c-0.54338,0 -1,-0.45662 -1,-1l0,-2.4z"
@@ -133,16 +109,7 @@ export default () => {
           x="54.23033"
           y="3.07319"
         />
-        <rect
-          id="svg_4"
-          fill="#ffffff"
-          height="5.13843"
-          rx="2"
-          stroke="null"
-          width="5.78397"
-          x="1.5327"
-          y="1.081"
-        />
+        <rect id="svg_4" fill="#ffffff" height="5.13843" rx="2" stroke="null" width="5.78397" x="1.5327" y="1.081" />
         <rect
           id="svg_5"
           fill={token.colorPrimary}

@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react';
+import React, { memo } from 'react';
 import { App, Avatar, Divider, Dropdown, theme, type MenuProps } from 'antd';
 import avatar from '@/assets/images/avatar.png';
 import { useNavigate } from 'react-router';
@@ -11,8 +13,6 @@ import {
   SyncOutlined,
   UserOutlined,
 } from '@ant-design/icons';
-import type { ReactNode } from 'react';
-import React, { memo } from 'react';
 import { usePreferencesStore } from '@/stores/store';
 import { commonService } from '@/services/common';
 import { useUserStore } from '@/stores/userStore';
@@ -129,7 +129,7 @@ const UserDropdown: React.FC = memo(() => {
                 // 清空token
                 userStore.logout();
                 // 修改回document.title
-                document.title = 'fusion';
+                document.title = 'nexus';
                 // 退出到登录页面
                 navigate('/login', { replace: true });
               }

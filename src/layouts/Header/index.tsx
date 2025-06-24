@@ -1,3 +1,6 @@
+import React, { Suspense } from 'react';
+import { memo, useState } from 'react';
+import { Badge, Dropdown, Input, Layout, type MenuProps, Skeleton, Space, Tooltip } from 'antd';
 import {
   BellOutlined,
   GithubOutlined,
@@ -7,18 +10,6 @@ import {
   SettingOutlined,
   SwitcherOutlined,
 } from '@ant-design/icons';
-import {
-  Badge,
-  Dropdown,
-  Input,
-  Layout,
-  type MenuProps,
-  Skeleton,
-  Space,
-  Tooltip,
-} from 'antd';
-import React, { Suspense } from 'react';
-import { memo, useState } from 'react';
 
 import MessageBox from './component/MessageBox';
 import FullScreen from './component/FullScreen';
@@ -45,7 +36,7 @@ const Header: React.FC = memo(() => {
    * 跳转到github
    */
   const routeGitHub = () => {
-    window.open('https://github.com/yecongling/fusion-flex', '_blank');
+    window.open('https://github.com/yecongling/nexus-vite', '_blank');
   };
 
   /**
@@ -84,23 +75,15 @@ const Header: React.FC = memo(() => {
       >
         {/* 面包屑 */}
         {breadcrumb.enable && <BreadcrumbNav />}
-        <Space
-          size="large"
-          className="flex flex-1 justify-end items-center toolbox"
-        >
+        <Space size="large" className="flex flex-1 justify-end items-center toolbox">
           <Input
             variant="filled"
             placeholder={t('common.operation.search')}
-            suffix={
-              <SearchOutlined style={{ cursor: 'pointer', fontSize: '18px' }} />
-            }
+            suffix={<SearchOutlined style={{ cursor: 'pointer', fontSize: '18px' }} />}
             onChange={(e) => searchMenu(e.target.value)}
           />
           <Tooltip placement="bottom" title="github">
-            <GithubOutlined
-              style={{ cursor: 'pointer', fontSize: '18px' }}
-              onClick={routeGitHub}
-            />
+            <GithubOutlined style={{ cursor: 'pointer', fontSize: '18px' }} onClick={routeGitHub} />
           </Tooltip>
           <Tooltip placement="bottom" title={t('layout.header.lock')}>
             <LockOutlined
@@ -120,10 +103,7 @@ const Header: React.FC = memo(() => {
             </Badge>
           </Dropdown>
           <Tooltip placement="bottomRight" title={t('layout.header.setting')}>
-            <SettingOutlined
-              style={{ cursor: 'pointer', fontSize: '18px' }}
-              onClick={() => setOpenSetting(true)}
-            />
+            <SettingOutlined style={{ cursor: 'pointer', fontSize: '18px' }} onClick={() => setOpenSetting(true)} />
           </Tooltip>
           <Dropdown menu={{ items: menuItems }}>
             <SwitcherOutlined style={{ cursor: 'pointer', fontSize: '18px' }} />

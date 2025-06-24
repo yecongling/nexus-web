@@ -1,4 +1,7 @@
 const translation = {
+  app: {
+    name: 'Nexus',
+  },
   api: {},
   operation: {
     confirm: 'confirm',
@@ -31,7 +34,7 @@ const translation = {
     reason: 'reason',
     requestTimeout: 'request timeout, please try again later',
   },
-  placeholder: "please input content to search",
+  placeholder: 'please input content to search',
   // 标签相关
   tag: {
     placeholder: 'All Tags',
@@ -47,6 +50,6 @@ const translation = {
     deleteTip: 'The tag is being used, delete it?',
     created: 'Tag created successfully',
     failed: 'Tag creation failed',
-  }
+  },
 };
 export default translation;

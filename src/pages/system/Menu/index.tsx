@@ -1,16 +1,12 @@
-import { ExclamationCircleFilled } from '@ant-design/icons';
-import { menuService } from '@/services/system/menu/menuApi';
-import {
-  App,
-  Button,
-  Card,
-  ConfigProvider,
-  Space,
-  type TableProps,
-  Tag,
-} from 'antd';
+import { isEqual } from 'lodash-es';
+
 import type React from 'react';
 import { useReducer, useState } from 'react';
+import { ExclamationCircleFilled } from '@ant-design/icons';
+import { App, Button, Card, ConfigProvider, Space, type TableProps, Tag } from 'antd';
+import { useTranslation } from 'react-i18next';
+
+import { menuService } from '@/services/system/menu/menuApi';
 import MenuInfoModal from './MenuInfoModal';
 import './menu.scss';
 import useParentSize from '@/hooks/useParentSize';
@@ -19,7 +15,6 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import SearchBar from './SearchBar';
 import ActionButtons from './ActionButtons';
 import DataTable from './DataTable';
-import { isEqual } from 'lodash-es';
 
 /**
  * 系统菜单维护
@@ -27,15 +22,13 @@ import { isEqual } from 'lodash-es';
 const Menu: React.FC = () => {
   const { modal, message } = App.useApp();
   const queryClient = useQueryClient();
+  const { t } = useTranslation();
   // 合并的状态
-  const [state, dispatch] = useReducer(
-    (prev: any, action: any) => ({ ...prev, ...action }),
-    {
-      openEditModal: false,
-      currentRow: null,
-      selRows: [],
-    },
-  );
+  const [state, dispatch] = useReducer((prev: any, action: any) => ({ ...prev, ...action }), {
+    openEditModal: false,
+    currentRow: null,
+    selRows: [],
+  });
   // 查询条件
   const [searchParams, setSearchParams] = useState({});
 
@@ -118,6 +111,9 @@ const Menu: React.FC = () => {
       width: 160,
       dataIndex: 'name',
       key: 'name',
+      render(value) {
+        return t(value);
+      },
     },
     {
       title: '组件',
@@ -204,12 +200,7 @@ const Menu: React.FC = () => {
             >
               修改
             </Button>
-            <Button
-              size="small"
-              variant="link"
-              color="danger"
-              onClick={() => delMenu(record.id)}
-            >
+            <Button size="small" variant="link" color="danger" onClick={() => delMenu(record.id)}>
               删除
             </Button>
           </Space>
@@ -239,9 +230,7 @@ const Menu: React.FC = () => {
   const onFinish = (values: any) => {
     // 拼接查询条件，没有选择的条件就不拼接
     const queryCondition = Object.fromEntries(
-      Object.entries(values).filter(
-        ([, value]) => value !== undefined && value !== '',
-      ),
+      Object.entries(values).filter(([, value]) => value !== undefined && value !== ''),
     );
     // 判断参数是否发生变化
     if (isEqual(queryCondition, searchParams)) {
@@ -263,9 +252,7 @@ const Menu: React.FC = () => {
       content: '确定批量删除菜单吗？数据删除后将无法恢复！',
       onOk() {
         // 调用删除接口，删除成功后刷新页面数据
-        batchDeleteMenuMutation.mutate(
-          state.selRows.map((item: any) => item.id),
-        );
+        batchDeleteMenuMutation.mutate(state.selRows.map((item: any) => item.id));
       },
     });
   };
@@ -337,11 +324,7 @@ const Menu: React.FC = () => {
         </Card>
       </ConfigProvider>
       {/* 查询表格 */}
-      <Card
-        className="mt-2! min-h-0 flex-1"
-        styles={{ body: { height: '100%' } }}
-        ref={parentRef}
-      >
+      <Card className="mt-2! min-h-0 flex-1" styles={{ body: { height: '100%' } }} ref={parentRef}>
         {/* 操作按钮 */}
         <ActionButtons
           onAddMenuClick={onAddMenuClick}

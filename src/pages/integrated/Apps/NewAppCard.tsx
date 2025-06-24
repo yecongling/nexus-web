@@ -1,17 +1,15 @@
-import React, {useReducer} from "react";
-import {ExportOutlined, FileAddFilled, PlusOutlined} from "@ant-design/icons";
-import {App as AntdApp, Card} from "antd";
-import AppCreate from "./create-app-modal";
-import ImportDsl from "./create-from-dsl-modal";
-import {useTranslation} from "react-i18next";
-import {useMutation} from "@tanstack/react-query";
-import {App, AppModalState} from "@/services/integrated/apps/app.ts";
-import {appsService} from "@/services/integrated/apps/appsApi.ts";
+import React, { useReducer } from 'react';
+import { ExportOutlined, FileAddFilled, PlusOutlined } from '@ant-design/icons';
+import { App as AntdApp, Card } from 'antd';
+import AppCreate from './create-app-modal';
+import ImportDsl from './create-from-dsl-modal';
+import { useTranslation } from 'react-i18next';
+import { useMutation } from '@tanstack/react-query';
+import type { App, AppModalState } from '@/services/integrated/apps/app.ts';
+import { appsService } from '@/services/integrated/apps/appsApi.ts';
 
 // 模版中心
-const AppTemplates = React.lazy(
-  () => import('./create-app-template/index.tsx'),
-);
+const AppTemplates = React.lazy(() => import('./create-app-template/index.tsx'));
 
 // 提取关闭弹窗的逻辑
 const closeAllModals = (dispatch: React.Dispatch<Partial<AppModalState>>) => {
@@ -24,14 +22,14 @@ const closeAllModals = (dispatch: React.Dispatch<Partial<AppModalState>>) => {
 
 type CreateAppCardProps = {
   refresh?: () => void;
-}
+};
 
 /**
  * 创建应用卡片
  */
-const CreateAppCard: React.FC<CreateAppCardProps> = ({refresh}) => {
-  const {t} = useTranslation();
-  const {modal} = AntdApp.useApp();
+const CreateAppCard: React.FC<CreateAppCardProps> = ({ refresh }) => {
+  const { t } = useTranslation();
+  const { modal } = AntdApp.useApp();
 
   // 新增弹窗、模版弹窗、导入弹窗
   const [state, dispatch] = useReducer(
@@ -62,7 +60,7 @@ const CreateAppCard: React.FC<CreateAppCardProps> = ({refresh}) => {
     onError: (error) => {
       modal.error({
         title: t('app.addApp.error.title'),
-        content: t('app.addApp.error.content', {error: error.message}),
+        content: t('app.addApp.error.content', { error: error.message }),
       });
     },
   });
@@ -154,7 +152,7 @@ const CreateAppCard: React.FC<CreateAppCardProps> = ({refresh}) => {
     <>
       <Card
         className="relative col-span-1 inline-flex flex-col justify-between h-[160px] bg-components-card-bg rounded-xl"
-        classNames={{body: 'grow p-2! rounded-t-xl'}}
+        classNames={{ body: 'grow p-2! rounded-t-xl' }}
       >
         <div className="px-6 pt-2 pb-1 text-xs font-medium leading-[18px] text-[#676f83]">
           {t('app.newApp.createApp')}
@@ -164,7 +162,7 @@ const CreateAppCard: React.FC<CreateAppCardProps> = ({refresh}) => {
           onClick={addApp}
           type="button"
         >
-          <PlusOutlined className="text-[#676f83] shrink-0 mr-2 w-4 h-4"/>
+          <PlusOutlined className="text-[#676f83] shrink-0 mr-2 w-4 h-4" />
           {t('app.newApp.startFromBlank')}
         </button>
         <button
@@ -172,7 +170,7 @@ const CreateAppCard: React.FC<CreateAppCardProps> = ({refresh}) => {
           onClick={openTemplate}
           type="button"
         >
-          <FileAddFilled className="text-[#676f83] shrink-0 mr-2 w-4 h-4"/>
+          <FileAddFilled className="text-[#676f83] shrink-0 mr-2 w-4 h-4" />
           {t('app.newApp.startFromTemplate')}
         </button>
         <button
@@ -180,7 +178,7 @@ const CreateAppCard: React.FC<CreateAppCardProps> = ({refresh}) => {
           onClick={openImport}
           type="button"
         >
-          <ExportOutlined className="text-[#676f83] shrink-0 mr-2 w-4 h-4"/>
+          <ExportOutlined className="text-[#676f83] shrink-0 mr-2 w-4 h-4" />
           {t('app.newApp.importFromDSL')}
         </button>
       </Card>
@@ -192,14 +190,10 @@ const CreateAppCard: React.FC<CreateAppCardProps> = ({refresh}) => {
         onCreateFromTemplate={onCreateFromTemplate}
       />
       {/* 模版中心 */}
-      <AppTemplates
-        open={state.openTemplateModal}
-        onClose={closeTemplate}
-        onCreateFromBlank={onCreateFromBlank}
-      />
+      <AppTemplates open={state.openTemplateModal} onClose={closeTemplate} onCreateFromBlank={onCreateFromBlank} />
       {/* 导入DSL */}
-      <ImportDsl open={state.openImportModal} onClose={closeImport}/>
+      <ImportDsl open={state.openImportModal} onClose={closeImport} />
     </>
   );
-}
+};
 export default CreateAppCard;

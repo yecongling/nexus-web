@@ -1,5 +1,3 @@
-import {tagsService} from '@/services/common/tags/tagsApi';
-import type {Tag} from '@/services/common/tags/tagsModel';
 import {
   TagOutlined,
   DownOutlined,
@@ -12,6 +10,8 @@ import {Dropdown, Button, Space, Input} from 'antd';
 import type React from 'react';
 import {useMemo, useState} from 'react';
 import {useTranslation} from 'react-i18next';
+import {tagsService} from '@/services/common/tags/tagsApi';
+import type {Tag} from '@/services/common/tags/tagsModel';
 
 type TagFilterProps = {
   type: 'app';

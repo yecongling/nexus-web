@@ -1,30 +1,18 @@
-import {
-  EditOutlined,
-  EllipsisOutlined,
-  CopyOutlined,
-  DeleteOutlined,
-  ExportOutlined,
-  SwitcherOutlined,
-} from '@ant-design/icons';
-import { Divider, App as AntdApp } from 'antd';
-import './apps.scss';
 import type React from 'react';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
-import type { App } from '@/services/integrated/apps/app';
+import { EllipsisOutlined } from '@ant-design/icons';
 import clsx from '@/utils/classnames';
 import { usePermission } from '@/hooks/usePermission';
-import CustomPopover, { type HtmlContentProps } from '@/components/popover';
-import DuplicateAppModal, {
-  type DuplicateAppModalProps,
-} from './duplicate-modal';
-import { useTranslation } from 'react-i18next';
+import CustomPopover from '@/components/popover';
+import DuplicateAppModal from './duplicate-modal';
 import EditAppModal from './edit-app-modal';
-import { appsService } from '@/services/integrated/apps/appsApi';
-import { useQueryClient, useMutation } from '@tanstack/react-query';
 import TagSelector from '@/components/base/tag-management/selector';
 import SwitchAppModal from './swith-app-modal';
 import type { Tag } from '@/services/common/tags/tagsModel';
+import type { App } from '@/services/integrated/apps/app';
+import AppCardOperations from './AppCardOperations';
+import './apps.css';
 
 /**
  * 应用
@@ -33,7 +21,6 @@ import type { Tag } from '@/services/common/tags/tagsModel';
 const AppCard: React.FC<AppCardProps> = ({ app, onRefresh }) => {
   const { id, name, type, remark = '' } = app;
   const navigate = useNavigate();
-  const { message, modal } = AntdApp.useApp();
   const [showEditModal, setShowEditModal] = useState(false);
   // 复制弹窗
   const [showDuplicateModal, setShowDuplicateModal] = useState(false);
@@ -41,14 +28,6 @@ const AppCard: React.FC<AppCardProps> = ({ app, onRefresh }) => {
   const [tags, setTags] = useState<Tag[]>(app.tags);
   // 是否有编辑权限
   const hasEditorPermission = usePermission(['engine.app.edit']);
-  const { t } = useTranslation();
-
-  // 这个会在应用卡片编辑了标签后，去更新右上角的全部标签列表数据
-  const queryClient = useQueryClient();
-  // 这里是编辑了标签后调用
-  // queryClient.invalidateQueries({
-  //   queryKey: ['integrated_apps_tagsFilter'],
-  // });
 
   useEffect(() => {
     setTags(app.tags);
@@ -61,221 +40,6 @@ const AppCard: React.FC<AppCardProps> = ({ app, onRefresh }) => {
     e.preventDefault();
     // 跳转到流程编排界面
     navigate(`/integrated/app/${id}/workflow`);
-  };
-
-  // 处理应用修改
-  const updateAppMutation = useMutation({
-    mutationFn: (app: Partial<App>) => appsService.updateApp(app),
-    onSuccess: () => {
-      message.success(t('app.updateApp.success'));
-      onRefresh?.();
-      // 关闭编辑弹窗
-      setShowEditModal(false);
-    },
-    onError: (error) => {
-      modal.error({
-        title: t('app.updateApp.error.title'),
-        content: t('app.updateApp.error.content', { error: error.message }),
-      });
-    },
-  });
-
-  // 处理应用删除
-  const deleteAppMutation = useMutation({
-    mutationFn: (id: string) => appsService.deleteApp(id),
-    onSuccess: () => {
-      message.success(t('app.deleteApp.success'));
-      onRefresh?.();
-    },
-    onError: (error) => {
-      modal.error({
-        title: t('app.deleteApp.error.title'),
-        content: t('app.deleteApp.error.content', { error: error.message }),
-      });
-    },
-  });
-
-  /**
-   * 复制应用
-   */
-  const copyAppMutation = useMutation({
-    mutationFn: (app: Partial<App>) => appsService.copyApp(app),
-    onSuccess: () => {
-      message.success(t('app.copyApp.success'));
-      // 刷新列表
-      onRefresh?.();
-      // 关闭复制弹窗
-      setShowDuplicateModal(false);
-      // 考虑是否跳转到应用编排页面
-    },
-    onError: (error) => {
-      modal.error({
-        title: t('app.copyApp.error.title'),
-        content: t('app.copyApp.error.content', { error: error.message }),
-      });
-    },
-  });
-
-  /**
-   * 确认删除应用
-   */
-  const onConfirmDelete = useCallback(() => {
-    deleteAppMutation.mutate(id);
-  }, [app.id, onRefresh]);
-
-  /**
-   * 编辑应用
-   */
-  const onEdit = useCallback(async () => {
-    updateAppMutation.mutate(app);
-  }, [app.id]);
-
-  /**
-   * 复制应用(有一个复制弹窗)
-   */
-  const onCopy: DuplicateAppModalProps['onConfirm'] = async ({
-    name,
-    icon_type,
-    icon,
-    icon_background,
-  }) => {
-    copyAppMutation.mutate({
-      name,
-      icon_type,
-      icon,
-      icon_background,
-    });
-  };
-
-  /**
-   * 导出应用
-   */
-  const onExport = async () => {};
-
-  /**
-   * 导出检测
-   */
-  const exportCheck = async () => {};
-
-  /**
-   * 切换应用
-   * @param type 应用类型
-   */
-  const onSwitch = (type?: number) => {};
-
-  /**
-   * 操作部分
-   * @param props
-   */
-  const Operations = (props: HtmlContentProps): React.ReactNode => {
-    const onMouseLeave = async () => {
-      props.onClose?.();
-    };
-
-    // 点击设置
-    const onClickSetting = async (e: React.MouseEvent<HTMLButtonElement>) => {
-      e.stopPropagation();
-      props.onClick?.();
-      e.preventDefault();
-      setShowEditModal(true);
-    };
-
-    // 点击复制
-    const onClickDuplicate = async (e: React.MouseEvent<HTMLButtonElement>) => {
-      e.stopPropagation();
-      props.onClick?.();
-      e.preventDefault();
-      setShowDuplicateModal(true);
-    };
-
-    // 点击导出
-    const onClickExport = async (e: React.MouseEvent<HTMLButtonElement>) => {
-      e.stopPropagation();
-      props.onClick?.();
-      e.preventDefault();
-      exportCheck();
-    };
-
-    // 点击切换
-    const onClickSwitch = async (e: React.MouseEvent<HTMLDivElement>) => {
-      e.stopPropagation();
-      props.onClick?.();
-      e.preventDefault();
-      setShowSwitchModal(true);
-    };
-
-    // 点击删除
-    const onClickDelete = async (e: React.MouseEvent<HTMLDivElement>) => {
-      e.stopPropagation();
-      props.onClick?.();
-      e.preventDefault();
-      // 询问是否删除
-      modal.confirm({
-        title: t('app.deleteAppConfirmTitle'),
-        content: t('app.deleteAppConfirmContent'),
-        width: 480,
-        onOk: onConfirmDelete,
-      });
-    };
-    return (
-      <div className="relative w-full py-1" onMouseLeave={onMouseLeave}>
-        <button
-          type="button"
-          className="mx-1 flex h-8 w-[calc(100%_-_8px)] cursor-pointer items-center gap-2 rounded-lg px-3 py-[6px] hover:bg-[#c8ceda33]"
-          onClick={onClickSetting}
-        >
-          <span className="text-[13px] text-zinc-500">
-            <EditOutlined className="w-4 h-4 mr-2" />
-            {t('app.editApp')}
-          </span>
-        </button>
-        <Divider className="!my-1" />
-        <button
-          type="button"
-          className="mx-1 flex h-8 w-[calc(100%_-_8px)] cursor-pointer items-center gap-2 rounded-lg px-3 py-[6px] hover:bg-[#c8ceda33]"
-          onClick={onClickDuplicate}
-        >
-          <span className="text-[13px] text-zinc-500">
-            <CopyOutlined className="w-4 h-4  mr-2" />
-            {t('app.duplicate')}
-          </span>
-        </button>
-        <button
-          type="button"
-          className="mx-1 flex h-8 w-[calc(100%_-_8px)] cursor-pointer items-center gap-2 rounded-lg px-3 py-[6px] hover:bg-[#c8ceda33]"
-          onClick={onClickExport}
-        >
-          <span className="text-[13px] text-zinc-500">
-            <ExportOutlined className="w-4 h-4  mr-2" />
-            {t('app.export')}
-          </span>
-        </button>
-        {app.type === 1 && (
-          <>
-            <Divider className="!my-1" />
-            <div
-              className="mx-1 flex h-9 cursor-pointer items-center rounded-lg px-3 py-2 hover:bg-[#c8ceda33]"
-              onClick={onClickSwitch}
-            >
-              <span className="text-sm leading-5 text-zinc-500">
-                <SwitcherOutlined className="w-4 h-4 mr-2" />
-                {t('app.switch')}
-              </span>
-            </div>
-          </>
-        )}
-        <Divider className="!my-1" />
-        <div
-          className="group mx-1 flex h-8 w-[calc(100%_-_8px)] cursor-pointer items-center gap-2 rounded-lg px-3 py-[6px] hover:bg-[#fef3f2]"
-          onClick={onClickDelete}
-        >
-          <span className="text-[13px] text-zinc-500 group-hover:text-red-500">
-            <DeleteOutlined className="w-4 h-4 mr-2" />
-            {t('common.operation.delete')}
-          </span>
-        </div>
-      </div>
-    );
   };
 
   return (
@@ -295,13 +59,13 @@ const AppCard: React.FC<AppCardProps> = ({ app, onRefresh }) => {
               </div>
             </div>
             <div className="flex items-center text-[10px] font-medium leading-[18px] text-[#676f83]">
-              <div className="truncate">{type}</div>
+              <div className="truncate">{type}编辑人-编辑时间</div>
             </div>
           </div>
         </div>
         <div className="title-wrapper h-[90px] px-[14px] text-xs leading-normal text-[#676f83]">
-          <div className="line-clamp-4 group-hover:line-clamp-2" title="">
-            细致描述
+          <div className="line-clamp-4 group-hover:line-clamp-2" title={remark}>
+            细致描述：{remark}
           </div>
         </div>
         {/* 隐藏部分 标签、操作按钮 */}
@@ -342,7 +106,15 @@ const AppCard: React.FC<AppCardProps> = ({ app, onRefresh }) => {
               <div className="!hidden shrink-0 group-hover:!flex">
                 {/* 这里是下拉选择编辑 */}
                 <CustomPopover
-                  htmlContent={<Operations />}
+                  htmlContent={
+                    <AppCardOperations
+                      app={app}
+                      onRefresh={onRefresh}
+                      setShowEditModal={setShowEditModal}
+                      setShowDuplicateModal={setShowDuplicateModal}
+                      setShowSwitchModal={setShowSwitchModal}
+                    />
+                  }
                   position="br"
                   trigger="click"
                   btnElement={
@@ -357,9 +129,7 @@ const AppCard: React.FC<AppCardProps> = ({ app, onRefresh }) => {
                     )
                   }
                   popupClassName={
-                    app.type === 1
-                      ? '!w-[256px] translate-x-[-224px]'
-                      : '!w-[160px] translate-x-[-128px]'
+                    app.type === 1 ? '!w-[256px] translate-x-[-224px]' : '!w-[160px] translate-x-[-128px]'
                   }
                 />
               </div>
@@ -378,7 +148,7 @@ const AppCard: React.FC<AppCardProps> = ({ app, onRefresh }) => {
           onCancel={() => {
             setShowEditModal(false);
           }}
-          onConfirm={onEdit}
+          onConfirm={() => {}}
         />
       )}
       {/* 复制框 */}
@@ -393,7 +163,7 @@ const AppCard: React.FC<AppCardProps> = ({ app, onRefresh }) => {
           onCancel={() => {
             setShowDuplicateModal(false);
           }}
-          onConfirm={onCopy}
+          onConfirm={() => {}}
         />
       )}
       {/* 切换应用类型弹窗 */}
@@ -401,6 +171,7 @@ const AppCard: React.FC<AppCardProps> = ({ app, onRefresh }) => {
     </>
   );
 };
+
 export default AppCard;
 
 /**

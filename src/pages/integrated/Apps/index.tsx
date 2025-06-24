@@ -1,39 +1,28 @@
-import {
-  Segmented,
-  type SegmentedProps,
-  Input,
-  type InputRef,
-  Checkbox,
-} from 'antd';
-import {useEffect, useRef, useState} from 'react';
-import './apps.scss';
-import {
-  ApartmentOutlined,
-  ApiOutlined,
-  AppstoreOutlined,
-  SolutionOutlined,
-} from '@ant-design/icons';
-import type {App, AppSearchParams} from '@/services/integrated/apps/app';
-import {usePermission} from '@/hooks/usePermission';
-import {appsService} from '@/services/integrated/apps/appsApi';
-import {useQuery} from '@tanstack/react-query';
-import React from 'react';
-import {isEqual} from 'lodash-es';
-import {useTranslation} from 'react-i18next';
-import AppCard from './AppCard';
-import {useDebounceFn} from 'ahooks';
-import TagFilter from '@/components/base/tag-management/TagFilter.tsx';
-import {useTagStore} from "@/stores/useTagStore.ts";
-import TagManagementModal from "@/components/base/tag-management";
-import CreateAppCard from "@/pages/integrated/Apps/NewAppCard.tsx";
+import { useEffect, useRef, useState } from 'react';
 
-const {Search} = Input;
+import { Segmented, type SegmentedProps, Input, type InputRef, Checkbox } from 'antd';
+import { ApartmentOutlined, ApiOutlined, AppstoreOutlined, SolutionOutlined } from '@ant-design/icons';
+import type { App, AppSearchParams } from '@/services/integrated/apps/app';
+import { usePermission } from '@/hooks/usePermission';
+import { appsService } from '@/services/integrated/apps/appsApi';
+import { useQuery } from '@tanstack/react-query';
+import type React from 'react';
+import { isEqual } from 'lodash-es';
+import { useTranslation } from 'react-i18next';
+import AppCard from './AppCard';
+import { useDebounceFn } from 'ahooks';
+import TagFilter from '@/components/base/tag-management/TagFilter.tsx';
+import { useTagStore } from '@/stores/useTagStore.ts';
+import TagManagementModal from '@/components/base/tag-management';
+import CreateAppCard from '@/pages/integrated/Apps/NewAppCard.tsx';
+import './apps.css';
+const { Search } = Input;
 /**
  * 应用设计
  */
 const Apps: React.FC = () => {
-  const {t} = useTranslation();
-  const {showTagManagementModal} = useTagStore();
+  const { t } = useTranslation();
+  const { showTagManagementModal } = useTagStore();
 
   // 搜索框聚焦
   const searchRef = useRef<InputRef>(null);
@@ -45,22 +34,22 @@ const Apps: React.FC = () => {
     {
       label: t('app.segment.all'),
       value: 0,
-      icon: <AppstoreOutlined/>,
+      icon: <AppstoreOutlined />,
     },
     {
       label: t('app.segment.integrated'),
       value: 1,
-      icon: <ApartmentOutlined/>,
+      icon: <ApartmentOutlined />,
     },
     {
       label: t('app.segment.interface'),
       value: 2,
-      icon: <ApiOutlined/>,
+      icon: <ApiOutlined />,
     },
     {
       label: t('app.segment.tripartite'),
       value: 3,
-      icon: <SolutionOutlined/>,
+      icon: <SolutionOutlined />,
     },
   ];
 
@@ -75,7 +64,7 @@ const Apps: React.FC = () => {
   });
 
   // 查询应用数据
-  const {data: result, refetch} = useQuery({
+  const { data: result, refetch } = useQuery({
     queryKey: ['integrated_app', searchParams],
     queryFn: () => appsService.getApps(searchParams),
   });
@@ -93,7 +82,7 @@ const Apps: React.FC = () => {
       refetch();
       return;
     }
-    setSearchParams((prev) => ({...prev, ...search}));
+    setSearchParams((prev) => ({ ...prev, ...search }));
   };
 
   useEffect(() => {
@@ -128,12 +117,12 @@ const Apps: React.FC = () => {
   /**
    * 处理标签过滤器更新
    */
-  const {run: handleTagsUpdate} = useDebounceFn(
+  const { run: handleTagsUpdate } = useDebounceFn(
     () => {
       // 更新页面应用的检索
-      setSearchParams((prev) => ({...prev, tags: tagFilterValue}));
+      setSearchParams((prev) => ({ ...prev, tags: tagFilterValue }));
     },
-    {wait: 500},
+    { wait: 500 },
   );
 
   /**
@@ -162,42 +151,27 @@ const Apps: React.FC = () => {
             />
           </div>
           <div className="w-full flex justify-between items-center">
-            <Segmented<number>
-              options={segmentedOptions}
-              onChange={onSegmentedChange}
-              value={searchParams.type}
-            />
+            <Segmented<number> options={segmentedOptions} onChange={onSegmentedChange} value={searchParams.type} />
             <div>
               {/* 区分我创建的、标签页 */}
-              <Checkbox onChange={(e) => onCreatedChange(e.target.checked)}>
-                {t('app.createBy')}
-              </Checkbox>
+              <Checkbox onChange={(e) => onCreatedChange(e.target.checked)}>{t('app.createBy')}</Checkbox>
               {/* 标签过滤 */}
-              <TagFilter
-                type="app"
-                value={tagFilterValue}
-                onChange={handleTagsChange}
-              />
+              <TagFilter type="app" value={tagFilterValue} onChange={handleTagsChange} />
             </div>
           </div>
         </div>
         {/* 应用列表 */}
-        <div
-          className="flex-1 overflow-x-hidden overflow-y-auto grid content-start grid-cols-1 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5 2k:grid-cols-6 gap-4 pt-2 grow relative">
-          {/* 数据查询中 */}
-          {hasAddPermission && (
-            <CreateAppCard refresh={refetch}/>
-          )}
+        <div className="flex-1 overflow-x-hidden overflow-y-auto grid content-start grid-cols-1 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5 2k:grid-cols-6 gap-4 pt-2 grow relative">
+          {/* 新建应用卡片 */}
+          {hasAddPermission && <CreateAppCard refresh={refetch} />}
           {/* 应用列表 */}
           {(result || []).map((item: App) => (
-            <AppCard key={item.id} app={item} onRefresh={refetch}/>
+            <AppCard key={item.id} app={item} onRefresh={refetch} />
           ))}
         </div>
       </div>
       {/* 显示标签管理弹窗 */}
-      {
-        <TagManagementModal type="app" show={showTagManagementModal}/>
-      }
+      {<TagManagementModal type="app" show={showTagManagementModal} />}
     </>
   );
 };

@@ -1,9 +1,5 @@
-import {
-  Popover,
-  PopoverButton,
-  PopoverPanel,
-  Transition,
-} from '@headlessui/react';
+import { Popover, PopoverButton, PopoverPanel, Transition } from '@headlessui/react';
+import type React from 'react';
 import { cloneElement, Fragment, useRef } from 'react';
 import cn from '@/utils/classnames';
 
@@ -65,12 +61,8 @@ const CustomPopover: React.FC<CustomPopoverProps> = ({
                 className={cn(
                   'group inline-flex items-center rounded-lg border border-[#10182824] bg-[#fff] px-3 py-2 text-base font-medium hover:border-[#10182833] hover:bg-[#f9fafb] focus:outline-none',
                   open && 'bg-[#10182824] hover:bg-[#f9fafb]',
-                  btnClassName &&
-                    typeof btnClassName === 'string' &&
-                    btnClassName,
-                  btnClassName &&
-                    typeof btnClassName !== 'string' &&
-                    btnClassName?.(open),
+                  btnClassName && typeof btnClassName === 'string' && btnClassName,
+                  btnClassName && typeof btnClassName !== 'string' && btnClassName?.(open),
                 )}
               >
                 {btnElement}

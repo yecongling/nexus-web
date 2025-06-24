@@ -1,5 +1,5 @@
-import type { Tag } from '@/services/common/tags/tagsModel';
 import { create } from 'zustand';
+import type { Tag } from '@/components/base/tag-management/constant';
 
 type TagStoreState = {
   tagList: Tag[];
@@ -19,6 +19,5 @@ export const useTagStore = create<TagStoreState & Action>((set) => ({
   tagList: [],
   showTagManagementModal: false,
   setTagList: (tags: Tag[]) => set({ tagList: tags }),
-  setShowTagManagementModal: (show: boolean) =>
-    set({ showTagManagementModal: show }),
+  setShowTagManagementModal: (show: boolean) => set({ showTagManagementModal: show }),
 }));
