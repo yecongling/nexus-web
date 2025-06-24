@@ -1,7 +1,7 @@
-import { persist, type PersistOptions } from 'zustand/middleware';
 import { create } from 'zustand';
-import type { Preferences } from './storeState';
+import { persist, type PersistOptions } from 'zustand/middleware';
 import { defaultPreferences } from '@/config/defaultPreferences';
+import type { Preferences } from './storeState';
 
 // 定义category和key的类型
 export type Category = keyof Preferences;

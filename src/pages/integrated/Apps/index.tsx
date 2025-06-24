@@ -15,7 +15,7 @@ import TagFilter from '@/components/base/tag-management/TagFilter.tsx';
 import { useTagStore } from '@/stores/useTagStore.ts';
 import TagManagementModal from '@/components/base/tag-management';
 import CreateAppCard from '@/pages/integrated/Apps/NewAppCard.tsx';
-import './apps.css';
+import './apps.scss';
 const { Search } = Input;
 /**
  * 应用设计

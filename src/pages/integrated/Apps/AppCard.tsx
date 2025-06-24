@@ -1,7 +1,7 @@
 import type React from 'react';
-import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { EllipsisOutlined } from '@ant-design/icons';
+import { useEffect, useState } from 'react';
 import clsx from '@/utils/classnames';
 import { usePermission } from '@/hooks/usePermission';
 import CustomPopover from '@/components/popover';
@@ -12,7 +12,7 @@ import SwitchAppModal from './swith-app-modal';
 import type { Tag } from '@/services/common/tags/tagsModel';
 import type { App } from '@/services/integrated/apps/app';
 import AppCardOperations from './AppCardOperations';
-import './apps.css';
+import './apps.scss';
 
 /**
  * 应用

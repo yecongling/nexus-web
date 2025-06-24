@@ -1,11 +1,11 @@
+import path from 'node:path';
+import { pluginHtmlMinifierTerser } from 'rsbuild-plugin-html-minifier-terser';
+import { pluginMockServer } from 'rspack-plugin-mock/rsbuild';
 import { defineConfig } from '@rsbuild/core';
+import { pluginImageCompress } from '@rsbuild/plugin-image-compress';
 import { pluginReact } from '@rsbuild/plugin-react';
 import { pluginSvgr } from '@rsbuild/plugin-svgr';
 import { pluginSass } from '@rsbuild/plugin-sass';
-import { pluginMockServer } from 'rspack-plugin-mock/rsbuild';
-import { pluginImageCompress } from '@rsbuild/plugin-image-compress';
-import { pluginHtmlMinifierTerser } from 'rsbuild-plugin-html-minifier-terser';
-import path from 'node:path';
 
 export default defineConfig({
   plugins: [
