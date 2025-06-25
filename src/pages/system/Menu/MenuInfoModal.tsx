@@ -1,21 +1,12 @@
 import { QuestionCircleFilled, SettingOutlined } from '@ant-design/icons';
 import DragModal from '@/components/modal/DragModal';
 import { menuService } from '@/services/system/menu/menuApi';
-import {
-  Dropdown,
-  Form,
-  Input,
-  InputNumber,
-  type InputRef,
-  Radio,
-  Switch,
-  Tooltip,
-  TreeSelect,
-} from 'antd';
-import type React from 'react';
+import { Dropdown, Form, Input, InputNumber, type InputRef, Radio, Switch, Tooltip, TreeSelect } from 'antd';
+import React from 'react';
 import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
-import IconPanel from '@/components/IconPanel';
 import { useQuery } from '@tanstack/react-query';
+
+const IconPanel = React.lazy(() => import('@/components/IconPanel'));
 
 // 菜单类型枚举
 enum MenuType {
@@ -64,12 +55,7 @@ export interface MenuData {
 /**
  * 菜单信息编辑弹窗
  */
-const MenuInfoModal: React.FC<MenuInfoModalProps> = ({
-  visible,
-  currentRow,
-  onOk,
-  onCancel,
-}) => {
+const MenuInfoModal: React.FC<MenuInfoModalProps> = ({ visible, currentRow, onOk, onCancel }) => {
   const [form] = Form.useForm<MenuData>();
   const nameRef = useRef<InputRef>(null);
   const [menuType, setMenuType] = useState<MenuType>(MenuType.TOP_LEVEL);
@@ -140,10 +126,7 @@ const MenuInfoModal: React.FC<MenuInfoModalProps> = ({
   }, [visible, currentRow, form]);
 
   // 根据菜单类型判断是否显示路由相关字段
-  const showRouteFields = useMemo(
-    () => menuType !== MenuType.PERMISSION_BUTTON,
-    [menuType],
-  );
+  const showRouteFields = useMemo(() => menuType !== MenuType.PERMISSION_BUTTON, [menuType]);
 
   return (
     <DragModal
@@ -162,42 +145,27 @@ const MenuInfoModal: React.FC<MenuInfoModalProps> = ({
       onCancel={onCancel}
       afterOpenChange={handleAfterOpenChange}
     >
-      <Form
-        form={form}
-        initialValues={initialFormValues}
-        labelCol={{ span: 4 }}
-      >
+      <Form form={form} initialValues={initialFormValues} labelCol={{ span: 4 }}>
         <Form.Item name="id" hidden>
           <Input />
         </Form.Item>
         <Form.Item name="menuType" label="菜单类型">
-          <Radio.Group
-            buttonStyle="solid"
-            onChange={(e) => handleMenuTypeChange(e.target.value)}
-          >
+          <Radio.Group buttonStyle="solid" onChange={(e) => handleMenuTypeChange(e.target.value)}>
             <Radio.Button value={MenuType.TOP_LEVEL}>一级菜单</Radio.Button>
             <Radio.Button value={MenuType.SUB_MENU}>子菜单</Radio.Button>
             <Radio.Button value={MenuType.SUB_ROUTE}>子路由</Radio.Button>
-            <Radio.Button value={MenuType.PERMISSION_BUTTON}>
-              权限按钮
-            </Radio.Button>
+            <Radio.Button value={MenuType.PERMISSION_BUTTON}>权限按钮</Radio.Button>
           </Radio.Group>
         </Form.Item>
         <Form.Item
           name="name"
-          label={
-            menuType === MenuType.PERMISSION_BUTTON ? '权限名称' : '菜单名称'
-          }
+          label={menuType === MenuType.PERMISSION_BUTTON ? '权限名称' : '菜单名称'}
           rules={[{ required: true, message: '菜单名称不能为空!' }]}
         >
           <Input autoFocus ref={nameRef} autoComplete="off" />
         </Form.Item>
         {menuType === MenuType.PERMISSION_BUTTON && (
-          <Form.Item
-            name="perms"
-            label="权限标识"
-            rules={[{ required: true, message: '权限标识不能为空！' }]}
-          >
+          <Form.Item name="perms" label="权限标识" rules={[{ required: true, message: '权限标识不能为空！' }]}>
             <Input allowClear autoComplete="off" />
           </Form.Item>
         )}
@@ -259,9 +227,7 @@ const MenuInfoModal: React.FC<MenuInfoModalProps> = ({
                   <Dropdown
                     trigger={['hover']}
                     placement="bottom"
-                    popupRender={() => (
-                      <IconPanel onSelect={handleIconSelect} />
-                    )}
+                    popupRender={() => <IconPanel onSelect={handleIconSelect} />}
                     overlayClassName="w-[360px] h-[300px] bg-white overflow-y-auto p-2 shadow-xl"
                   >
                     <SettingOutlined className="cursor-pointer" />
@@ -274,14 +240,9 @@ const MenuInfoModal: React.FC<MenuInfoModalProps> = ({
         <Form.Item name="sortNo" label="排序">
           <InputNumber min={0} autoComplete="off" />
         </Form.Item>
-        {(menuType === MenuType.SUB_MENU ||
-          menuType === MenuType.SUB_ROUTE) && (
+        {(menuType === MenuType.SUB_MENU || menuType === MenuType.SUB_ROUTE) && (
           <Form.Item name="route" label="是否路由菜单">
-            <Switch
-              checkedChildren="是"
-              unCheckedChildren="否"
-              disabled={menuType === MenuType.SUB_ROUTE}
-            />
+            <Switch checkedChildren="是" unCheckedChildren="否" disabled={menuType === MenuType.SUB_ROUTE} />
           </Form.Item>
         )}
         {menuType !== MenuType.PERMISSION_BUTTON && (

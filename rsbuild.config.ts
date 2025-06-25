@@ -42,8 +42,12 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
+      // 将三方依赖中对lodash的依赖重定向到lodash-es
+      lodash: 'lodash-es',
     },
     extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
+    // 通过rsdcotor分析出来的打包时重复包
+    dedupe: ['@babel/runtime', 'tslib', 'rc-switch', 'rc-checkbox', 'clsx'],
   },
   dev: {
     // 按需编译
@@ -63,17 +67,19 @@ export default defineConfig({
     chunkSplit: {
       strategy: 'split-by-experience',
       // 下面的部分单独分包(这里暂时不分包-原因是：后续的测试中发现不配置下面的选项页面加载反而更快)
-      // forceSplitting: {
-      //   axios: /node_modules[\\/]axios/,
-      //   react: /node_modules[\\/]react/,
-      //   antd: /node_modules[\\/]antd/,
-      //   'lodash-es': /node_modules[\\/]lodash-es/,
-      //   echarts: /node_modules[\\/]echarts/,
-      //   zrender: /node_modules[\\/]zrender/,
-      //   antdIcons: /node_modules[\\/]@ant-design\/icons/,
-      //   'rc-cp': /node_modules[\\/]rc-/,
-      // },
+      forceSplitting: {
+        //   axios: /node_modules[\\/]axios/,
+        //   react: /node_modules[\\/]react/,
+        antd: /node_modules[\\/]antd/,
+        //   'lodash-es': /node_modules[\\/]lodash-es/,
+        //   echarts: /node_modules[\\/]echarts/,
+        //   zrender: /node_modules[\\/]zrender/,
+        antdIcons: /node_modules[\\/]@ant-design\/icons/,
+        //   'rc-cp': /node_modules[\\/]rc-/,
+      },
     },
+    // 启用构建缓存
+    buildCache: true,
     // 移除console.[method]语句
     removeConsole: true,
     // 开启包文件分析

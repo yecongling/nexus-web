@@ -1,4 +1,4 @@
-import debounce from 'lodash-es/debounce';
+import { debounce } from 'lodash-es';
 import { type RefObject, useEffect, useMemo, useRef, useState } from 'react';
 
 // 直接抄airbnb的visx
@@ -12,10 +12,7 @@ interface ResizeObserverEntry {
   };
 }
 
-type ResizeObserverCallback = (
-  entries: ResizeObserverEntry[],
-  observer: ResizeObserver,
-) => void;
+type ResizeObserverCallback = (entries: ResizeObserverEntry[], observer: ResizeObserver) => void;
 
 export declare class ResizeObserver {
   constructor(callback: ResizeObserverCallback);
@@ -58,11 +55,10 @@ export type UseParentSizeConfig = {
   ignoreDimensions?: keyof ParentSizeState | (keyof ParentSizeState)[];
 } & DebounceSettings;
 
-type UseParentSizeResult<T extends HTMLElement = HTMLDivElement> =
-  ParentSizeState & {
-    parentRef: RefObject<T>;
-    resize: (state: ParentSizeState) => void;
-  };
+type UseParentSizeResult<T extends HTMLElement = HTMLDivElement> = ParentSizeState & {
+  parentRef: RefObject<T>;
+  resize: (state: ParentSizeState) => void;
+};
 
 const defaultIgnoreDimensions: UseParentSizeConfig['ignoreDimensions'] = [];
 const defaultInitialSize: ParentSizeState = {
@@ -88,20 +84,14 @@ export default function useParentSize<T extends HTMLElement = HTMLDivElement>({
   });
 
   const resize = useMemo(() => {
-    const normalized = Array.isArray(ignoreDimensions)
-      ? ignoreDimensions
-      : [ignoreDimensions];
+    const normalized = Array.isArray(ignoreDimensions) ? ignoreDimensions : [ignoreDimensions];
 
     return debounce(
       (incoming: ParentSizeState) => {
         setState((existing) => {
           const stateKeys = Object.keys(existing) as (keyof ParentSizeState)[];
-          const keysWithChanges = stateKeys.filter(
-            (key) => existing[key] !== incoming[key],
-          );
-          const shouldBail = keysWithChanges.every((key) =>
-            normalized.includes(key),
-          );
+          const keysWithChanges = stateKeys.filter((key) => existing[key] !== incoming[key]);
+          const shouldBail = keysWithChanges.every((key) => normalized.includes(key));
 
           return shouldBail ? existing : incoming;
         });
@@ -112,9 +102,7 @@ export default function useParentSize<T extends HTMLElement = HTMLDivElement>({
   }, [debounceTime, enableDebounceLeadingCall, ignoreDimensions]);
 
   useEffect(() => {
-    const LocalResizeObserver =
-      resizeObserverPolyfill ||
-      (window as unknown as PrivateWindow).ResizeObserver;
+    const LocalResizeObserver = resizeObserverPolyfill || (window as unknown as PrivateWindow).ResizeObserver;
 
     const observer = new LocalResizeObserver((entries) => {
       for (const entry of entries) {
