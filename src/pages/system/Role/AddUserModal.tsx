@@ -1,29 +1,11 @@
-import DragModal from '@/components/modal/DragModal';
-import { roleService } from '@/services/system/role/roleApi';
-import {
-  SearchOutlined,
-  RedoOutlined,
-  ManOutlined,
-  WomanOutlined,
-} from '@ant-design/icons';
-import {
-  Button,
-  Card,
-  Col,
-  Form,
-  Input,
-  type InputRef,
-  Row,
-  Select,
-  Space,
-  Table,
-  type TableProps,
-  App,
-} from 'antd';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import type { UserSearchParams } from '@/services/system/role/type';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { isEqual } from 'lodash-es';
+import { SearchOutlined, RedoOutlined, ManOutlined, WomanOutlined } from '@ant-design/icons';
+import { Button, Card, Col, Form, Input, type InputRef, Row, Select, Space, Table, type TableProps } from 'antd';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import type { UserSearchParams } from '@/services/system/role/type';
+import DragModal from '@/components/modal/DragModal';
+import { roleService } from '@/services/system/role/roleApi';
 
 /**
  * 添加用户弹窗
@@ -34,7 +16,6 @@ const AddUser: React.FC<AddUserProps> = ({ open, onOk, onCancel, roleId }) => {
   // 当前选中的行数据
   const [selRows, setSelectedRows] = useState<any[]>([]);
   const ref = useRef<InputRef>(null);
-  const { message, modal } = App.useApp();
 
   // 查询参数（包含分页参数）
   const [searchParams, setSearchParams] = useState<UserSearchParams>({
@@ -53,19 +34,11 @@ const AddUser: React.FC<AddUserProps> = ({ open, onOk, onCancel, roleId }) => {
    * 分配用户
    */
   const assignUserMutation = useMutation({
-    mutationFn: (params: any) =>
-      roleService.assignRoleUser(params.roleId, params.userIds, params.type),
+    mutationFn: (params: any) => roleService.assignRoleUser(params.roleId, params.userIds, params.type),
     onSuccess: () => {
-      message.success('分配用户成功');
       onOk(selRows.length);
       // 清空选择项
       setSelectedRows([]);
-    },
-    onError: (error: any) => {
-      modal.error({
-        title: '分配用户失败',
-        content: error.message,
-      });
     },
   });
 
@@ -126,11 +99,7 @@ const AddUser: React.FC<AddUserProps> = ({ open, onOk, onCancel, roleId }) => {
       width: 60,
       align: 'center',
       render: (text) => {
-        return text === 1 ? (
-          <ManOutlined className="text-blue-400" />
-        ) : (
-          <WomanOutlined className="text-pink-400" />
-        );
+        return text === 1 ? <ManOutlined className="text-blue-400" /> : <WomanOutlined className="text-pink-400" />;
       },
     },
   ];
@@ -178,34 +147,18 @@ const AddUser: React.FC<AddUserProps> = ({ open, onOk, onCancel, roleId }) => {
   };
 
   return (
-    <DragModal
-      open={open}
-      onCancel={onCancel}
-      title="添加用户"
-      width={{ xl: 800, xxl: 1000 }}
-      onOk={handleOk}
-    >
+    <DragModal open={open} onCancel={onCancel} title="添加用户" width={{ xl: 800, xxl: 1000 }} onOk={handleOk}>
       <Card className="mb-2!">
         <Form form={form} onFinish={onFinish}>
           <Row gutter={12}>
             <Col span={6}>
               <Form.Item className="mb-0" label="用户名" name="username">
-                <Input
-                  placeholder="请输入用户名"
-                  autoFocus
-                  allowClear
-                  autoComplete="off"
-                  ref={ref}
-                />
+                <Input placeholder="请输入用户名" autoFocus allowClear autoComplete="off" ref={ref} />
               </Form.Item>
             </Col>
             <Col span={6}>
               <Form.Item className="mb-0" label="真实姓名" name="realName">
-                <Input
-                  placeholder="请输入真实姓名"
-                  allowClear
-                  autoComplete="off"
-                />
+                <Input placeholder="请输入真实姓名" allowClear autoComplete="off" />
               </Form.Item>
             </Col>
             <Col span={6}>
@@ -222,11 +175,7 @@ const AddUser: React.FC<AddUserProps> = ({ open, onOk, onCancel, roleId }) => {
             </Col>
             <Col span={6} style={{ textAlign: 'right' }}>
               <Space>
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  icon={<SearchOutlined />}
-                >
+                <Button type="primary" htmlType="submit" icon={<SearchOutlined />}>
                   检索
                 </Button>
                 <Button
@@ -262,7 +211,7 @@ const AddUser: React.FC<AddUserProps> = ({ open, onOk, onCancel, roleId }) => {
               onPageSizeChange(page, pageSize);
             },
           }}
-          dataSource={data?.tableData || []}
+          dataSource={data?.data || []}
           rowSelection={rowSelection}
         />
       </Card>

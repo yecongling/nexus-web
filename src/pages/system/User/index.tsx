@@ -1,14 +1,10 @@
-import useParentSize from '@/hooks/useParentSize';
-import { userService } from '@/services/system/user/userApi';
-import {
-  DeleteOutlined,
-  EditOutlined,
-  ExclamationCircleFilled,
-  LockOutlined,
-} from '@ant-design/icons';
+import { isEqual } from 'lodash-es';
+import { DeleteOutlined, EditOutlined, ExclamationCircleFilled, LockOutlined } from '@ant-design/icons';
 import { Card, Table, App } from 'antd';
 import type React from 'react';
 import { useMemo, useReducer, useState } from 'react';
+import useParentSize from '@/hooks/useParentSize';
+import { userService } from '@/services/system/user/userApi';
 import type { UserSearchParams } from './types';
 import { getColumns } from './columns';
 import SearchForm from './SearchForm';
@@ -17,13 +13,12 @@ import type { UserModel } from '@/services/system/user/type';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import TableActionButtons from './TableActionButtons';
 import UserPasswordModal from './UserPasswordModal';
-import { isEqual } from 'lodash-es';
 
 /**
  * 用户管理
  */
 const User: React.FC = () => {
-  const { message, modal } = App.useApp();
+  const { modal } = App.useApp();
   // 合并状态
   const [state, dispatch] = useReducer(
     (prev: any, action: any) => ({
@@ -67,17 +62,10 @@ const User: React.FC = () => {
   const logicDeleteUserMutation = useMutation({
     mutationFn: (ids: string[]) => userService.logicDeleteUsers(ids),
     onSuccess: () => {
-      message.success('删除成功!');
       dispatch({
         selectedRows: [],
       });
       refetch();
-    },
-    onError: (error) => {
-      modal.error({
-        title: '删除失败',
-        content: error.message,
-      });
     },
   });
 
@@ -140,39 +128,20 @@ const User: React.FC = () => {
 
   // 处理用户更新状态
   const handleUpdateStatusMutation = useMutation({
-    mutationFn: (record: UserModel) =>
-      userService.updateBatchUserStatus(
-        [record.id],
-        record.status === 1 ? 0 : 1,
-      ),
+    mutationFn: (record: UserModel) => userService.updateBatchUserStatus([record.id], record.status === 1 ? 0 : 1),
     onSuccess: () => {
-      message.success('状态更新成功');
       refetch();
-    },
-    onError: (error) => {
-      modal.error({
-        title: '状态更新失败',
-        content: error.message,
-      });
     },
   });
 
   // 更新用户mutation
   const updateUserMutation = useMutation({
-    mutationFn: (values: Partial<UserModel>) =>
-      userService.updateUser({ id: state.currentRow.id, ...values }),
+    mutationFn: (values: Partial<UserModel>) => userService.updateUser({ id: state.currentRow.id, ...values }),
     onSuccess: () => {
-      message.success('更新成功');
       dispatch({
         openEditModal: false,
       });
       refetch();
-    },
-    onError: (error) => {
-      modal.error({
-        title: '更新失败',
-        content: error.message,
-      });
     },
   });
 
@@ -180,17 +149,10 @@ const User: React.FC = () => {
   const createUserMutation = useMutation({
     mutationFn: (values: Partial<UserModel>) => userService.createUser(values),
     onSuccess: () => {
-      message.success('新增成功');
       dispatch({
         openEditModal: false,
       });
       refetch();
-    },
-    onError: (error) => {
-      modal.error({
-        title: '新增失败',
-        content: error.message,
-      });
     },
   });
 
@@ -257,11 +219,7 @@ const User: React.FC = () => {
       <SearchForm onSearch={handleSearch} />
 
       {/* 查询表格 */}
-      <Card
-        style={{ flex: 1, marginTop: '8px', minHeight: 0 }}
-        styles={{ body: { height: '100%' } }}
-        ref={parentRef}
-      >
+      <Card style={{ flex: 1, marginTop: '8px', minHeight: 0 }} styles={{ body: { height: '100%' } }} ref={parentRef}>
         {/* 操作按钮 */}
         <TableActionButtons
           handleAdd={handleAdd}

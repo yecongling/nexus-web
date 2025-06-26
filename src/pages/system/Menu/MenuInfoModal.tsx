@@ -242,7 +242,12 @@ const MenuInfoModal: React.FC<MenuInfoModalProps> = ({ visible, currentRow, onOk
         </Form.Item>
         {(menuType === MenuType.SUB_MENU || menuType === MenuType.SUB_ROUTE) && (
           <Form.Item name="route" label="是否路由菜单">
-            <Switch checkedChildren="是" unCheckedChildren="否" disabled={menuType === MenuType.SUB_ROUTE} />
+            <Switch
+              checkedChildren="是"
+              unCheckedChildren="否"
+              defaultChecked
+              disabled={menuType === MenuType.SUB_ROUTE}
+            />
           </Form.Item>
         )}
         {menuType !== MenuType.PERMISSION_BUTTON && (

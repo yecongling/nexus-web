@@ -1,18 +1,55 @@
 const menu = {
   home: '首页',
+  statics: {
+    main: '统计',
+    messageSearch: '消息查询',
+    errorStatics: '错误统计',
+    endpoint: '端点',
+    testMessage: '测试消息',
+  },
+  resources: {
+    main: '资源维护',
+    database: '数据库资源',
+    dataMode: '数据模式',
+    transfer: '数据转换',
+    ssl: 'SSL',
+    web: 'Web服务',
+    dll: '原生库',
+  },
+  connection: {
+    main: '连接管理',
+    database: '数据库',
+    jms: 'JMS',
+  },
+  dataHandle: {
+    main: '数据处理',
+    dataTransfer: '数据转换',
+    variable: '变量配置',
+    codeSet: '代码集',
+    script: '共享脚本',
+  },
   system: {
-    management: '系统管理',
+    main: '系统管理',
     menu: '菜单管理',
-    role: '角色管理',
+    role: '角色维护',
     user: '用户管理',
     dict: '数据字典',
     param: '系统参数',
+    announcement: '系统公告',
+  },
+  monitor: {
+    main: '监控',
+    timer: '定时器',
   },
   integration: {
-    management: '集成管理',
+    main: '集成管理',
     apps: '应用中心',
     endpoint: '端点维护',
     endpointConfig: '端点配置管理',
+  },
+  message: {
+    main: '消息中心',
+    template: '消息模板',
   },
 };
 export default menu;

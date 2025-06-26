@@ -188,19 +188,7 @@ const Login: React.FC = () => {
               </p>
             </div>
             <div className="form" style={{ marginTop: '40px' }}>
-              <Form
-                form={form}
-                name="login"
-                labelCol={{ span: 5 }}
-                initialValues={{
-                  username: 'admin',
-                  password: '123456qwe,.',
-                  remember: true,
-                }}
-                size="large"
-                autoComplete="off"
-                onFinish={submit}
-              >
+              <Form form={form} name="login" labelCol={{ span: 5 }} size="large" autoComplete="off" onFinish={submit}>
                 <Form.Item name="username" rules={[{ required: true, message: t('login.enterUsername') }]}>
                   <Input
                     size="large"
@@ -208,7 +196,7 @@ const Login: React.FC = () => {
                     autoFocus
                     autoComplete="off"
                     allowClear
-                    // placeholder="用户名：admin"
+                    placeholder="用户名(访问用户):nexus"
                     prefix={<UserOutlined />}
                   />
                 </Form.Item>
@@ -217,7 +205,7 @@ const Login: React.FC = () => {
                     size="large"
                     allowClear
                     autoComplete="off"
-                    // placeholder="密码：123456qwe,."
+                    placeholder="密码:123456"
                     prefix={<LockOutlined />}
                   />
                 </Form.Item>

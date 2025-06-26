@@ -23,6 +23,7 @@ const translation = {
     paste: '粘贴',
     cut: '剪切',
     search: '搜索',
+    selectAll: '全选',
   },
   errorMsg: {
     requestFailed: '请求失败',

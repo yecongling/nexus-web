@@ -1,7 +1,7 @@
-import DragModal from '@/components/modal/DragModal';
-import { roleService } from '@/services/system/role/roleApi';
 import { Form, Input, type InputRef, Select, Switch } from 'antd';
 import { useEffect, useRef } from 'react';
+import DragModal from '@/components/modal/DragModal';
+import { roleService } from '@/services/system/role/roleApi';
 import type { RoleState } from '@/services/system/role/type';
 
 const RoleInfoModal: React.FC<RoleInfoModalProps> = ({

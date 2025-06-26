@@ -20,7 +20,7 @@ import DataTable from './DataTable';
  * 系统菜单维护
  */
 const Menu: React.FC = () => {
-  const { modal, message } = App.useApp();
+  const { modal } = App.useApp();
   const queryClient = useQueryClient();
   const { t } = useTranslation();
   // 合并的状态
@@ -46,15 +46,8 @@ const Menu: React.FC = () => {
   const addMenuMutation = useMutation({
     mutationFn: menuService.addMenu,
     onSuccess: () => {
-      message.success('新增菜单成功');
       queryClient.invalidateQueries({ queryKey: ['sys_menu', searchParams] });
       closeEditModal();
-    },
-    onError: (error) => {
-      modal.error({
-        title: '新增菜单失败',
-        content: `原因：${error.message}`,
-      });
     },
   });
 
@@ -62,15 +55,8 @@ const Menu: React.FC = () => {
   const updateMenuMutation = useMutation({
     mutationFn: menuService.updateMenu,
     onSuccess: () => {
-      message.success('修改菜单成功');
       queryClient.invalidateQueries({ queryKey: ['sys_menu', searchParams] });
       closeEditModal();
-    },
-    onError: (error) => {
-      modal.error({
-        title: '修改菜单失败',
-        content: `原因：${error.message}`,
-      });
     },
   });
 
@@ -78,14 +64,7 @@ const Menu: React.FC = () => {
   const deleteMenuMutation = useMutation({
     mutationFn: menuService.deleteMenu,
     onSuccess: () => {
-      message.success('删除菜单成功');
       queryClient.invalidateQueries({ queryKey: ['sys_menu', searchParams] });
-    },
-    onError: (error) => {
-      modal.error({
-        title: '删除菜单失败',
-        content: `原因：${error.message}`,
-      });
     },
   });
 
@@ -93,14 +72,7 @@ const Menu: React.FC = () => {
   const batchDeleteMenuMutation = useMutation({
     mutationFn: menuService.deleteMenuBatch,
     onSuccess: () => {
-      message.success('批量删除菜单成功');
       queryClient.invalidateQueries({ queryKey: ['sys_menu', searchParams] });
-    },
-    onError: (error) => {
-      modal.error({
-        title: '批量删除菜单失败',
-        content: `原因：${error.message}`,
-      });
     },
   });
 

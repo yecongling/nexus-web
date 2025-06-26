@@ -1,7 +1,11 @@
-import useParentSize from '@/hooks/useParentSize';
-import { App, Card, type TableProps } from 'antd';
+import { isEqual } from 'lodash-es';
+import { Card, type TableProps } from 'antd';
 import type React from 'react';
 import { useReducer, useState } from 'react';
+import useParentSize from '@/hooks/useParentSize';
+import type { RoleSearchParams, RoleState } from '@/services/system/role/type';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { roleService } from '@/services/system/role/roleApi';
 import RoleInfoModal from './RoleInfoModal';
 import RoleMenuDrawer from './AssignRoleMenuDrawer';
 import RoleUserDrawer from './AssignRoleUserDrawer';
@@ -9,17 +13,12 @@ import RoleSearchForm from './RoleSearchForm';
 import RoleActionButtons from './RoleActionButtons';
 import RoleTable from './RoleTable';
 import getRoleTableColumns from './RoleTableColumns';
-import type { RoleSearchParams, RoleState } from '@/services/system/role/type';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { roleService } from '@/services/system/role/roleApi';
-import { isEqual } from 'lodash-es';
 
 /**
  * 系统角色维护
  * @returns
  */
 const Role: React.FC = () => {
-  const { modal, message } = App.useApp();
   // 容器高度计算（表格）
   const { parentRef, height } = useParentSize();
 
@@ -80,26 +79,17 @@ const Role: React.FC = () => {
   const logicDeleteUserMutation = useMutation({
     mutationFn: (ids: string[]) => roleService.deleteBatchRole(ids),
     onSuccess() {
-      message.success('删除成功!');
       dispatch({
         selectedRows: [],
       });
       refetch();
     },
-    onError(error) {
-      modal.error({
-        title: '操作失败',
-        content: `原因：${error}`,
-      });
-    },
   });
 
   // 添加角色mutation
   const addRoleMutation = useMutation({
-    mutationFn: (roleData: Record<string, any>) =>
-      roleService.addRole(roleData),
+    mutationFn: (roleData: Record<string, any>) => roleService.addRole(roleData),
     onSuccess() {
-      message.success('添加成功!');
       dispatch({
         openEditModal: false,
         currentRow: null,
@@ -107,30 +97,16 @@ const Role: React.FC = () => {
       });
       refetch();
     },
-    onError(error) {
-      modal.error({
-        title: '添加角色失败',
-        content: `原因：${error}`,
-      });
-    },
   });
 
   // 编辑角色mutation
   const editRoleMutation = useMutation({
-    mutationFn: (roleData: Record<string, any>) =>
-      roleService.editRole(roleData),
+    mutationFn: (roleData: Record<string, any>) => roleService.editRole(roleData),
     onSuccess() {
-      message.success('编辑成功!');
       dispatch({
         openEditModal: false,
         currentRow: null,
         action: 'ok',
-      });
-    },
-    onError(error) {
-      modal.error({
-        title: '编辑角色失败',
-        content: `原因：${error}`,
       });
     },
   });
@@ -226,11 +202,7 @@ const Role: React.FC = () => {
       {/* 菜单检索条件栏 */}
       <RoleSearchForm onFinish={handleSearch} />
       {/* 查询表格 */}
-      <Card
-        style={{ flex: 1, marginTop: '8px' }}
-        styles={{ body: { height: '100%' } }}
-        ref={parentRef}
-      >
+      <Card style={{ flex: 1, marginTop: '8px' }} styles={{ body: { height: '100%' } }} ref={parentRef}>
         {/* 操作按钮 */}
         <RoleActionButtons
           onAddRoleClick={onAddRoleClick}
@@ -274,11 +246,7 @@ const Role: React.FC = () => {
         onCancel={hideDrawer}
       />
       {/* 用户分配抽屉 */}
-      <RoleUserDrawer
-        roleId={state.currentRow?.id}
-        onCancel={hideDrawer}
-        open={state.openRoleUserModal}
-      />
+      <RoleUserDrawer roleId={state.currentRow?.id} onCancel={hideDrawer} open={state.openRoleUserModal} />
     </>
   );
 };

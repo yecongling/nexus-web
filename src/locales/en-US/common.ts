@@ -23,6 +23,7 @@ const translation = {
     paste: 'paste',
     cut: 'cut',
     search: 'search',
+    selectAll: 'select all',
   },
   errorMsg: {
     requestFailed: 'request failed',

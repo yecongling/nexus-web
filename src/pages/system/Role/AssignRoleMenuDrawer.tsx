@@ -1,8 +1,8 @@
-import { memo, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CloseOutlined, DownOutlined, FolderFilled, FolderOpenFilled } from '@ant-design/icons';
-import { Button, Drawer, Space, Tree, type TreeProps, App } from 'antd';
 import { useMutation, useQuery } from '@tanstack/react-query';
+import { memo, useCallback, useEffect, useState } from 'react';
+import { CloseOutlined, DownOutlined, FolderFilled, FolderOpenFilled } from '@ant-design/icons';
+import { Button, Checkbox, Drawer, Space, Tree, type TreeProps } from 'antd';
 import { roleService } from '@/services/system/role/roleApi';
 import { getIcon } from '@/utils/utils';
 
@@ -17,7 +17,6 @@ const RoleMenuDrawer: React.FC<RoleMenuDrawerProps> = memo(({ open, roleId, onOk
   const [checked, setChecked] = useState<string[]>([]);
   // 展开的节点
   const [expandedKeys, setExpandedKeys] = useState<string[]>([]);
-  const { message, modal } = App.useApp();
   const { t } = useTranslation();
   // 使用useQuery获取数据
   const {
@@ -35,14 +34,7 @@ const RoleMenuDrawer: React.FC<RoleMenuDrawerProps> = memo(({ open, roleId, onOk
   const assignRoleMenuMutation = useMutation({
     mutationFn: (params: any) => roleService.assignRoleMenu(params.roleId, params.menuIds),
     onSuccess: () => {
-      message.success('分配角色菜单成功');
       onOk();
-    },
-    onError: (error: any) => {
-      modal.error({
-        title: '分配角色菜单失败',
-        content: error.message,
-      });
     },
   });
 
@@ -79,6 +71,28 @@ const RoleMenuDrawer: React.FC<RoleMenuDrawerProps> = memo(({ open, roleId, onOk
   }, []);
 
   /**
+   * 全选/取消全选
+   * @param checked 是否全选
+   */
+  const selectAll = (checked: boolean) => {
+    if (!checked) {
+      setChecked([]);
+      return;
+    }
+    const checkedKeys: string[] = [];
+    const transform = (treeData: any, checkedKeys: string[]) => {
+      treeData.map((item: any) => {
+        checkedKeys.push(item.id);
+        if (item.children?.length > 0) {
+          transform(item.children, checkedKeys);
+        }
+      });
+    };
+    transform(treeData, checkedKeys);
+    setChecked(checkedKeys);
+  };
+
+  /**
    * 点击确定的时候的操作
    */
   const handleOk = () => {
@@ -106,17 +120,31 @@ const RoleMenuDrawer: React.FC<RoleMenuDrawerProps> = memo(({ open, roleId, onOk
       closeIcon={false}
       extra={<Button type="text" icon={<CloseOutlined />} onClick={onCancel} />}
       onClose={onCancel}
-      classNames={{ footer: 'text-right' }}
       footer={
-        <Space>
-          <Button onClick={onCancel}>取消</Button>
-          <Button type="primary" onClick={handleOk}>
-            确认
-          </Button>
-        </Space>
+        <div className="flex justify-between items-center">
+          <Checkbox
+            onChange={(e) => {
+              selectAll(e.target.checked);
+            }}
+          >
+            {t('common.operation.selectAll')}
+          </Checkbox>
+          <Space>
+            <Button onClick={onCancel}>{t('common.operation.cancel')}</Button>
+            <Button type="primary" onClick={handleOk}>
+              {t('common.operation.confirm')}
+            </Button>
+          </Space>
+        </div>
       }
     >
-      {isError && <div>数据加载失败，{error.message}</div>}
+      {isError && (
+        <div>
+          {t('common.errorMsg.requestFailed')}
+          <br />
+          {error.message}
+        </div>
+      )}
       {isSuccess && (
         <Tree
           blockNode

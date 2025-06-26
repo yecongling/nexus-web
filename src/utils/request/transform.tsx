@@ -358,7 +358,7 @@ export const transform: AxiosTransform = {
   },
 
   /**
-   * 响应错误处理(这种是针对后端服务有响应的，比如404之类的)
+   * 响应错误处理(这种是针对后端服务有响应的，比如404之类的)，这里需要放过401的请求，让其走到上面的token续期操作里面
    * @param error
    */
   responseInterceptorsCatch: (error: any) => {
@@ -379,7 +379,7 @@ export const transform: AxiosTransform = {
       errMessage = t('common.errorMsg.requestTimeout');
     } else if (err?.includes('Network Error')) {
       errMessage = t('common.errorMsg.networkException');
-    } else if (responseCode && responseMessage) {
+    } else if (responseCode !== HttpCodeEnum.RC401 && responseMessage) {
       errMessage = responseMessage;
     }
 
