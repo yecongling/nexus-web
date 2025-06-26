@@ -1,7 +1,7 @@
 const menu = {
   home: '首页',
   statics: {
-    main: '统计',
+    main: '数据统计',
     messageSearch: '消息查询',
     errorStatics: '错误统计',
     endpoint: '端点',
@@ -38,7 +38,7 @@ const menu = {
     announcement: '系统公告',
   },
   monitor: {
-    main: '监控',
+    main: '系统监控',
     timer: '定时器',
   },
   integration: {

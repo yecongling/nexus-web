@@ -23,7 +23,7 @@ const DataTable: React.FC<DataTableProps> = ({
 }) => {
   return (
     <Table
-      size="middle"
+      size="small"
       style={{ marginTop: '8px' }}
       bordered
       pagination={false}

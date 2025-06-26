@@ -171,8 +171,8 @@ const UserDropdown: React.FC = memo(() => {
   return (
     <>
       <Dropdown
-        trigger={['click']}
-        menu={{ items, triggerSubMenuAction: 'click' }}
+        trigger={['hover']}
+        menu={{ items, triggerSubMenuAction: 'hover' }}
         popupRender={renderDropdown}
         placement="bottomLeft"
         overlayStyle={{ width: 240 }}

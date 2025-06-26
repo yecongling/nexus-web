@@ -1,3 +1,4 @@
+import { isEqual } from 'lodash-es';
 import {
   CloseOutlined,
   DeleteOutlined,
@@ -31,7 +32,6 @@ import AddUser from './AddUserModal';
 import { roleService } from '@/services/system/role/roleApi';
 import type { UserSearchParams } from '@/services/system/role/type';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { isEqual } from 'lodash-es';
 
 /**
  * 给角色分配用户
