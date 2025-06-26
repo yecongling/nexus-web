@@ -7,6 +7,8 @@ import { pluginReact } from '@rsbuild/plugin-react';
 import { pluginSvgr } from '@rsbuild/plugin-svgr';
 import { pluginSass } from '@rsbuild/plugin-sass';
 
+const isDev = process.env.NODE_ENV === 'development';
+
 export default defineConfig({
   plugins: [
     // 表示将react和router相关的包拆分为单独的chunk
@@ -79,7 +81,7 @@ export default defineConfig({
       },
     },
     // 启用构建缓存
-    buildCache: true,
+    buildCache: !isDev,
     // 移除console.[method]语句
     removeConsole: true,
     // 开启包文件分析

@@ -7,21 +7,36 @@ import React from 'react';
  */
 
 export const LazyLoad = (moduleName: string) => {
+  // 文件直接来自 views 目录，匹配的文件名以 `.tsx` 结尾。
+  const viewModule = import.meta.webpackContext('../pages', {
+    // 是否搜索子目录
+    recursive: true,
+    // 匹配文件
+    regExp: /\.tsx$/,
+    // 异步加载
+    mode: 'lazy',
+  });
   //页面地址
   let URL = '';
   if (moduleName.endsWith('.tsx')) {
-    URL = `/${moduleName}`;
+    URL = `./${moduleName}`;
   } else {
-    URL = `/${moduleName}/index.tsx`;
+    URL = `./${moduleName}/index.tsx`;
   }
   //组件地址
   let Module: any;
   try {
-    Module = React.lazy(() => import(`@/pages${URL}`));
+    // 检查模块是否存在并动态加载
+    if (viewModule.keys().includes(URL)) {
+      Module = React.lazy(() => viewModule(URL) as any);
+    } else {
+      Module = React.lazy(() => import('@/pages/error/404'));
+    }
   } catch (error) {
     void error;
     // 如果动态加载错误就是认定为模块不存在
     Module = React.lazy(() => import('@/pages/error/404'));
   }
+
   return <Module />;
 };

@@ -82,7 +82,10 @@ const MyLayout: React.FC = () => {
               justifyContent: 'center',
             }}
           >
-            <item.type />
+            {(() => {
+              const Comp = item.type;
+              return <Comp />;
+            })()}
           </div>
           <div className="layoutTitle">
             {item.name}

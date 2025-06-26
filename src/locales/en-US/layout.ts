@@ -9,6 +9,7 @@ const translation = {
       doc: 'Docs',
       profile: 'Profile',
       support: 'Support',
+      switchUser: 'Switch User',
       feedback: 'Feedback',
       question: 'Question',
       refresh: 'Refresh Cache',
