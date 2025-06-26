@@ -6,7 +6,7 @@
 # 框架技术： 
     react@18.3.1  
     antd@latest 
-    rsbuild 构建工具
+    rsbuild@latest 构建工具
     zustand@latest 状态管理
     sass@latest
     react-router@latest
@@ -14,8 +14,7 @@
     axios@latest
     @tanstack/react-query@latest
 # 注意
-    其中对axios进行了二次封装，其前后台交互的数据是json，并将数据进行了加密处理，发送到后端，后端项目参考
-    https://github.com/yecongling/fusion
+    其中对axios进行了二次封装，其前后台交互的数据是json，并将数据进行了加密处理，发送到后端，后端(springboot3.5.3+jdk21-继续完善中，后续开源)
 
 # 支持丰富的交互协议，http、soap、RPC、hl7(后续支持)、file 等等，其包含的功能大部分由 apache camel 中的组件所支持，也可自行扩充其中的组件
 
