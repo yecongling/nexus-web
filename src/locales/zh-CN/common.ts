@@ -19,6 +19,7 @@ const translation = {
     upload: '上传',
     download: '下载',
     preview: '预览',
+    detail: '详情',
     copy: '复制',
     paste: '粘贴',
     cut: '剪切',

@@ -1,6 +1,6 @@
 import { useMenuStore } from '@/stores/store';
-import { useCurrentMenuKey } from './useCurrentMenuKey';
 import { useUserStore } from '@/stores/userStore';
+import { useCurrentMenuKey } from './useCurrentMenuKey';
 
 /**
  * 结合当前菜单权限，判断用户是否有权限
@@ -8,16 +8,13 @@ import { useUserStore } from '@/stores/userStore';
  * @param mode "AND"（必须全部匹配） | "OR"（只需匹配一个）
  * @returns {boolean} 是否有权限
  */
-export function usePermission(
-  requiredPermissions: string[],
-  mode: 'AND' | 'OR' = 'OR',
-): boolean {
+export function usePermission(requiredPermissions: string[], mode: 'AND' | 'OR' = 'OR'): boolean {
   const { menus } = useMenuStore();
   const { loginUser } = useUserStore();
   const currentMenuKey = useCurrentMenuKey();
   // 获取当前菜单的权限（如果传入了 currentMenuKey）
   const currentMenu = findMenuByKey(menus, currentMenuKey);
-  const menuPermission = currentMenu?.permission || []; // 例如："user:view"
+  const menuPermission = currentMenu?.meta?.permissionList || []; // 例如："user:view"
   // 判断是否是管理员
   const isAdmin = loginUser === 'admin';
   if (isAdmin) {

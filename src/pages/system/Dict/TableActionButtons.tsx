@@ -1,11 +1,7 @@
 import { usePermission } from '@/hooks/usePermission';
-import {
-  PlusOutlined,
-  DeleteOutlined,
-  ExportOutlined,
-  ImportOutlined,
-} from '@ant-design/icons';
+import { PlusOutlined, DeleteOutlined, ExportOutlined, ImportOutlined } from '@ant-design/icons';
 import { Space, Button, Upload, message } from 'antd';
+import { useTranslation } from 'react-i18next';
 
 interface TableActionButtonsProps {
   handleAdd: () => void;
@@ -21,6 +17,7 @@ const TableActionButtons: React.FC<TableActionButtonsProps> = ({
   refetch,
   selectedRows,
 }) => {
+  const { t } = useTranslation();
   // 是否有新增权限
   const canAdd = usePermission(['sys:dict:add']);
   // 是否有批量删除权限
@@ -34,7 +31,7 @@ const TableActionButtons: React.FC<TableActionButtonsProps> = ({
     <Space>
       {canAdd && (
         <Button type="primary" icon={<PlusOutlined />} onClick={handleAdd}>
-          新增
+          {t('common.operation.add')}
         </Button>
       )}
       {canBatchImport && (
@@ -51,7 +48,7 @@ const TableActionButtons: React.FC<TableActionButtonsProps> = ({
             }
           }}
         >
-          <Button icon={<ImportOutlined />}>批量导入</Button>
+          <Button icon={<ImportOutlined />}>{t('common.operation.import')}</Button>
         </Upload>
       )}
       {canBatchExport && (
@@ -61,17 +58,12 @@ const TableActionButtons: React.FC<TableActionButtonsProps> = ({
             window.open('/api/dict/export');
           }}
         >
-          批量导出
+          {t('common.operation.export')}
         </Button>
       )}
       {canBatchDelete && (
-        <Button
-          danger
-          icon={<DeleteOutlined />}
-          disabled={selectedRows.length === 0}
-          onClick={handleBatchDelete}
-        >
-          批量删除
+        <Button danger icon={<DeleteOutlined />} disabled={selectedRows.length === 0} onClick={handleBatchDelete}>
+          {t('common.operation.delete')}
         </Button>
       )}
     </Space>

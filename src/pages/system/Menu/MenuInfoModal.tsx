@@ -1,10 +1,12 @@
 import { QuestionCircleFilled, SettingOutlined } from '@ant-design/icons';
-import DragModal from '@/components/modal/DragModal';
-import { menuService } from '@/services/system/menu/menuApi';
-import { Dropdown, Form, Input, InputNumber, type InputRef, Radio, Switch, Tooltip, TreeSelect } from 'antd';
+import { Dropdown, Form, Input, InputNumber, type InputRef, Radio, Space, Switch, Tooltip, TreeSelect } from 'antd';
+import { useQuery } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import React from 'react';
 import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import DragModal from '@/components/modal/DragModal';
+import { menuService } from '@/services/system/menu/menuApi';
+import { addIcon } from '@/utils/utils';
 
 const IconPanel = React.lazy(() => import('@/components/IconPanel'));
 
@@ -59,11 +61,37 @@ const MenuInfoModal: React.FC<MenuInfoModalProps> = ({ visible, currentRow, onOk
   const [form] = Form.useForm<MenuData>();
   const nameRef = useRef<InputRef>(null);
   const [menuType, setMenuType] = useState<MenuType>(MenuType.TOP_LEVEL);
+  const { t } = useTranslation();
+
+  // 递归处理目录数据，对 title 进行国际化
+  const translateDirectory = useCallback((data: any[]) => {
+    return data.map((item) => {
+      // 对 title 字段进行国际化处理
+      const translatedItem = {
+        ...item,
+        title: (
+          <Space>
+            {addIcon(item.icon)}
+            {t(item.title)}
+          </Space>
+        ),
+      };
+      if (item.children && item.children.length > 0) {
+        // 递归处理子项
+        translatedItem.children = translateDirectory(item.children);
+      }
+      return translatedItem;
+    });
+  }, []);
 
   // 使用 useQuery 获取目录数据
   const { data: directoryData, isLoading } = useQuery({
     queryKey: ['sys_menu_directory', menuType],
-    queryFn: () => menuService.getDirectory(menuType),
+    queryFn: async () => {
+      const directory = await menuService.getDirectory(menuType);
+      // 递归处理目录数据
+      return translateDirectory(directory);
+    },
     enabled: visible,
   });
 
@@ -123,7 +151,7 @@ const MenuInfoModal: React.FC<MenuInfoModalProps> = ({ visible, currentRow, onOk
     } else {
       form.resetFields();
     }
-  }, [visible, currentRow, form]);
+  }, [visible, currentRow]);
 
   // 根据菜单类型判断是否显示路由相关字段
   const showRouteFields = useMemo(() => menuType !== MenuType.PERMISSION_BUTTON, [menuType]);

@@ -1,16 +1,7 @@
 import { SearchOutlined, RedoOutlined } from '@ant-design/icons';
-import {
-  Button,
-  Card,
-  Col,
-  ConfigProvider,
-  Form,
-  Input,
-  Row,
-  Select,
-  Space,
-} from 'antd';
+import { Button, Card, Col, ConfigProvider, Form, Input, Row, Select, Space } from 'antd';
 import type React from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface RoleSearchFormProps {
   onFinish: (values: any) => void;
@@ -24,6 +15,7 @@ interface RoleSearchFormProps {
 const RoleSearchForm: React.FC<RoleSearchFormProps> = ({ onFinish }) => {
   // 检索表单
   const [form] = Form.useForm();
+  const { t } = useTranslation();
   return (
     <ConfigProvider
       theme={{
@@ -61,12 +53,8 @@ const RoleSearchForm: React.FC<RoleSearchFormProps> = ({ onFinish }) => {
             </Col>
             <Col span={6} style={{ textAlign: 'right' }}>
               <Space>
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  icon={<SearchOutlined />}
-                >
-                  检索
+                <Button type="primary" htmlType="submit" icon={<SearchOutlined />}>
+                  {t('common.operation.search')}
                 </Button>
                 <Button
                   type="default"
@@ -75,7 +63,7 @@ const RoleSearchForm: React.FC<RoleSearchFormProps> = ({ onFinish }) => {
                     form.resetFields();
                   }}
                 >
-                  重置
+                  {t('common.operation.reset')}
                 </Button>
               </Space>
             </Col>

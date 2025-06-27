@@ -170,10 +170,10 @@ const Menu: React.FC = () => {
                 });
               }}
             >
-              修改
+              {t('common.operation.edit')}
             </Button>
             <Button size="small" variant="link" color="danger" onClick={() => delMenu(record.id)}>
-              删除
+              {t('common.operation.delete')}
             </Button>
           </Space>
         );

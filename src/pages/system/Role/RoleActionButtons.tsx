@@ -1,12 +1,9 @@
-import {
-  PlusOutlined,
-  DeleteOutlined,
-  ExclamationCircleFilled,
-} from '@ant-design/icons';
+import { PlusOutlined, DeleteOutlined, ExclamationCircleFilled } from '@ant-design/icons';
 import type { UseMutationResult } from '@tanstack/react-query';
 import { App, Button, Space } from 'antd';
 import type React from 'react';
 import { useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface RoleActionButtonsProps {
   onAddRoleClick: () => void;
@@ -19,12 +16,9 @@ interface RoleActionButtonsProps {
  * @param props 参数
  * @returns 操作按钮
  */
-const RoleActionButtons: React.FC<RoleActionButtonsProps> = ({
-  onAddRoleClick,
-  selRows,
-  logicDeleteUserMutation,
-}) => {
+const RoleActionButtons: React.FC<RoleActionButtonsProps> = ({ onAddRoleClick, selRows, logicDeleteUserMutation }) => {
   const { modal } = App.useApp();
+  const { t } = useTranslation();
   // 批量处理删除
   const onBatchDelete = useCallback(() => {
     modal.confirm({
@@ -41,19 +35,13 @@ const RoleActionButtons: React.FC<RoleActionButtonsProps> = ({
   return (
     <Space>
       <Button type="primary" icon={<PlusOutlined />} onClick={onAddRoleClick}>
-        新增
+        {t('common.operation.add')}
       </Button>
       <Button type="default" icon={<PlusOutlined />}>
-        批量导入
+        {t('common.operation.import')}
       </Button>
-      <Button
-        type="default"
-        danger
-        icon={<DeleteOutlined />}
-        disabled={selRows.length === 0}
-        onClick={onBatchDelete}
-      >
-        批量删除
+      <Button type="default" danger icon={<DeleteOutlined />} disabled={selRows.length === 0} onClick={onBatchDelete}>
+        {t('common.operation.delete')}
       </Button>
     </Space>
   );

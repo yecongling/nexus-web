@@ -13,12 +13,14 @@ import type { UserModel } from '@/services/system/user/type';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import TableActionButtons from './TableActionButtons';
 import UserPasswordModal from './UserPasswordModal';
+import { useTranslation } from 'react-i18next';
 
 /**
  * 用户管理
  */
 const User: React.FC = () => {
   const { modal } = App.useApp();
+  const { t } = useTranslation();
   // 合并状态
   const [state, dispatch] = useReducer(
     (prev: any, action: any) => ({
@@ -175,7 +177,7 @@ const User: React.FC = () => {
   // 表格操作列中的更多操作
   const columns = useMemo(
     () =>
-      getColumns(handleEdit, handleDetail, (record) => [
+      getColumns(handleEdit, handleDetail, t, (record) => [
         {
           key: 'updatePwd',
           label: '修改密码',
@@ -196,7 +198,7 @@ const User: React.FC = () => {
         },
         {
           key: 'delete',
-          label: '删除',
+          label: t('common.operation.delete'),
           icon: <DeleteOutlined className="text-red-400!" />,
           onClick: () => {
             modal.confirm({
