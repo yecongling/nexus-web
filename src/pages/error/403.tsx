@@ -1,5 +1,5 @@
-import type React from 'react';
 import { Button, Result } from 'antd';
+import type React from 'react';
 
 const App: React.FC = () => (
   <Result

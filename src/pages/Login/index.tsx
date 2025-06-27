@@ -184,7 +184,7 @@ const Login: React.FC = () => {
           <div className={styles['login-form']}>
             <div className="login-title">
               <p className="text-[28px] text-center m-0">
-                <span className="font-bold">{t('login.title')}</span>
+                <span className="font-bold">{t('login.login')}</span>
               </p>
             </div>
             <div className="form" style={{ marginTop: '40px' }}>
@@ -196,7 +196,7 @@ const Login: React.FC = () => {
                     autoFocus
                     autoComplete="off"
                     allowClear
-                    placeholder="用户名(访问用户):nexus"
+                    placeholder={`${t('login.username')}:nexus`}
                     prefix={<UserOutlined />}
                   />
                 </Form.Item>
@@ -205,7 +205,7 @@ const Login: React.FC = () => {
                     size="large"
                     allowClear
                     autoComplete="off"
-                    placeholder="密码:123456"
+                    placeholder={`${t('login.password')}:123456`}
                     prefix={<LockOutlined />}
                   />
                 </Form.Item>

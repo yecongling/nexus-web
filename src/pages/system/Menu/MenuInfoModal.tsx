@@ -1,10 +1,11 @@
 import { QuestionCircleFilled, SettingOutlined } from '@ant-design/icons';
-import DragModal from '@/components/modal/DragModal';
-import { menuService } from '@/services/system/menu/menuApi';
 import { Dropdown, Form, Input, InputNumber, type InputRef, Radio, Switch, Tooltip, TreeSelect } from 'antd';
+import { useQuery } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import React from 'react';
 import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import DragModal from '@/components/modal/DragModal';
+import { menuService } from '@/services/system/menu/menuApi';
 
 const IconPanel = React.lazy(() => import('@/components/IconPanel'));
 
@@ -59,11 +60,19 @@ const MenuInfoModal: React.FC<MenuInfoModalProps> = ({ visible, currentRow, onOk
   const [form] = Form.useForm<MenuData>();
   const nameRef = useRef<InputRef>(null);
   const [menuType, setMenuType] = useState<MenuType>(MenuType.TOP_LEVEL);
+  const { t } = useTranslation();
 
   // 使用 useQuery 获取目录数据
   const { data: directoryData, isLoading } = useQuery({
     queryKey: ['sys_menu_directory', menuType],
-    queryFn: () => menuService.getDirectory(menuType),
+    queryFn: async () => {
+      const directory = await menuService.getDirectory(menuType);
+      // 目录数据处理
+      return directory.map((item) => ({
+        ...item,
+        title: t(item.title),
+      }));
+    },
     enabled: visible,
   });
 

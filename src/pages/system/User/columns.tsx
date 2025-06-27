@@ -1,14 +1,6 @@
-import type { UserModel } from '@/services/system/user/type';
 import { ManOutlined, WomanOutlined, MoreOutlined } from '@ant-design/icons';
-import {
-  Button,
-  Space,
-  Tag,
-  Image,
-  Dropdown,
-  type TableProps,
-  type MenuProps,
-} from 'antd';
+import { Button, Space, Tag, Image, Dropdown, type TableProps, type MenuProps } from 'antd';
+import type { UserModel } from '@/services/system/user/type';
 
 /**
  * 获取表格列
@@ -20,6 +12,7 @@ import {
 export const getColumns = (
   handleEdit: (record: UserModel) => void,
   handleDetail: (record: UserModel) => void,
+  t: (key: string) => string,
   handleMore: (record: UserModel) => MenuProps['items'],
 ): TableProps<UserModel>['columns'] => [
   {
@@ -49,11 +42,7 @@ export const getColumns = (
     width: 40,
     align: 'center',
     render: (text: number) => {
-      return text === 1 ? (
-        <ManOutlined className="text-blue-400!" />
-      ) : (
-        <WomanOutlined className="text-pink-400!" />
-      );
+      return text === 1 ? <ManOutlined className="text-blue-400!" /> : <WomanOutlined className="text-pink-400!" />;
     },
   },
   {
@@ -93,11 +82,7 @@ export const getColumns = (
     width: 60,
     align: 'center',
     render: (text: number) => {
-      return text === 1 ? (
-        <Tag color="green">正常</Tag>
-      ) : (
-        <Tag color="gray">冻结</Tag>
-      );
+      return text === 1 ? <Tag color="green">正常</Tag> : <Tag color="gray">冻结</Tag>;
     },
   },
   {
@@ -109,16 +94,12 @@ export const getColumns = (
     render: (_: any, record: UserModel) => (
       <Space size={0}>
         <Button type="link" size="small" onClick={() => handleDetail(record)}>
-          详情
+          {t('common.operation.detail')}
         </Button>
         <Button type="link" size="small" onClick={() => handleEdit(record)}>
-          编辑
+          {t('common.operation.edit')}
         </Button>
-        <Dropdown
-          menu={{ items: handleMore(record) }}
-          placement="bottom"
-          trigger={['click']}
-        >
+        <Dropdown menu={{ items: handleMore(record) }} placement="bottom" trigger={['click']}>
           <Button type="link" size="small" icon={<MoreOutlined />} />
         </Dropdown>
       </Space>

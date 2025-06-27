@@ -51,5 +51,9 @@ const menu = {
     main: 'Message',
     template: 'Template',
   },
+  editor: {
+    main: 'Editor',
+    docWriter: 'Doc Writer',
+  },
 };
 export default menu;

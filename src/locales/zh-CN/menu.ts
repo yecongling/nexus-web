@@ -51,5 +51,9 @@ const menu = {
     main: '消息中心',
     template: '消息模板',
   },
+  editor: {
+    main: '编辑器',
+    docWriter: '文档编辑器'
+  }
 };
 export default menu;

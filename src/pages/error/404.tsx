@@ -1,5 +1,5 @@
-import type React from 'react';
 import { Button, Result } from 'antd';
+import type React from 'react';
 import { useNavigate } from 'react-router';
 
 const App: React.FC = () => {

@@ -19,6 +19,7 @@ const translation = {
     upload: 'upload',
     download: 'download',
     preview: 'preview',
+    detail: 'detail',
     copy: 'copy',
     paste: 'paste',
     cut: 'cut',
