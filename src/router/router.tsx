@@ -1,28 +1,40 @@
 import { Navigate, useRoutes } from 'react-router';
-import { LazyLoad } from './lazyLoad';
+import { Skeleton } from 'antd';
 import React, { type ReactNode, Suspense, useMemo } from 'react';
 import type { RouteObject } from '@/types/route';
 import { handleRouter } from '@/utils/utils';
 import { useMenuStore } from '@/stores/store';
-import { Skeleton } from 'antd';
+import { LazyLoad } from './lazyLoad';
 
 // 默认的错误路由
 const errorRoutes: RouteObject[] = [
   {
     path: '/500',
     component: LazyLoad('error/500.tsx').type,
+    handle: {
+      menuKey: '500',
+    },
   },
   {
     path: '/404',
     component: LazyLoad('error/404.tsx').type,
+    handle: {
+      menuKey: '404',
+    },
   },
   {
     path: '/403',
     component: LazyLoad('error/403.tsx').type,
+    handle: {
+      menuKey: '403',
+    },
   },
   {
     path: '*',
     component: () => <Navigate replace to="/404" />,
+    handle: {
+      menuKey: '404',
+    },
   },
 ];
 
@@ -30,14 +42,18 @@ const errorRoutes: RouteObject[] = [
 export const dynamicRoutes: RouteObject[] = [
   {
     path: '/',
-    component: React.lazy(
-      () => import('@/layouts/index.tsx'),
-    ) as unknown as ReactNode,
+    component: React.lazy(() => import('@/layouts/index.tsx')) as unknown as ReactNode,
     children: [],
+    handle: {
+      menuKey: 'home',
+    },
   },
   {
     path: '/login',
     component: LazyLoad('Login').type,
+    handle: {
+      menuKey: 'login',
+    },
   },
 ];
 

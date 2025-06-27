@@ -1,6 +1,7 @@
 import { Button, Space, Upload, message } from 'antd';
 import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { usePermission } from '@/hooks/usePermission';
+import { useTranslation } from 'react-i18next';
 
 interface TableActionButtonsProps {
   handleAdd: () => void;
@@ -16,6 +17,7 @@ const TableActionButtons: React.FC<TableActionButtonsProps> = ({
   refetch,
   selectedRows,
 }) => {
+  const { t } = useTranslation();
   // 是否有新增权限
   const canAdd = usePermission(['sys:user:add']);
   // 是否有批量删除权限
@@ -26,7 +28,7 @@ const TableActionButtons: React.FC<TableActionButtonsProps> = ({
     <Space>
       {canAdd && (
         <Button type="primary" icon={<PlusOutlined />} onClick={handleAdd}>
-          新增
+          {t('common.operation.add')}
         </Button>
       )}
 
@@ -44,18 +46,13 @@ const TableActionButtons: React.FC<TableActionButtonsProps> = ({
             }
           }}
         >
-          <Button icon={<PlusOutlined />}>批量导入</Button>
+          <Button icon={<PlusOutlined />}>{t('common.operation.import')}</Button>
         </Upload>
       )}
 
       {canBatchDelete && (
-        <Button
-          danger
-          icon={<DeleteOutlined />}
-          disabled={selectedRows.length === 0}
-          onClick={handleBatchDelete}
-        >
-          批量删除
+        <Button danger icon={<DeleteOutlined />} disabled={selectedRows.length === 0} onClick={handleBatchDelete}>
+          {t('common.operation.delete')}
         </Button>
       )}
     </Space>

@@ -1,5 +1,5 @@
-import { dynamicRoutes } from '@/router/router';
 import { matchRoutes, useLocation } from 'react-router';
+import { dynamicRoutes } from '@/router/router';
 
 /**
  * 获取当前路由的匹配菜单 key

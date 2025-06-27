@@ -1,9 +1,9 @@
-import { MyIcon } from '../components/MyIcon/index';
 import * as Icons from '@ant-design/icons';
-import { isObject } from './is';
 import React from 'react';
-import type { RouteItem, RouteObject } from '@/types/route';
 import { LazyLoad } from '@/router/lazyLoad';
+import type { RouteItem, RouteObject } from '@/types/route';
+import { isObject } from './is';
+import { MyIcon } from '@/components/MyIcon/index';
 
 /**
  * @description 使用递归处理路由菜单，生成一维数组，做菜单权限判断
@@ -11,16 +11,18 @@ import { LazyLoad } from '@/router/lazyLoad';
  * @param newArr
  * @return array
  */
-export function handleRouter(
-  routerList: RouteItem[],
-  newArr: RouteObject[] = [],
-) {
+export function handleRouter(routerList: RouteItem[], newArr: RouteObject[] = []) {
   if (!routerList) return newArr;
   for (const item of routerList) {
-    const menu: RouteObject = {};
+    const menu: RouteObject = {
+      handle: {
+        menuKey: item.id,
+      },
+    };
     if (typeof item === 'object' && item.path && item.route) {
       menu.path = item.path;
       menu.component = LazyLoad(item.component).type;
+      // 这里要添加id
       newArr.push(menu);
     }
     if (item.children?.length) {
@@ -51,15 +53,10 @@ export function setObjToUrlParams(baseUrl: string, obj: any): string {
     parameters += `${key}=${encodeURIComponent(obj[key])}&`;
   }
   parameters = parameters.replace(/&$/, '');
-  return /\?$/.test(baseUrl)
-    ? baseUrl + parameters
-    : baseUrl.replace(/\/?$/, '?') + parameters;
+  return /\?$/.test(baseUrl) ? baseUrl + parameters : baseUrl.replace(/\/?$/, '?') + parameters;
 }
 
-export function deepMerge<T = object>(
-  src: Record<string, any> = {},
-  target: any = {},
-): T {
+export function deepMerge<T = object>(src: Record<string, any> = {}, target: any = {}): T {
   let key: string;
   for (key in target) {
     if (isObject(src[key])) {
@@ -77,10 +74,7 @@ export function deepMerge<T = object>(
  * @param routes 路由列表
  * @returns array
  */
-export const searchRoute = (
-  path: string,
-  routes: RouteItem[] = [],
-): RouteItem | null => {
+export const searchRoute = (path: string, routes: RouteItem[] = []): RouteItem | null => {
   for (const item of routes) {
     if (item.path === path) return item;
     if (item.children) {
@@ -150,4 +144,3 @@ export const addKeyToData = (data: any[], key: string) => {
     return newItem;
   });
 };
-

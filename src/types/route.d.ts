@@ -13,20 +13,16 @@ export interface MetaProps {
 export interface RouteObject {
   caseSensitive?: boolean;
   children?: RouteObject[];
-  component?:
-    | React.ReactNode
-    | FunctionComponent<any>
-    | ReactComponentElement<any>
-    | any;
+  component?: React.ReactNode | FunctionComponent<any> | ReactComponentElement<any> | any;
   index?: boolean;
   path?: string;
   meta?: MetaProps;
   isLink?: string;
   auth?: boolean;
   title?: string;
-  handle?: {
-    menuKey?: string;
-  }
+  handle: {
+    menuKey: string;
+  };
 }
 
 /**
@@ -73,6 +69,8 @@ export interface RouteMeta {
  * 菜单项
  */
 export interface RouteItem {
+  // 菜单id
+  id: string;
   // 路径
   path: string;
   // 组件

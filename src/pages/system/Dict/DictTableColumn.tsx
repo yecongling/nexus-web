@@ -1,10 +1,6 @@
-import {
-  EditOutlined,
-  DeleteOutlined,
-  ExclamationCircleFilled,
-  MoreOutlined,
-} from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import type { UseMutationResult } from '@tanstack/react-query';
+import { EditOutlined, DeleteOutlined, ExclamationCircleFilled, MoreOutlined } from '@ant-design/icons';
 import { type TableProps, App, Button, Dropdown, Space } from 'antd';
 import { useCallback } from 'react';
 
@@ -15,18 +11,16 @@ interface DictTableColumnProps {
 }
 
 // 定义表格列
-const getDictTableColumns = ({
-  dispatch,
-  logicDeleteUserMutation,
-}: DictTableColumnProps): TableProps['columns'] => {
+const getDictTableColumns = ({ dispatch, logicDeleteUserMutation }: DictTableColumnProps): TableProps['columns'] => {
   const { modal } = App.useApp();
+  const { t } = useTranslation();
 
   // 更多操作
   const more = useCallback(
     (row: any) => [
       {
         key: 'edit',
-        label: '编辑',
+        label: t('common.operation.edit'),
         icon: <EditOutlined className="text-orange-400" />,
         onClick: () => {
           dispatch({
@@ -38,7 +32,7 @@ const getDictTableColumns = ({
       },
       {
         key: 'delete',
-        label: '删除',
+        label: t('common.operation.delete'),
         icon: <DeleteOutlined className="text-red-400" />,
         onClick: () => {
           modal.confirm({
@@ -97,7 +91,7 @@ const getDictTableColumns = ({
                 });
               }}
             >
-              详情
+              {t('common.operation.detail')}
             </Button>
             <Button
               type="link"
@@ -111,13 +105,9 @@ const getDictTableColumns = ({
                 });
               }}
             >
-              编辑
+              {t('common.operation.edit')}
             </Button>
-            <Dropdown
-              menu={{ items: more(record) }}
-              placement="bottom"
-              trigger={['click']}
-            >
+            <Dropdown menu={{ items: more(record) }} placement="bottom" trigger={['click']}>
               <Button type="link" size="small" icon={<MoreOutlined />} />
             </Dropdown>
           </Space>

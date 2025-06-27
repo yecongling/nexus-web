@@ -1,15 +1,7 @@
 import { SearchOutlined, RedoOutlined } from '@ant-design/icons';
-import {
-  Form,
-  ConfigProvider,
-  Card,
-  Row,
-  Col,
-  Input,
-  Space,
-  Button,
-} from 'antd';
+import { Form, ConfigProvider, Card, Row, Col, Input, Space, Button } from 'antd';
 import type { DictSearchParams } from '@/services/system/dict/type';
+import { useTranslation } from 'react-i18next';
 
 // 搜索表单属性
 interface SearchFormProps {
@@ -19,6 +11,7 @@ interface SearchFormProps {
 // 数据字典检索表单
 const DictSearchForm: React.FC<SearchFormProps> = ({ onSearch }) => {
   const [form] = Form.useForm();
+  const { t } = useTranslation();
 
   /**
    * 重置
@@ -53,19 +46,11 @@ const DictSearchForm: React.FC<SearchFormProps> = ({ onSearch }) => {
             </Col>
             <Col span={6} style={{ textAlign: 'right' }}>
               <Space>
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  icon={<SearchOutlined />}
-                >
-                  检索
+                <Button type="primary" htmlType="submit" icon={<SearchOutlined />}>
+                  {t('common.operation.search')}
                 </Button>
-                <Button
-                  type="default"
-                  icon={<RedoOutlined />}
-                  onClick={handleReset}
-                >
-                  重置
+                <Button type="default" icon={<RedoOutlined />} onClick={handleReset}>
+                  {t('common.operation.reset')}
                 </Button>
               </Space>
             </Col>

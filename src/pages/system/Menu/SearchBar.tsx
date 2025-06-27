@@ -1,5 +1,6 @@
 import { Form, Input, Select, Button, Row, Col, Space } from 'antd';
 import { SearchOutlined, RedoOutlined } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 
 type SearchBarProps = {
   onFinish: (values: any) => void;
@@ -10,6 +11,7 @@ type SearchBarProps = {
  */
 const SearchBar: React.FC<SearchBarProps> = ({ onFinish }) => {
   const [form] = Form.useForm();
+  const { t } = useTranslation();
 
   return (
     <Form form={form} onFinish={onFinish}>
@@ -47,10 +49,10 @@ const SearchBar: React.FC<SearchBarProps> = ({ onFinish }) => {
         <Col span={6} style={{ textAlign: 'right' }}>
           <Space>
             <Button type="primary" htmlType="submit" icon={<SearchOutlined />}>
-              检索
+              {t('common.operation.search')}
             </Button>
             <Button type="default" icon={<RedoOutlined />}>
-              重置
+              {t('common.operation.reset')}
             </Button>
           </Space>
         </Col>
