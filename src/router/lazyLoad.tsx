@@ -38,5 +38,5 @@ export const LazyLoad = (moduleName: string) => {
     Module = React.lazy(() => import('@/pages/error/500'));
   }
 
-  return <Module />;
+  return Module;
 };

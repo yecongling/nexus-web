@@ -10,6 +10,7 @@ const translation = {
       profile: 'Profile',
       support: 'Support',
       switchUser: 'Switch User',
+      switchRole: 'Switch Role',
       feedback: 'Feedback',
       question: 'Question',
       refresh: 'Refresh Cache',
