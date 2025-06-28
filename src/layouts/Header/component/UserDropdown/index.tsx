@@ -107,7 +107,15 @@ const UserDropdown: React.FC = memo(() => {
     },
     {
       key: 'about',
-      label: t('layout.header.userDropdown.about'),
+      label: (
+        <div className="flex items-center justify-between">
+          <span>{t('layout.header.userDropdown.about')}</span>
+          <div className="flex items-center">
+            <div className="text-[12px]">0.0.1</div>
+            <div className="w-2 h-2 bg-green-400 rounded-sm ml-1" />
+          </div>
+        </div>
+      ),
       icon: <InfoCircleOutlined />,
       onClick: () => {
         // 跳转到关于
