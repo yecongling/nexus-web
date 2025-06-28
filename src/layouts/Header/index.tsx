@@ -1,6 +1,3 @@
-import React, { Suspense } from 'react';
-import { memo, useState } from 'react';
-import { Badge, Dropdown, Input, Layout, type MenuProps, Skeleton, Space, Tooltip } from 'antd';
 import {
   BellOutlined,
   GithubOutlined,
@@ -8,17 +5,19 @@ import {
   MailOutlined,
   SearchOutlined,
   SettingOutlined,
-  SwitcherOutlined,
 } from '@ant-design/icons';
-
-import MessageBox from './component/MessageBox';
-import FullScreen from './component/FullScreen';
-import BreadcrumbNav from './component/BreadcrumbNav';
-import UserDropdown from './component/UserDropdown';
-import { usePreferencesStore } from '@/stores/store';
+import { Badge, Dropdown, Input, Layout, type MenuProps, Skeleton, Space, Tooltip } from 'antd';
+import React, { memo, useState, Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
+
 import { languages } from '@/locales/language';
+import { MyIcon } from '@/components/MyIcon';
 import { changeLanguage } from '@/locales/i18next-config';
+import { usePreferencesStore } from '@/stores/store';
+import BreadcrumbNav from './component/BreadcrumbNav';
+import FullScreen from './component/FullScreen';
+import MessageBox from './component/MessageBox';
+import UserDropdown from './component/UserDropdown';
 
 const Setting = React.lazy(() => import('./component/Setting'));
 
@@ -36,7 +35,7 @@ const Header: React.FC = memo(() => {
    * 跳转到github
    */
   const routeGitHub = () => {
-    window.open('https://github.com/yecongling/nexus-vite', '_blank');
+    window.open('https://github.com/yecongling/nexus-web', '_blank');
   };
 
   /**
@@ -105,8 +104,8 @@ const Header: React.FC = memo(() => {
           <Tooltip placement="bottomRight" title={t('layout.header.setting')}>
             <SettingOutlined style={{ cursor: 'pointer', fontSize: '18px' }} onClick={() => setOpenSetting(true)} />
           </Tooltip>
-          <Dropdown menu={{ items: menuItems }}>
-            <SwitcherOutlined style={{ cursor: 'pointer', fontSize: '18px' }} />
+          <Dropdown menu={{ items: menuItems }} placement="bottom">
+            <MyIcon type="fusion-language" style={{ cursor: 'pointer', fontSize: '18px' }} />
           </Dropdown>
           <FullScreen />
           {/* 用户信息 */}

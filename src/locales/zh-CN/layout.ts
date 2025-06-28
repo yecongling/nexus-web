@@ -10,6 +10,7 @@ const translation = {
       profile: '个人中心',
       support: '支持',
       switchUser: '切换用户',
+      switchRole: '切换角色',
       feedback: '反馈',
       question: '问题',
       refresh: '刷新缓存',

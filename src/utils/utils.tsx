@@ -1,9 +1,9 @@
 import * as Icons from '@ant-design/icons';
 import React from 'react';
+import { MyIcon } from '@/components/MyIcon/index';
 import { LazyLoad } from '@/router/lazyLoad';
 import type { RouteItem, RouteObject } from '@/types/route';
 import { isObject } from './is';
-import { MyIcon } from '@/components/MyIcon/index';
 
 /**
  * @description 使用递归处理路由菜单，生成一维数组，做菜单权限判断
@@ -21,7 +21,7 @@ export function handleRouter(routerList: RouteItem[], newArr: RouteObject[] = []
     };
     if (typeof item === 'object' && item.path && item.route) {
       menu.path = item.path;
-      menu.component = LazyLoad(item.component).type;
+      menu.component = LazyLoad(item.component);
       // 这里要添加id
       newArr.push(menu);
     }

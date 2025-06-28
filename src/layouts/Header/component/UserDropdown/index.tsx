@@ -1,7 +1,7 @@
+import { App, Avatar, Divider, Dropdown, theme, type MenuProps } from 'antd';
 import type { ReactNode } from 'react';
 import React, { memo } from 'react';
-import { App, Avatar, Divider, Dropdown, theme, type MenuProps } from 'antd';
-import avatar from '@/assets/images/avatar.png';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import {
   ExclamationCircleOutlined,
@@ -13,12 +13,10 @@ import {
   SyncOutlined,
   UserOutlined,
 } from '@ant-design/icons';
-import { usePreferencesStore } from '@/stores/store';
+import avatar from '@/assets/images/avatar.png';
 import { commonService } from '@/services/common';
+import { usePreferencesStore } from '@/stores/store';
 import { useUserStore } from '@/stores/userStore';
-import { useTranslation } from 'react-i18next';
-
-const { useToken } = theme;
 
 /**
  * 用户信息下拉框
@@ -27,7 +25,7 @@ const { useToken } = theme;
 const UserDropdown: React.FC = memo(() => {
   const { updatePreferences } = usePreferencesStore();
   const userStore = useUserStore();
-  const { token } = useToken();
+  const { token } = theme.useToken();
   const { modal } = App.useApp();
   const { t } = useTranslation();
 
@@ -48,6 +46,34 @@ const UserDropdown: React.FC = memo(() => {
       onClick: () => {
         // 个人中心做成一个弹窗，内部可以修改
       },
+    },
+    {
+      key: 'switchRole',
+      label: t('layout.header.userDropdown.switchRole'),
+      icon: <UserOutlined />,
+      disabled: false,
+      popupStyle: {
+        width: 220,
+      },
+      popupOffset: [2, 8],
+      children: [
+        {
+          key: 'role1',
+          label: '角色1',
+          icon: <UserOutlined />,
+          onClick: () => {
+            // 跳转到问题反馈
+          },
+        },
+        {
+          key: 'role2',
+          label: '角色2',
+          icon: <UserOutlined />,
+          onClick: () => {
+            // 跳转到常见问题
+          },
+        },
+      ],
     },
     {
       key: 'help',
