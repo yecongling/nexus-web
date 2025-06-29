@@ -23,7 +23,7 @@
     "@headlessui/react": "^2.2.4",
     "@tanstack/react-query": "^5.81.5",
     "@zxcvbn-ts/core": "^3.0.4",
-    "ahooks": "^3.8.5",
+    "ahooks": "^3.9.0",
     "antd": "^5.26.2",
     "axios": "^1.10.0",
     "clsx": "^2.1.1",
