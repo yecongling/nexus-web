@@ -46,6 +46,21 @@ const menu = {
     apps: '应用中心',
     endpoint: '端点维护',
     endpointConfig: '端点配置管理',
+    workdlow: '流程编排',
+    templates: '模板库',
+    version: '版本管理',
+  },
+  instance: {
+    main: '实例监控',
+    flowInstance: '流程实例',
+    runningLog: '运行日志',
+    trace: '上下文追踪',
+  },
+  nodes: {
+    main: '节点管理',
+    flowNodes: '节点列表',
+    market: '插件市场',
+    debug: '节点调试',
   },
   message: {
     main: '消息中心',
@@ -53,7 +68,7 @@ const menu = {
   },
   editor: {
     main: '编辑器',
-    docWriter: '文档编辑器'
-  }
+    docWriter: '文档编辑器',
+  },
 };
 export default menu;
