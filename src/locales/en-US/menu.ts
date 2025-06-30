@@ -46,6 +46,21 @@ const menu = {
     apps: 'Apps',
     endpoint: 'Endpoint',
     endpointConfig: 'EndpointConfig',
+    workflow: 'Workflow',
+    templates: 'Templates',
+    version: 'Version',
+  },
+  instance: {
+    main: 'Instance',
+    flowInstance: 'Flow Instance',
+    runningLog: 'Running Log',
+    trace: 'Trace',
+  },
+  nodes: {
+    main: 'Nodes',
+    flowNodes: 'Flow Nodes',
+    market: 'Market',
+    debug: 'Node Debug',
   },
   message: {
     main: 'Message',
