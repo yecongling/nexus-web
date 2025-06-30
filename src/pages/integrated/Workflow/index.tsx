@@ -1,4 +1,4 @@
-import { DownOutlined, HistoryOutlined, LeftOutlined } from '@ant-design/icons';
+import { DownOutlined, HistoryOutlined, LeftOutlined, OrderedListOutlined } from '@ant-design/icons';
 import { Button, Card, Space } from 'antd';
 import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router';
@@ -51,6 +51,7 @@ const Workflow: React.FC = () => {
           classNames={{ body: 'w-full h-full p-2! flex flex-col' }}
         >
           <Space>
+            <Button icon={<OrderedListOutlined />} />
             <Button type="primary" size="middle">
               保存
             </Button>
