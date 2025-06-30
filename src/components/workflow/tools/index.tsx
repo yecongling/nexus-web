@@ -1,9 +1,6 @@
-import {
-  InteractiveType,
-  useClientContext,
-  usePlaygroundTools,
-  useRefresh,
-} from '@flowgram.ai/free-layout-editor';
+import { UndoOutlined } from '@ant-design/icons';
+import { InteractiveType, useClientContext, usePlaygroundTools, useRefresh } from '@flowgram.ai/free-layout-editor';
+import { Button, Divider } from 'antd';
 import AutoLayout from './auto-layout';
 import FitView from './fit-view';
 import SwitchLine from './switch-line';
@@ -13,8 +10,6 @@ import MinimapSwitch from './minimap-switch';
 import MiniMap from './minimap';
 import { Readonly } from './readonly';
 import { Comment } from './comment';
-import { Button, Divider } from 'antd';
-import { UndoOutlined } from '@ant-design/icons';
 
 /**
  * 流程编排工具组件
@@ -41,9 +36,7 @@ const WorkflowTools: React.FC = () => {
   const refresh = useRefresh();
 
   useEffect(() => {
-    const disposable = playground.config.onReadonlyOrDisabledChange(() =>
-      refresh(),
-    );
+    const disposable = playground.config.onReadonlyOrDisabledChange(() => refresh());
     return () => disposable.dispose();
   }, [playground]);
 
@@ -53,7 +46,7 @@ const WorkflowTools: React.FC = () => {
   }, []);
 
   return (
-    <div className="absolute bottom-4 flex justify-start min-w-[360px] pointer-none gap-2 z-99">
+    <div className="absolute bottom-4 flex justify-start min-w-[360px] pointer-none gap-2 z-99 ml-2">
       <div className="flex items-center bg-[#fff] rounded-[6px] p-1">
         {/* 自动布局 */}
         <AutoLayout />
@@ -64,10 +57,7 @@ const WorkflowTools: React.FC = () => {
         {/* 视图自适应 */}
         <FitView />
         {/* 显示隐藏缩略图 */}
-        <MinimapSwitch
-          minimapVisible={minimapVisible}
-          setMinimapVisible={setMinimapVisible}
-        />
+        <MinimapSwitch minimapVisible={minimapVisible} setMinimapVisible={setMinimapVisible} />
         {/* 缩略图 */}
         <MiniMap visible={minimapVisible} />
         {/* 切换只读模式 */}

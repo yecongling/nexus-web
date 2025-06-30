@@ -10,9 +10,9 @@ const NodeAddPanel: React.FC = () => {
   const startDragService = useService<WorkflowDragService>(WorkflowDragService);
 
   return (
-    <div className="workflow-sidebar">
+    <div className="workflow-sidebar flex flex-col flex-auto">
       <div className="workflow-sidebar-header">
-        <div className="workflow-sidebar-header-title">节点</div>
+        <div className="workflow-sidebar-header-title">节点列表</div>
       </div>
       <div
         className="w-full h-full bg-amber-300"

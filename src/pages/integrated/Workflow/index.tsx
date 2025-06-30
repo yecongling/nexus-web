@@ -1,4 +1,5 @@
-import { Button } from 'antd';
+import { DownOutlined, HistoryOutlined, LeftOutlined } from '@ant-design/icons';
+import { Button, Card, Space } from 'antd';
 import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router';
 
@@ -31,28 +32,38 @@ const Workflow: React.FC = () => {
 
   return (
     <div className="w-full flex h-full">
-      <div className="w-[220px] h-full flex flex-col justify-between border-r-[1px] border-solid border-[#ddd] bg-white">
+      <Card
+        className="w-[220px] h-full flex flex-col justify-between bg-white"
+        classNames={{ body: 'w-full h-full p-2! flex flex-col' }}
+      >
         <div className="flex justify-center align-middle">
-          <Button type="text" onClick={redirectApps}>
+          <Button type="default" onClick={redirectApps} icon={<LeftOutlined />}>
             应用中心
           </Button>
         </div>
-        <div className="flex-auto">
-          <NodeAddPanel />
-        </div>
-      </div>
+        <NodeAddPanel />
+      </Card>
 
-      <div className="w-full flex flex-auto">
+      <div className="w-full flex flex-auto relative">
         {/* 左边可收缩部分 */}
-        <div className="w-[300px] h-full border-r-[1px] border-solid border-[#ddd] fixed z-20 hidden">
-          上面一栏的各种操作按钮和功能
-        </div>
+        <Card
+          className="w-[300px] h-auto absolute! z-20 right-8 top-4"
+          classNames={{ body: 'w-full h-full p-2! flex flex-col' }}
+        >
+          <Space>
+            <Button type="primary" size="middle">
+              保存
+            </Button>
+            <Button type="primary" icon={<DownOutlined />}>
+              发布
+            </Button>
+            <Button icon={<HistoryOutlined />}></Button>
+          </Space>
+        </Card>
         {/* 右边设计部分 */}
         <div className="w-full h-full">
           {/* 画布 */}
-          <div className="w-full h-full">
-            <WorkflowEditor id={appId} />
-          </div>
+          <WorkflowEditor id={appId} />
         </div>
       </div>
     </div>

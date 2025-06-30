@@ -7,10 +7,10 @@ import { FlowMinimapService, MinimapRender } from '@flowgram.ai/minimap-plugin';
  * @returns
  */
 const MiniMap: React.FC<MiniMapProps> = ({ visible }) => {
+  const minimapService = useService(FlowMinimapService);
   if (!visible) {
     return <></>;
   }
-  const minimapService = useService(FlowMinimapService);
   return (
     <div className="absolute bottom-14 w-[198px]">
       <MinimapRender
