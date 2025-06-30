@@ -1,17 +1,15 @@
+import { EditorRenderer, FreeLayoutEditorProvider } from '@flowgram.ai/free-layout-editor';
+
 import { useEditorProps } from '@/hooks/workflow/use-editor-props';
-import { nodeRegistries } from './nodes';
-import { initialData } from './init-data';
-import {
-  EditorRenderer,
-  FreeLayoutEditorProvider,
-} from '@flowgram.ai/free-layout-editor';
 import { SidebarProvider } from './sidebar/sidebar-provider';
-import '@flowgram.ai/free-layout-editor/index.css';
 import SidebarRenderer from './sidebar/sidebar-renderer';
 import WorkflowTools from './tools';
 import './workflow.scss';
+import '@flowgram.ai/free-layout-editor/index.css';
 import { NodeModalProvider } from './node-modal/node-modal-provider';
 import ModalRenderer from './node-modal/modal-renderer';
+import { nodeRegistries } from './nodes';
+import { initialData } from './init-data';
 
 /**
  * 流程编排组件

@@ -33,11 +33,9 @@ const Workflow: React.FC = () => {
     <div className="w-full flex h-full">
       <div className="w-[220px] h-full flex flex-col justify-between border-r-[1px] border-solid border-[#ddd] bg-white">
         <div className="flex justify-center align-middle">
-          <div>
-            <Button type="text" onClick={redirectApps}>
-              应用中心
-            </Button>
-          </div>
+          <Button type="text" onClick={redirectApps}>
+            应用中心
+          </Button>
         </div>
         <div className="flex-auto">
           <NodeAddPanel />

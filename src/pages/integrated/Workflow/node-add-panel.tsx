@@ -1,7 +1,4 @@
-import {
-  useService,
-  WorkflowDragService,
-} from '@flowgram.ai/free-layout-editor';
+import { useService, WorkflowDragService } from '@flowgram.ai/free-layout-editor';
 
 /**
  * 左边可添加的节点面板
@@ -18,7 +15,7 @@ const NodeAddPanel: React.FC = () => {
         <div className="workflow-sidebar-header-title">节点</div>
       </div>
       <div
-        className="w-[100px] h-[100px] bg-amber-300"
+        className="w-full h-full bg-amber-300"
         onMouseDown={(e) =>
           startDragService.startDragCard('card', e, {
             data: {
