@@ -1,5 +1,5 @@
-import echarts from '@/config/echartsConfig';
 import { useEffect, useRef } from 'react';
+import echarts from '@/config/echartsConfig';
 
 const DocumentPieChart: React.FC = () => {
   const chartRef = useRef<HTMLDivElement>(null);

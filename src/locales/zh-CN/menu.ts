@@ -46,7 +46,7 @@ const menu = {
     apps: '应用中心',
     endpoint: '端点维护',
     endpointConfig: '端点配置管理',
-    workdlow: '流程编排',
+    workflow: '流程编排',
     templates: '模板库',
     version: '版本管理',
   },

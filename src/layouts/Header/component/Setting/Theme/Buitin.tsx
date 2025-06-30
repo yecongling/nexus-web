@@ -1,10 +1,10 @@
+import { ColorPicker } from 'antd';
+import type { Color } from 'antd/es/color-picker';
+import { UserAddOutlined } from '@ant-design/icons';
+import clsx from 'clsx';
 import { BUILTIN_THEME_PRESETS } from '@/enums/constants';
 import './theme.scss';
-import { ColorPicker } from 'antd';
-import { UserAddOutlined } from '@ant-design/icons';
 import { usePreferencesStore } from '@/stores/store';
-import clsx from 'clsx';
-import type { Color } from 'antd/es/color-picker';
 
 /**
  * 内置主题
@@ -18,7 +18,7 @@ const Buitin: React.FC = () => {
   // 颜色选择器颜色切换
   const onColorChange = (color: Color) => {
     updatePreferences('theme', 'colorPrimary', color.toCssString());
-  }
+  };
 
   return (
     <div
@@ -75,7 +75,7 @@ const Buitin: React.FC = () => {
                       borderRadius: '6px',
                     }}
                   >
-                    <ColorPicker onChange={onColorChange} value={theme.colorPrimary}>
+                    <ColorPicker onChangeComplete={onColorChange} value={theme.colorPrimary}>
                       <UserAddOutlined style={{ fontSize: '1.25rem' }} />
                     </ColorPicker>
                   </div>

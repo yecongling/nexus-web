@@ -1,9 +1,10 @@
 import { Button, Card, Col, Row, DatePicker } from 'antd';
-import StatusLineChart from './StatusLineChart';
-import ShortCutMenu from './ShortCutMenu';
-import EndpointStatistics from './EndpointStatistics';
-import style from './home.module.scss';
 import DocumentPieChart from './DocumentPieChart';
+import EndpointStatistics from './EndpointStatistics';
+import ShortCutMenu from './ShortCutMenu';
+import StatusLineChart from './StatusLineChart';
+
+import style from './home.module.scss';
 
 const { RangePicker } = DatePicker;
 
@@ -15,12 +16,12 @@ function Home() {
   return (
     <>
       <Row gutter={8}>
-        <Col span={12}>
+        <Col span={16}>
           <Card className={style.cardTitleBar} style={{ height: '300px' }}>
             欢迎
           </Card>
         </Col>
-        <Col span={12}>
+        <Col span={8}>
           <Card
             style={{ height: '300px' }}
             styles={{ header: { borderBottom: 'none' } }}
