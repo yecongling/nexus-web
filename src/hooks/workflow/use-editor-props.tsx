@@ -1,3 +1,13 @@
+import { debounce } from 'lodash-es';
+import { useMemo } from 'react';
+
+import { WorkflowNodeLinesData, type FreeLayoutProps } from '@flowgram.ai/free-layout-editor';
+import { createFreeLinesPlugin } from '@flowgram.ai/free-lines-plugin';
+import { createMinimapPlugin } from '@flowgram.ai/minimap-plugin';
+import { createFreeSnapPlugin } from '@flowgram.ai/free-snap-plugin';
+import { createFreeNodePanelPlugin } from '@flowgram.ai/free-node-panel-plugin';
+import { createContainerNodePlugin } from '@flowgram.ai/free-container-plugin';
+import { createFreeGroupPlugin } from '@flowgram.ai/free-group-plugin';
 import { CommentRender } from '@/components/workflow/nodes/comment/components/commentRender';
 import { LineAddButton } from '@/components/workflow/line-add-button';
 import { WorkflowNodeType } from '@/components/workflow/nodes/constants';
@@ -6,25 +16,13 @@ import SelectBoxPopover from '@/components/workflow/select-box-popover';
 import { RunningService } from '@/components/workflow/services/running-service';
 import { shortcuts } from '@/components/workflow/shortcuts/shortcuts';
 import { onDragLineEnd } from '@/components/workflow/utils/on-drag-line-end';
-import type { FlowDocumentJSON, FlowNodeRegistry } from '@/types/workflow/node';
-import {
-  WorkflowNodeLinesData,
-  type FreeLayoutProps,
-} from '@flowgram.ai/free-layout-editor';
-import { createFreeLinesPlugin } from '@flowgram.ai/free-lines-plugin';
-import { createMinimapPlugin } from '@flowgram.ai/minimap-plugin';
-import { createFreeSnapPlugin } from '@flowgram.ai/free-snap-plugin';
-import { createFreeNodePanelPlugin } from '@flowgram.ai/free-node-panel-plugin';
-import { createContainerNodePlugin } from '@flowgram.ai/free-container-plugin';
-import { createFreeGroupPlugin } from '@flowgram.ai/free-group-plugin';
 
-import { debounce } from 'lodash-es';
-import { useMemo } from 'react';
 import { NodePanel } from '@/components/workflow/node-panel';
 import { GroupNodeRender } from '@/components/workflow/group/node-render';
 import BaseNode from '@/components/workflow/nodes/base-node';
 import { defaultFormMeta } from '@/components/workflow/nodes/default-form-meta';
 import { createContextMenuPlugin } from '@/components/workflow/plugins/context-menu-plugin/context-menu-plugin';
+import type { FlowDocumentJSON, FlowNodeRegistry } from '@/types/workflow/node';
 
 /**
  * 定义流程编辑器画布属性
@@ -33,6 +31,7 @@ import { createContextMenuPlugin } from '@/components/workflow/plugins/context-m
 export function useEditorProps(
   initialData: FlowDocumentJSON,
   nodeRegistries: FlowNodeRegistry[],
+  handleSave?: (data: FlowDocumentJSON) => void,
 ): FreeLayoutProps {
   return useMemo<FreeLayoutProps>(
     () => ({
@@ -110,9 +109,7 @@ export function useEditorProps(
           return false;
         }
         // 线条环检测，不允许连接到前面的节点
-        return !fromPort.node
-          .getData(WorkflowNodeLinesData)
-          .allInputNodes.includes(toPort.node);
+        return !fromPort.node.getData(WorkflowNodeLinesData).allInputNodes.includes(toPort.node);
       },
 
       /**
@@ -178,7 +175,10 @@ export function useEditorProps(
        * 内容改变监听（自动保存）
        */
       onContentChange: debounce((ctx, event) => {
-        console.log('Auto Save', event, ctx.document.toJSON());
+        // 这里可以添加自动保存逻辑
+        const json = ctx.document.toJSON();
+        console.log('Auto Save', event, json);
+        handleSave?.(json);
       }, 5000),
 
       /**

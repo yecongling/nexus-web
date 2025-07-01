@@ -1,5 +1,5 @@
-import { DownOutlined, HistoryOutlined, LeftOutlined, OrderedListOutlined } from '@ant-design/icons';
-import { Button, Card, Space } from 'antd';
+import { LeftOutlined } from '@ant-design/icons';
+import { Button, Card } from 'antd';
 import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router';
 
@@ -45,27 +45,8 @@ const Workflow: React.FC = () => {
       </Card>
 
       <div className="w-full flex flex-auto relative">
-        {/* 左边可收缩部分 */}
-        <Card
-          className="w-[300px] h-auto absolute! z-20 right-8 top-4"
-          classNames={{ body: 'w-full h-full p-2! flex flex-col' }}
-        >
-          <Space>
-            <Button icon={<OrderedListOutlined />} />
-            <Button type="primary" size="middle">
-              保存
-            </Button>
-            <Button type="primary" icon={<DownOutlined />}>
-              发布
-            </Button>
-            <Button icon={<HistoryOutlined />}></Button>
-          </Space>
-        </Card>
-        {/* 右边设计部分 */}
-        <div className="w-full h-full">
-          {/* 画布 */}
-          <WorkflowEditor id={appId} />
-        </div>
+        {/* 画布 */}
+        <WorkflowEditor id={appId} />
       </div>
     </div>
   );

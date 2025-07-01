@@ -1,6 +1,6 @@
-import { formMeta } from './http';
 import type { FlowNodeRegistry } from '@/types/workflow/node';
 import { WorkflowNodeType } from '../../constants';
+import { formMeta } from './http';
 
 /**
  * http输入的节点

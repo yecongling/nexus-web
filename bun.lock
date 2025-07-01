@@ -21,7 +21,7 @@
         "crypto-js": "^4.2.0",
         "dayjs": "^1.11.13",
         "echarts": "^5.6.0",
-        "i18next": "^25.2.1",
+        "i18next": "^25.3.0",
         "jsencrypt": "^3.3.2",
         "lodash-es": "^4.17.21",
         "react": "^18.3.1",
@@ -798,7 +798,7 @@
 
     "i18n-js": ["i18n-js@4.5.1", "", { "dependencies": { "bignumber.js": "*", "lodash": "*", "make-plural": "*" } }, "sha512-n7jojFj1WC0tztgr0I8jqTXuIlY1xNzXnC3mjKX/YjJhimdM+jXM8vOmn9d3xQFNC6qDHJ4ovhdrGXrRXLIGkA=="],
 
-    "i18next": ["i18next@25.2.1", "", { "dependencies": { "@babel/runtime": "^7.27.1" }, "peerDependencies": { "typescript": "^5" }, "optionalPeers": ["typescript"] }, "sha512-+UoXK5wh+VlE1Zy5p6MjcvctHXAhRwQKCxiJD8noKZzIXmnAX8gdHX5fLPA3MEVxEN4vbZkQFy8N0LyD9tUqPw=="],
+    "i18next": ["i18next@25.3.0", "", { "dependencies": { "@babel/runtime": "^7.27.6" }, "peerDependencies": { "typescript": "^5" }, "optionalPeers": ["typescript"] }, "sha512-ZSQIiNGfqSG6yoLHaCvrkPp16UejHI8PCDxFYaNG/1qxtmqNmqEg4JlWKlxkrUmrin2sEjsy+Mjy1TRozBhOgw=="],
 
     "iconv-lite": ["iconv-lite@0.4.24", "", { "dependencies": { "safer-buffer": ">= 2.1.2 < 3" } }, "sha512-v3MXnZAcvnywkTUEZomIActle7RXXeedOR31wwl7VlyoXO4Qi9arvSenNQWne1TcRwhCL1HwLI21bEqdpj8/rA=="],
 
