@@ -1,20 +1,20 @@
-import { useEffect, useRef, useState } from 'react';
-
-import { Segmented, type SegmentedProps, Input, type InputRef, Checkbox } from 'antd';
 import { ApartmentOutlined, ApiOutlined, AppstoreOutlined, SolutionOutlined } from '@ant-design/icons';
-import type { App, AppSearchParams } from '@/services/integrated/apps/app';
-import { usePermission } from '@/hooks/usePermission';
-import { appsService } from '@/services/integrated/apps/appsApi';
 import { useQuery } from '@tanstack/react-query';
-import type React from 'react';
-import { isEqual } from 'lodash-es';
-import { useTranslation } from 'react-i18next';
-import AppCard from './AppCard';
+
 import { useDebounceFn } from 'ahooks';
-import TagFilter from '@/components/base/tag-management/TagFilter.tsx';
-import { useTagStore } from '@/stores/useTagStore.ts';
+import { Segmented, type SegmentedProps, Input, type InputRef, Checkbox } from 'antd';
+import { isEqual } from 'lodash-es';
+import type React from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import TagManagementModal from '@/components/base/tag-management';
+import TagFilter from '@/components/base/tag-management/TagFilter.tsx';
+import { usePermission } from '@/hooks/usePermission';
 import CreateAppCard from '@/pages/integrated/Apps/NewAppCard.tsx';
+import type { App, AppSearchParams } from '@/services/integrated/apps/app';
+import { appsService } from '@/services/integrated/apps/appsApi';
+import { useTagStore } from '@/stores/useTagStore.ts';
+import AppCard from './AppCard';
 import './apps.scss';
 const { Search } = Input;
 /**
