@@ -1,6 +1,6 @@
-import DragModal from '@/components/modal/DragModal';
 import { Button, Form, Input, type InputRef } from 'antd';
 import { useEffect, useRef } from 'react';
+import DragModal from '@/components/modal/DragModal';
 
 /**
  * 端点类型编辑窗口

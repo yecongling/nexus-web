@@ -1,6 +1,6 @@
-import useParentSize from '@/hooks/useParentSize';
 import { Button, Checkbox, Space, Table, type TableProps } from 'antd';
 import { memo, useState } from 'react';
+import useParentSize from '@/hooks/useParentSize';
 
 /**
  * 端点配置表格
