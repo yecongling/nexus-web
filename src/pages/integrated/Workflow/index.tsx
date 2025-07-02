@@ -27,7 +27,8 @@ const Workflow: React.FC = () => {
 
   useEffect(() => {
     // 监听主题变化
-    document.documentElement.style.setProperty('--g-workflow-line-color-default', theme.colorPrimary);
+    document.documentElement.style.setProperty('--g-workflow-line-color-flowing', theme.colorPrimary);
+    document.documentElement.style.setProperty('--g-workflow-port-color-secondary', theme.colorPrimary);
   }, [theme.colorPrimary]);
 
   return (
