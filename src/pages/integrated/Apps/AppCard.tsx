@@ -19,7 +19,7 @@ import './apps.scss';
  * @returns
  */
 const AppCard: React.FC<AppCardProps> = ({ app, onRefresh }) => {
-  const { id, name, type, remark = '' } = app;
+  const { id, name, type, remark = '', updateUser, updateTime } = app;
   const navigate = useNavigate();
   const [showEditModal, setShowEditModal] = useState(false);
   // 复制弹窗
@@ -59,7 +59,10 @@ const AppCard: React.FC<AppCardProps> = ({ app, onRefresh }) => {
               </div>
             </div>
             <div className="flex items-center text-[10px] font-medium leading-[18px] text-[#676f83]">
-              <div className="truncate">{type}编辑人-编辑时间</div>
+              <div className="truncate">
+                {type}
+                {updateUser} · 编辑于{updateTime}
+              </div>
             </div>
           </div>
         </div>
@@ -158,7 +161,7 @@ const AppCard: React.FC<AppCardProps> = ({ app, onRefresh }) => {
           icon_type={app.icon_type}
           icon={app.icon}
           icon_url={app.icon_url}
-          icon_background={app.icon_background}
+          icon_background={app.iconBg}
           show={showDuplicateModal}
           onCancel={() => {
             setShowDuplicateModal(false);

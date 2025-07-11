@@ -27,6 +27,7 @@
         "react-dom": "^18.3.1",
         "react-draggable": "^4.5.0",
         "react-error-boundary": "^6.0.0",
+        "react-hotkeys-hook": "^5.1.0",
         "react-i18next": "^15.6.0",
         "react-router": "^7.6.3",
         "screenfull": "^6.0.2",
@@ -1026,6 +1027,8 @@
     "react-error-boundary": ["react-error-boundary@6.0.0", "", { "dependencies": { "@babel/runtime": "^7.12.5" }, "peerDependencies": { "react": ">=16.13.1" } }, "sha512-gdlJjD7NWr0IfkPlaREN2d9uUZUlksrfOx7SX62VRerwXbMY6ftGCIZua1VG1aXFNOimhISsTq+Owp725b9SiA=="],
 
     "react-fast-compare": ["react-fast-compare@3.2.2", "", {}, "sha512-nsO+KSNgo1SbJqJEYRE9ERzo7YtYbou/OqjSQKxV7jcKox7+usiUVZOAC+XnDOABXggQTno0Y1CpVnuWEc1boQ=="],
+
+    "react-hotkeys-hook": ["react-hotkeys-hook@5.1.0", "https://registry.npmmirror.com/react-hotkeys-hook/-/react-hotkeys-hook-5.1.0.tgz", { "peerDependencies": { "react": ">=16.8.0", "react-dom": ">=16.8.0" } }, "sha512-GCNGXjBzV9buOS3REoQFmSmE4WTvBhYQ0YrAeeMZI83bhXg3dRWsLHXDutcVDdEjwJqJCxk5iewWYX5LtFUd7g=="],
 
     "react-i18next": ["react-i18next@15.6.0", "https://registry.npmmirror.com/react-i18next/-/react-i18next-15.6.0.tgz", { "dependencies": { "@babel/runtime": "^7.27.6", "html-parse-stringify": "^3.0.1" }, "peerDependencies": { "i18next": ">= 23.2.3", "react": ">= 16.8.0", "typescript": "^5" }, "optionalPeers": ["typescript"] }, "sha512-W135dB0rDfiFmbMipC17nOhGdttO5mzH8BivY+2ybsQBbXvxWIwl3cmeH3T9d+YPBSJu/ouyJKFJTtkK7rJofw=="],
 

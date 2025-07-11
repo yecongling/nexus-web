@@ -16,8 +16,6 @@ export interface App {
   priority?: number;
   // 日志级别
   logLevel: number;
-  // 背景图
-  background?: string;
   // 备注
   remark?: string;
   // 创建时间
@@ -26,8 +24,10 @@ export interface App {
   updateTime?: string;
   // 创建人
   createBy?: string;
+  createUser?: string;
   // 更新人
   updateBy?: string;
+  updateUser?: string;
   // 标签
   tags: Tag[];
 
@@ -36,7 +36,7 @@ export interface App {
    */
   icon_type: AppIconType | null;
   icon: string;
-  icon_background: string | null;
+  iconBg: string | null;
   icon_url: string | null;
 }
 

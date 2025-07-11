@@ -144,3 +144,18 @@ export const addKeyToData = (data: any[], key: string) => {
     return newItem;
   });
 };
+
+/**
+ * 获取快捷键的标签
+ * @param shortcut 快捷键字符串
+ * @returns 格式化后的快捷键标签
+ */
+export function getShortcutLabel(shortcut: string): string {
+  const isMac = /Mac|iPod|iPhone|iPad/.test(navigator.platform);
+  return shortcut
+    .replace('ctrl', isMac ? '⌘' : 'Ctrl')
+    .replace('shift', isMac ? '⇧' : 'Shift')
+    .replace('alt', isMac ? '⌥' : 'Alt')
+    .replace('meta', isMac ? '⌘' : 'Meta') // 可选
+    .toUpperCase();
+}

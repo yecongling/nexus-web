@@ -6,6 +6,8 @@ import DragModal from '@/components/modal/DragModal';
 import type { App } from '@/services/integrated/apps/app';
 import { usePreferencesStore } from '@/stores/store';
 import { useTranslation } from 'react-i18next';
+import { usePlatformHotkey } from '@/hooks/usePlatformHotkey';
+import { getShortcutLabel } from '@/utils/utils';
 
 /**
  * 添加项目弹窗
@@ -25,6 +27,18 @@ const AppInfoModal: React.FC<AppInfoModalProps> = memo(({ open, onOk, onCancel, 
   const { preferences } = usePreferencesStore();
   const { theme } = preferences;
   const { t } = useTranslation();
+
+  // 绑定保存的快捷键
+  const shotcut = usePlatformHotkey({
+    mac: 'meta+s',
+    windows: 'ctrl+s',
+    handler: (event) => {
+      event.preventDefault();
+      if (name.trim().length > 0) {
+        handleOk();
+      }
+    },
+  });
 
   /**
    * 选择类型
@@ -79,7 +93,7 @@ const AppInfoModal: React.FC<AppInfoModalProps> = memo(({ open, onOk, onCancel, 
                 </div>
                 <div className="flex flex-row gap-2">
                   <div
-                    className="w-[191px] h-[84px] p-3 border-[0.5px] relative box-content! rounded-xl cursor-pointer shadow-xs hover:shadow-md"
+                    className="w-[191px] h-[84px] p-3 border-[1px] relative box-content! rounded-xl cursor-pointer shadow-xs hover:shadow-md"
                     style={{ borderColor: type === 1 ? theme.colorPrimary : '#e9ebf0' }}
                     onClick={() => selectType(1)}
                   >
@@ -90,7 +104,7 @@ const AppInfoModal: React.FC<AppInfoModalProps> = memo(({ open, onOk, onCancel, 
                     <div className="text-[#676f83] text-[12px] font-normal leading-4">内置高性能调用的数据调度</div>
                   </div>
                   <div
-                    className="w-[191px] h-[84px] p-3 border-[0.5px] relative box-content! rounded-xl cursor-pointer shadow-xs hover:shadow-md"
+                    className="w-[191px] h-[84px] p-3 border-[1px] relative box-content! rounded-xl cursor-pointer shadow-xs hover:shadow-md"
                     style={{ borderColor: type === 2 ? theme.colorPrimary : '#e9ebf0' }}
                     onClick={() => selectType(2)}
                   >
@@ -101,7 +115,7 @@ const AppInfoModal: React.FC<AppInfoModalProps> = memo(({ open, onOk, onCancel, 
                     <div className="text-[#676f83] text-[12px] font-normal leading-4">内置高性能调用的数据调度</div>
                   </div>
                   <div
-                    className="w-[191px] h-[84px] p-3 border-[0.5px] relative box-content! rounded-xl cursor-pointer shadow-xs hover:shadow-md"
+                    className="w-[191px] h-[84px] p-3 border-[1px] relative box-content! rounded-xl cursor-pointer shadow-xs hover:shadow-md"
                     style={{ borderColor: type === 3 ? theme.colorPrimary : '#e9ebf0' }}
                     onClick={() => selectType(3)}
                   >
@@ -183,6 +197,7 @@ const AppInfoModal: React.FC<AppInfoModalProps> = memo(({ open, onOk, onCancel, 
                       value: 4,
                     },
                   ]}
+                  defaultValue={1}
                   className="w-full h-10"
                   placeholder="日志级别"
                   size="middle"
@@ -208,7 +223,7 @@ const AppInfoModal: React.FC<AppInfoModalProps> = memo(({ open, onOk, onCancel, 
                   {t('common.operation.cancel')}
                 </Button>
                 <Button type="primary" disabled={name.trim().length === 0} onClick={handleOk}>
-                  {t('common.operation.confirm')}
+                  {t('common.operation.confirm')}({getShortcutLabel(shotcut)})
                 </Button>
               </Space>
             </div>
