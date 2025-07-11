@@ -5,12 +5,7 @@ import DragModal from '@/components/modal/DragModal';
 /**
  * 端点类型编辑窗口
  */
-const EndpointTypeModal: React.FC<EndpointTypeModalProps> = ({
-  open,
-  onOk,
-  onCancel,
-  data,
-}) => {
+const EndpointTypeModal: React.FC<EndpointTypeModalProps> = ({ open, onOk, onCancel, data }) => {
   const [form] = Form.useForm();
   const nameRef = useRef<InputRef>(null);
 
@@ -65,7 +60,7 @@ const EndpointTypeModal: React.FC<EndpointTypeModalProps> = ({
         <Form.Item name="parentId" hidden>
           <Input />
         </Form.Item>
-        <Form.Item name="typeName" label="名称" rules={[{ required: true }]}>
+        <Form.Item name="name" label="名称" rules={[{ required: true }]}>
           <Input ref={nameRef} />
         </Form.Item>
         <Form.Item name="icon" label="图标">

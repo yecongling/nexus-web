@@ -203,20 +203,18 @@ const UserDropdown: React.FC = memo(() => {
   };
 
   return (
-    <>
-      <Dropdown
-        trigger={['hover']}
-        menu={{ items, triggerSubMenuAction: 'hover' }}
-        popupRender={renderDropdown}
-        placement="bottomLeft"
-        overlayStyle={{ width: 240 }}
-      >
-        <div className="login-user flex items-center cursor-pointer justify-between h-[50] transition-all duration-300">
-          <Avatar size="default" src={avatar} />
-          <span style={{ margin: '0 0 0 6px' }}>{userStore.loginUser}</span>
-        </div>
-      </Dropdown>
-    </>
+    <Dropdown
+      trigger={['hover']}
+      menu={{ items, triggerSubMenuAction: 'hover' }}
+      popupRender={renderDropdown}
+      placement="bottomLeft"
+      overlayStyle={{ width: 240 }}
+    >
+      <div className="login-user flex items-center cursor-pointer justify-between h-[50] transition-all duration-300">
+        <Avatar size="default" src={avatar} />
+        <span style={{ margin: '0 0 0 6px' }}>{userStore.loginUser}</span>
+      </div>
+    </Dropdown>
   );
 });
 

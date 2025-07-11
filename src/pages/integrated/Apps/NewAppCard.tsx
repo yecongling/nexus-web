@@ -1,6 +1,6 @@
 import React, { useReducer } from 'react';
 import { ExportOutlined, FileAddFilled, PlusOutlined } from '@ant-design/icons';
-import { App as AntdApp, Card } from 'antd';
+import { Card } from 'antd';
 import AppCreate from './create-app-modal';
 import ImportDsl from './create-from-dsl-modal';
 import { useTranslation } from 'react-i18next';
@@ -29,7 +29,6 @@ type CreateAppCardProps = {
  */
 const CreateAppCard: React.FC<CreateAppCardProps> = ({ refresh }) => {
   const { t } = useTranslation();
-  const { modal } = AntdApp.useApp();
 
   // 新增弹窗、模版弹窗、导入弹窗
   const [state, dispatch] = useReducer(
@@ -56,13 +55,7 @@ const CreateAppCard: React.FC<CreateAppCardProps> = ({ refresh }) => {
       dispatch({
         openAddModal: false,
       });
-    },
-    onError: (error) => {
-      modal.error({
-        title: t('app.addApp.error.title'),
-        content: t('app.addApp.error.content', { error: error.message }),
-      });
-    },
+    }
   });
 
   /**

@@ -98,12 +98,12 @@ const AppCardOperations: React.FC<AppCardOperationsProps> = ({
   /**
    * 复制应用(有一个复制弹窗)
    */
-  const onCopy = async ({ name, icon_type, icon, icon_background }: Partial<App>) => {
+  const onCopy = async ({ name, icon_type, icon, iconBg }: Partial<App>) => {
     copyAppMutation.mutate({
       name,
       icon_type,
       icon,
-      icon_background,
+      iconBg,
     });
   };
 

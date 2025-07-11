@@ -27,7 +27,7 @@ const EndpointConfigTable: React.FC<EndpointConfigTableProps> = memo(
         title: '名称',
         dataIndex: 'name',
         key: 'name',
-        width: 120,
+        width: 80,
         fixed: 'left',
       },
       {
@@ -88,7 +88,7 @@ const EndpointConfigTable: React.FC<EndpointConfigTableProps> = memo(
         fixed: 'right',
         title: '操作',
         align: 'center',
-        width: 160,
+        width: 120,
         render: (_: any, record: any) => {
           return (
             <Space size={0}>

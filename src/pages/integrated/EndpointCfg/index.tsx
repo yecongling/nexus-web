@@ -13,6 +13,7 @@ import { useEffect, useRef, useState } from 'react';
 import TextArea from 'antd/es/input/TextArea';
 import EndpointConfigTable from './EndpointConfigTable';
 import EndpointTypeTree from './EndpointTypeTree';
+import { useTranslation } from 'react-i18next';
 
 /**
  * 端点配置模块
@@ -21,10 +22,11 @@ const EndpointConfig: React.FC = () => {
   // 当前编辑状态
   const [action, setAction] = useState<string>('view');
 
-  // 当前编辑的配置数据
-  const [configData, setConfigData] = useState<Record<string, any> | null>(null);
+  // 当前选中的分类数据
+  const [selectCategory, setSelectCategory] = useState<Record<string, any> | null>(null);
   // 名称框
   const nameRef = useRef<InputRef>(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (action !== 'view' && nameRef.current) {
@@ -40,7 +42,7 @@ const EndpointConfig: React.FC = () => {
     // 查询配置数据
     console.log(info);
     // 假设是后台查询到的配置数据
-    setConfigData(info);
+    setSelectCategory(info);
   };
 
   /**
@@ -129,18 +131,31 @@ const EndpointConfig: React.FC = () => {
                 端点配置
               </Divider>
               {/* 端点配置表格 */}
-              <EndpointConfigTable configData={configData} action={action} onConfigDataChange={onConfigDataChange} />
+              <EndpointConfigTable
+                configData={selectCategory}
+                action={action}
+                onConfigDataChange={onConfigDataChange}
+              />
             </Col>
           </Row>
           <Row>
             <Col span={24} style={{ textAlign: 'right' }}>
               <Divider style={{ margin: '8px 0 12px 0' }} />
               <Space>
-                <Button icon={<PlusOutlined />} type="primary" onClick={() => setAction('add')}>
-                  新增
+                <Button
+                  icon={<PlusOutlined />}
+                  disabled={selectCategory === null || selectCategory.node.type === 'config'}
+                  type="primary"
+                  onClick={() => setAction('add')}
+                >
+                  {t('common.operation.add')}
                 </Button>
-                <Button icon={<EditOutlined />} onClick={() => setAction('modify')}>
-                  修改
+                <Button
+                  icon={<EditOutlined />}
+                  disabled={selectCategory === null || selectCategory.node.type !== 'config'}
+                  onClick={() => setAction('modify')}
+                >
+                  {t('common.operation.edit')}
                 </Button>
                 <Button
                   icon={<SaveOutlined />}
@@ -148,18 +163,18 @@ const EndpointConfig: React.FC = () => {
                   disabled={action === 'view'}
                   onClick={() => setAction('view')}
                 >
-                  保存
+                  {t('common.operation.save')}
                 </Button>
                 <Button icon={<CloseOutlined />} disabled={action === 'view'} onClick={() => setAction('view')}>
-                  取消
+                  {t('common.operation.cancel')}
                 </Button>
                 <Button
                   icon={<DeleteOutlined />}
                   danger
-                  disabled={configData === null || configData.node.type !== 'config'}
+                  disabled={selectCategory === null || selectCategory.node.type !== 'config'}
                   onClick={() => {}}
                 >
-                  删除
+                  {t('common.operation.delete')}
                 </Button>
               </Space>
             </Col>

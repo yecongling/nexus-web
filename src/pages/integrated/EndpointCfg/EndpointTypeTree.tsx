@@ -1,5 +1,5 @@
-import { Button, Card, Dropdown, Empty, Input, type MenuProps, Space, Tree } from 'antd';
-import { memo, useEffect, useRef, useState } from 'react';
+import { Button, Card, Dropdown, Empty, Input, type MenuProps, Tree } from 'antd';
+import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import type { DataNode } from 'antd/es/tree';
 import { MyIcon } from '@/components/MyIcon';
 import {
@@ -19,14 +19,15 @@ import {
   PlusCircleOutlined,
 } from '@ant-design/icons';
 import { antdUtils } from '@/utils/antdUtil';
+import { useMutation, useQuery } from '@tanstack/react-query';
 
 /**
  * 端点类型树
  * @returns
  */
 const EndpointTypeTree: React.FC<EndpointTypeTreeProps> = memo(({ onSelect }) => {
-  // 树结构数据
-  const [treeData, setTreeData] = useState<ConfigTypeNode[]>([]);
+  // 检索框的值和搜索的关键字
+  const [inputValue, setInputValue] = useState<string>('');
   // 树结构展开的节点
   const [expandedKeys, setExpandedKeys] = useState<string[]>([]);
   // 类型编辑窗口
@@ -56,6 +57,60 @@ const EndpointTypeTree: React.FC<EndpointTypeTreeProps> = memo(({ onSelect }) =>
       document.removeEventListener('click', handleClick);
     };
   }, []);
+
+  /**
+   * 检索
+   * @param params 参数
+   */
+  const { data: treeData = [], refetch } = useQuery({
+    queryKey: ['endpoint_type_tree'],
+    queryFn: async () => {
+      const res = await queryEndpointConfigType(inputValue);
+      const expanded: string[] = [];
+      const transformedData = transformData(res, expanded);
+      setExpandedKeys(expanded);
+      return transformedData;
+    },
+  });
+
+  // 新增分类的mutation
+  const addEpTypeMutation = useMutation({
+    mutationFn: (typeData: Record<string, any>) => {
+      return addEndpointType(typeData);
+    },
+    onSuccess: () => {
+      // 刷新数据
+      refetch();
+      // 关闭弹窗
+      setOpenTypeModal(false);
+    },
+  });
+
+  // 修改分类的mutation
+  const updateEpTypeMutation = useMutation({
+    mutationFn: (typeData: Record<string, any>) => {
+      return updateEndpointType(typeData);
+    },
+    onSuccess: () => {
+      // 刷新数据
+      refetch();
+      // 关闭弹窗
+      setOpenTypeModal(false);
+    },
+  });
+
+  // 删除分类的mutation
+  const deleteEndpointTypeMutation = useMutation({
+    mutationFn: (id: string) => {
+      return deleteEndpointType(id);
+    },
+    onSuccess: () => {
+      // 刷新数据
+      refetch();
+      // 关闭菜单
+      setVisible(false);
+    },
+  });
 
   // 右键菜单选项
   const contextMenu: MenuProps['items'] = [
@@ -124,9 +179,7 @@ const EndpointTypeTree: React.FC<EndpointTypeTreeProps> = memo(({ onSelect }) =>
               });
               return;
             }
-            deleteEndpointType(selectedNode.id).then(() => {
-              queryData();
-            });
+            deleteEndpointTypeMutation.mutate(selectedNode.id);
           },
           onCancel: () => {
             setVisible(false);
@@ -136,37 +189,18 @@ const EndpointTypeTree: React.FC<EndpointTypeTreeProps> = memo(({ onSelect }) =>
     },
   ];
 
-  useEffect(() => {
-    queryData();
-  }, []);
-
-  /**
-   * 检索
-   * @param params 参数
-   */
-  const queryData = (params?: string) => {
-    // 调用查询
-    queryEndpointConfigType(params).then((response) => {
-      // 内部数据需要进行处理，其中的icon需要处理成对应的组件
-      const expanded: string[] = [];
-      const data = transformData(response, expanded);
-      setTreeData(data);
-      setExpandedKeys(expanded);
-    });
-  };
-
   /**
    * 数据转换，处理其中的icon
    * @param data 数据
    */
-  const transformData = (data: any[], expanded: string[]): any[] => {
+  const transformData = useCallback((data: any[], expanded: string[]): any[] => {
     return data.map((item: any) => {
       // 转为树节点需要的key
       item.key = item.id;
       if (item.icon) {
         item.icon = item.icon.indexOf('fusion') > -1 ? <MyIcon type={item.icon} /> : addIcon(item.icon);
       }
-      item.title = item.typeName;
+      item.title = item.name;
       if (item.children?.length > 0 || item.endpointConfigs?.length > 0) {
         expanded.push(item.key as string);
       }
@@ -176,10 +210,10 @@ const EndpointTypeTree: React.FC<EndpointTypeTreeProps> = memo(({ onSelect }) =>
       }
       return item;
     });
-  };
+  }, []);
 
   // 右键点击事件
-  const handleRightClick = (event: any) => {
+  const handleRightClick = useCallback((event: any) => {
     event.event.preventDefault();
     // 如果是右键的配置节点，则不响应, 这里类型判断有误dang，需要处理
     if (event.node.isConfig) {
@@ -206,7 +240,7 @@ const EndpointTypeTree: React.FC<EndpointTypeTreeProps> = memo(({ onSelect }) =>
       endpointConfigs: node.endpointConfigs,
     }); // 获取当前点击节点的 key
     setVisible(true); // 显示右键菜单
-  };
+  }, []);
 
   /**
    * 类型数据确定
@@ -216,18 +250,15 @@ const EndpointTypeTree: React.FC<EndpointTypeTreeProps> = memo(({ onSelect }) =>
     // 请求后台数据保存
     if (typeData.id) {
       // 编辑
-      await updateEndpointType(typeData);
+      updateEpTypeMutation.mutate(typeData);
     } else {
       // 新增
-      await addEndpointType(typeData);
+      addEpTypeMutation.mutate(typeData);
     }
-    // 操作成功，关闭弹窗，刷新数据
-    setOpenTypeModal(false);
-    queryData();
   };
 
   // 树节点选中事件
-  const onTreeSelect = (selectedKeys: React.Key[], info: any) => {
+  const onTreeSelect = (_selectedKeys: React.Key[], info: any) => {
     const node = info.node;
     setSelectedNode({
       id: node.id,
@@ -240,7 +271,6 @@ const EndpointTypeTree: React.FC<EndpointTypeTreeProps> = memo(({ onSelect }) =>
       endpointConfigs: node.endpointConfigs,
     });
     onSelect(info);
-    console.log(selectedKeys, info);
   };
 
   // 新增分类
@@ -264,68 +294,69 @@ const EndpointTypeTree: React.FC<EndpointTypeTreeProps> = memo(({ onSelect }) =>
 
   return (
     <>
-      <Card style={{ height: '100%' }} title="端点分类列表">
-        <Space
-          direction="vertical"
-          size={8}
-          style={{ width: '100%', minHeight: 0 }}
-          styles={{ item: { flex: 1, overflowY: 'auto' } }}
-        >
-          {/* 检索 */}
-          <Input.Search placeholder="请输入名称检索" autoFocus onSearch={(value: string) => queryData(value)} />
-          {/* 树结构 */}
-          {/* 如果没有数据则显示为空，手动添加 */}
-          <div className="tree">
-            {treeData.length === 0 ? (
-              <Empty description="暂无分类！">
-                <Button type="primary" onClick={onAddTypeClick}>
-                  新增分类
-                </Button>
-              </Empty>
-            ) : (
-              <Tree
-                blockNode
-                showIcon
-                switcherIcon={<DownOutlined />}
-                defaultExpandAll
-                icon={(props: any) => {
-                  // 没有isConfig这个属性表明这是类型，不是配置
-                  const { isConfig } = props.data;
-                  if (!isConfig) {
-                    return props.expanded ? (
-                      <FolderOpenFilled style={{ fontSize: '16px', color: 'orange' }} />
-                    ) : (
-                      <FolderFilled style={{ fontSize: '16px', color: 'orange' }} />
-                    );
-                  }
-                  return <></>;
-                }}
-                expandedKeys={expandedKeys}
-                onExpand={onExpand}
-                treeData={treeData}
-                selectedKeys={selectedNode ? [selectedNode.key] : []}
-                onSelect={onTreeSelect}
-                onRightClick={handleRightClick}
-              />
-            )}
-            {/* 右键菜单 */}
-            {visible && (
-              <div
-                ref={dropdownRef}
-                style={{
-                  position: 'fixed',
-                  top: contextMenuPosition.y,
-                  left: contextMenuPosition.x,
-                  zIndex: 1000,
-                }}
-              >
-                <Dropdown menu={{ items: contextMenu }} trigger={['click']} open={visible}>
-                  <div />
-                </Dropdown>
-              </div>
-            )}
-          </div>
-        </Space>
+      <Card className="h-full flex flex-col" classNames={{ body: 'flex-1' }} title="端点分类列表">
+        {/* 检索 */}
+        <Input.Search
+          placeholder="请输入名称检索"
+          className="mb-2"
+          value={inputValue}
+          enterButton
+          autoFocus
+          onChange={(e) => setInputValue(e.target.value)}
+          onSearch={() => refetch()}
+        />
+        {/* 树结构 */}
+        {/* 如果没有数据则显示为空，手动添加 */}
+        <div className="tree">
+          {treeData.length === 0 ? (
+            <Empty description="暂无分类！">
+              <Button type="primary" onClick={onAddTypeClick}>
+                新增分类
+              </Button>
+            </Empty>
+          ) : (
+            <Tree
+              blockNode
+              showIcon
+              switcherIcon={<DownOutlined />}
+              defaultExpandAll
+              icon={(props: any) => {
+                // 没有isConfig这个属性表明这是类型，不是配置
+                const { isConfig } = props.data;
+                if (!isConfig) {
+                  return props.expanded ? (
+                    <FolderOpenFilled style={{ fontSize: '16px', color: 'orange' }} />
+                  ) : (
+                    <FolderFilled style={{ fontSize: '16px', color: 'orange' }} />
+                  );
+                }
+                return <></>;
+              }}
+              expandedKeys={expandedKeys}
+              onExpand={onExpand}
+              treeData={treeData}
+              selectedKeys={selectedNode ? [selectedNode.key] : []}
+              onSelect={onTreeSelect}
+              onRightClick={handleRightClick}
+            />
+          )}
+          {/* 右键菜单 */}
+          {visible && (
+            <div
+              ref={dropdownRef}
+              style={{
+                position: 'fixed',
+                top: contextMenuPosition.y,
+                left: contextMenuPosition.x,
+                zIndex: 1000,
+              }}
+            >
+              <Dropdown menu={{ items: contextMenu }} trigger={['click']} open={visible}>
+                <div />
+              </Dropdown>
+            </div>
+          )}
+        </div>
       </Card>
       {/* 类型编辑窗口 */}
       <EndpointTypeModal
