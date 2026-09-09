@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import { cn } from 'cn';
 import './switchItem.css';
 import { InputNumber } from 'antd';
 import type { ReactNode } from 'react';
@@ -46,7 +46,7 @@ const NumberItem: React.FC<NumberItemProps> = (props) => {
 
   return (
     <div
-      className={clsx('number-item', {
+      className={cn('number-item', {
         'pointer-events-none opacity-50': disabled,
       })}
     >

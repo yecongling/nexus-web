@@ -10,7 +10,7 @@ import SidebarNav from '../icons/SidebarNav';
 import '../Theme/theme.css';
 import './layout.css';
 import { QuestionCircleOutlined } from '@ant-design/icons';
-import clsx from 'clsx';
+import { cn } from 'cn';
 import { useShallow } from 'zustand/shallow';
 import { usePreferencesStore } from '@/shared/stores/preferences.store';
 
@@ -65,7 +65,7 @@ const MyLayout: React.FC = () => {
           }}
         >
           <div
-            className={clsx('outline-box items-center flex justify-center', {
+            className={cn('outline-box items-center flex justify-center', {
               'outline-box-active': layout === item.type,
             })}
           >

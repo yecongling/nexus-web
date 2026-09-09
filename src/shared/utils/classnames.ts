@@ -1,5 +1,4 @@
-import clsx, { type ClassValue } from 'clsx';
-import { twMerge } from 'tailwind-merge';
+import { type ClassValue, cn } from 'cn';
 
 /**
  * tailwindcss 合并类名工具函数
@@ -7,7 +6,7 @@ import { twMerge } from 'tailwind-merge';
  * @returns
  */
 const classNames = (...cls: ClassValue[]) => {
-  return twMerge(clsx(cls));
+  return cn(...cls);
 };
 
 export default classNames;

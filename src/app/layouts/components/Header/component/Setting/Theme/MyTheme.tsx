@@ -1,7 +1,7 @@
 import { THEME_PRESET } from '@/shared/constants/constants';
 import { usePreferencesStore } from '@/shared/stores/preferences.store';
 import './theme.css';
-import clsx from 'clsx';
+import { cn } from 'cn';
 import { useShallow } from 'zustand/shallow';
 import SwitchItem from '../SwitchItem';
 
@@ -29,7 +29,7 @@ const MyTheme: React.FC = () => {
               }}
             >
               <div
-                className={clsx('outline-box pt-4! pb-4!', {
+                className={cn('outline-box pt-4! pb-4!', {
                   'outline-box-active': item.name === mode,
                 })}
               >

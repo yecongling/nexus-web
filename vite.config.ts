@@ -76,7 +76,7 @@ export default defineConfig(({ mode }): UserConfig => {
               },
               {
                 name: 'lib-utils',
-                test: /node_modules[\\/](lodash-es|dayjs|crypto-js|clsx|tailwind-merge)/,
+                test: /node_modules[\\/](lodash-es|dayjs|crypto-js|cn)/,
               },
               {
                 name: 'lib-network',

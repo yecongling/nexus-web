@@ -20,9 +20,9 @@
     "@tanstack/react-router": "^1.170.33",
     "@xyflow/react": "^12.11.6",
     "@zxcvbn-ts/core": "^4.2.0",
-    "antd": "^6.6.2",
+    "antd": "^6.6.3",
     "axios": "^1.20.0",
-    "clsx": "^2.1.1",
+    "cn": "^0.2.6",
     "crypto-js": "^4.2.0",
     "dayjs": "^1.11.23",
     "echarts": "^6.1.0",
@@ -35,7 +35,6 @@
     "react-draggable": "^4.7.1",
     "react-error-boundary": "^6.1.5",
     "react-i18next": "^17.0.13",
-    "tailwind-merge": "^3.6.0",
     "zustand": "^5.0.15"
   },
   "devDependencies": {
@@ -49,7 +48,7 @@
     "@types/react-dom": "^19.2.7",
     "@vitejs/plugin-react": "^6.1.1",
     "mockjs": "^1.1.0",
-    "oxc-transform-react": "^0.148.0",
+    "oxc-transform-react": "^0.149.0",
     "tailwindcss": "^4.3.3",
     "typescript": "^7.0.2",
     "vite": "^8.2.2",

@@ -1,7 +1,7 @@
 import { UserAddOutlined } from '@ant-design/icons';
 import { ColorPicker } from 'antd';
 import type { Color } from 'antd/es/color-picker';
-import clsx from 'clsx';
+import { cn } from 'cn';
 import { BUILTIN_THEME_PRESETS } from '@/shared/constants/constants';
 import './theme.css';
 import { useShallow } from 'zustand/shallow';
@@ -32,7 +32,7 @@ const Buitin: React.FC = () => {
           return (
             <div key={item.color} className="flex flex-col">
               <div
-                className={clsx('outline-box flex items-center justify-center cursor-pointer', {
+                className={cn('outline-box flex items-center justify-center cursor-pointer', {
                   'outline-box-active': colorPrimary === item.color,
                 })}
               >
@@ -59,7 +59,7 @@ const Buitin: React.FC = () => {
             }}
           >
             <div
-              className={clsx('outline-box flex items-center justify-center cursor-pointer', {
+              className={cn('outline-box flex items-center justify-center cursor-pointer', {
                 'outline-box-active': colorPrimary === item.color,
               })}
             >
